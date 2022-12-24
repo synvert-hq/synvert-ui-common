@@ -1,0 +1,22 @@
+{
+  "name": "synvert-ui-common",
+  "version": "1.0.0",
+  "description": "common methods for synvert ui (GUI, vscode extension and web)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xinminlabs/synvert-ui-common.git"
+  },
+  "keywords": [
+    "synvert"
+  ],
+  "author": "Richard Huang <flyerhzm@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xinminlabs/synvert-ui-common/issues"
+  },
+  "homepage": "https://github.com/xinminlabs/synvert-ui-common#readme"
+}
