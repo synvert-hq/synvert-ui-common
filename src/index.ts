@@ -20,3 +20,16 @@ export function snippetMatchesByText(snippet: Snippet, text: string): boolean {
     (!!snippet.description && snippet.description.toLowerCase().includes(lowerCaseText))
   );
 }
+
+export function sortSnippets(snippets: Snippet[], text: string): Snippet[] {
+  const lowerCaseText = text.toLowerCase();
+  return snippets.sort((a: Snippet, b: Snippet) => {
+    if (a.group.toLowerCase().includes(lowerCaseText) && !b.group.toLowerCase().includes(lowerCaseText)) return -1;
+    if (!a.group.toLowerCase().includes(lowerCaseText) && b.group.toLowerCase().includes(lowerCaseText)) return 1;
+    if (a.name.toLowerCase().includes(lowerCaseText) && !b.name.toLowerCase().includes(lowerCaseText)) return -1;
+    if (!a.name.toLowerCase().includes(lowerCaseText) && b.name.toLowerCase().includes(lowerCaseText)) return 1;
+    if (`${a.group}/${a.name}` < `${b.group}/${b.name}`) return -1;
+    if (`${a.group}/${a.name}` > `${b.group}/${b.name}`) return 1;
+    return 0;
+  });
+}
