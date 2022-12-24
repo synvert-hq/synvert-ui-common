@@ -7,16 +7,16 @@ export interface Snippet {
 }
 
 /**
- * Filter snippets select option.
- * @param {Snippet} snippet - value of an option
- * @param {string} inputValue - input value
- * @returns {boolean} if snippet matches an input value
+ * Check if a snippet matches by the text.
+ * @param {Snippet} snippet
+ * @param {string} text
+ * @returns {boolean} true if matches
  */
-export function filterOption(snippet: Snippet, inputValue: string): boolean {
-  const text = inputValue.toLowerCase();
+export function snippetMatchesByText(snippet: Snippet, text: string): boolean {
+  const lowerCaseText = text.toLowerCase();
   return (
-    snippet.group.toLowerCase().includes(text) ||
-    snippet.name.toLowerCase().includes(text) ||
-    (!!snippet.description && snippet.description.toLowerCase().includes(text))
+    snippet.group.toLowerCase().includes(lowerCaseText) ||
+    snippet.name.toLowerCase().includes(lowerCaseText) ||
+    (!!snippet.description && snippet.description.toLowerCase().includes(lowerCaseText))
   );
 }
