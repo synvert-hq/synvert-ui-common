@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/xinminlabs/synvert-ui-common/issues"
   },
-  "homepage": "https://github.com/xinminlabs/synvert-ui-common#readme"
+  "homepage": "https://github.com/xinminlabs/synvert-ui-common#readme",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }
