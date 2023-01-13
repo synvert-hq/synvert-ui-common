@@ -39,3 +39,59 @@ export function sortSnippets(snippets: Snippet[], text: string): Snippet[] {
     return 0;
   });
 }
+
+type GenerateRubySnippetParams = {
+  filePattern: string,
+  rubyVersion: string,
+  gemVersion: string,
+  snippet: string,
+}
+export function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet }: GenerateRubySnippetParams): string {
+  let generatedSnippet = "Synvert::Rewriter.new 'group', 'name' do\n";
+  if (rubyVersion) {
+    generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
+  }
+  if (gemVersion) {
+    const index = gemVersion.indexOf(" ");
+    const name = gemVersion.substring(0, index);
+    const version = gemVersion.substring(index + 1);
+    generatedSnippet += `  if_gem '${name}', '${version}'\n`;
+  }
+  generatedSnippet += `  within_files '${filePattern}' do\n`;
+  if (snippet) {
+    generatedSnippet += "    ";
+    generatedSnippet += snippet.replace(/\n/g, "\n    ");
+    generatedSnippet += "\n";
+  }
+  generatedSnippet += "  end\n";
+  generatedSnippet += "end";
+  return generatedSnippet;
+};
+
+type GenerateJavascriptSnippetParams = {
+  filePattern: string,
+  nodeVersion: string,
+  npmVersion: string,
+  snippet: string,
+}
+export function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet }: GenerateJavascriptSnippetParams): string {
+  let generatedSnippet = `const Synvert = require("synvert-core");\n\nnew Synvert.Rewriter("group", "name", () => {\n`;
+  if (nodeVersion) {
+    generatedSnippet += `  ifNode("${nodeVersion}");\n`;
+  }
+  if (npmVersion) {
+    const index = npmVersion.indexOf(" ");
+    const name = npmVersion.substring(0, index);
+    const version = npmVersion.substring(index + 1);
+    generatedSnippet += `  ifNpm("${name}", "${version}");\n`;
+  }
+  generatedSnippet += `  withinFiles("${filePattern}", () => {\n`;
+  if (snippet) {
+    generatedSnippet += "    ";
+    generatedSnippet += snippet.replace(/\n/g, "\n    ");
+    generatedSnippet += "\n";
+  }
+  generatedSnippet += "  });\n";
+  generatedSnippet += "});";
+  return generatedSnippet;
+};
