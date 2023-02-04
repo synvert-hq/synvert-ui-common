@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.4.1 (2023/02/04)
+
+* Revert "Add `runShellCommand` function"
+
 ## 1.4.0 (2023/02/04)
 
 * Add `parseJSON` function
