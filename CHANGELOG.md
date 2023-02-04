@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.5.0 (2023/02/04)
+
+* Add `formatCommandResult` function
+
 ## 1.4.1 (2023/02/04)
 
 * Revert "Add `runShellCommand` function"
