@@ -4,7 +4,8 @@ import {
   sortSnippets,
   parseJSON,
   composeRubyGeneratedSnippet,
-  composeJavascriptGeneratedSnippet
+  composeJavascriptGeneratedSnippet,
+  formatCommandResult,
 } from "../src/index";
 
 describe("filterSnippets", () => {
@@ -109,5 +110,19 @@ describe("composeJavascriptGeneratedSnippet", () => {
       });
     `;
     expect(composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet })).toEqual(composedSnippet);
+  });
+});
+
+describe("formatCommandResult", () => {
+  it("formats with empty stderr", () => {
+    expect(formatCommandResult({ stdout: "hello world", stderr: "" })).toEqual({ output: "hello world", error: undefined });
+  });
+
+  it("formats with stderr", () => {
+    expect(formatCommandResult({ stdout: "", stderr: "hello world" })).toEqual({ output: "", error: "hello world" });
+  });
+
+  it("formats with warning", () => {
+    expect(formatCommandResult({ stdout: "hello world", stderr: "warning: hello world" })).toEqual({ output: "hello world", error: undefined });
   });
 });

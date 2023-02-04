@@ -114,3 +114,46 @@ export function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, np
   generatedSnippet += "});";
   return generatedSnippet;
 };
+
+function isRealError(stderr: string): boolean {
+  return (
+    Boolean(stderr) &&
+    !stderr.startsWith('warning:') &&
+    !stderr.startsWith('Cloning into ') &&
+    !stderr.startsWith("error: pathspec '.' did not match any file(s) known to git")
+  );
+}
+
+function isJsonString(str: string): boolean {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+function outputContainsError(stdout: string): boolean {
+  return (
+    Boolean(stdout) &&
+    isJsonString(stdout) &&
+    JSON.parse(stdout).error
+  );
+}
+
+/**
+ * Format shell command result, convert stdout and stderr to a json object { output, error }.
+ * @param {string} stdout
+ * @param {string} stderr
+ * @returns {{ output: string, error: string }
+ */
+export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr: string }): { output: string, error?: string } {
+  let error;
+  if (isRealError(stderr)) {
+    error = stderr;
+  }
+  if (outputContainsError(stdout)) {
+    error = JSON.parse(stdout).error;
+  }
+  return { output: stdout, error };
+}
