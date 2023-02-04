@@ -1,5 +1,11 @@
 import dedent from "dedent";
-import { filterSnippets, sortSnippets, composeRubyGeneratedSnippet, composeJavascriptGeneratedSnippet } from "../src/index";
+import {
+  filterSnippets,
+  sortSnippets,
+  parseJSON,
+  composeRubyGeneratedSnippet,
+  composeJavascriptGeneratedSnippet
+} from "../src/index";
 
 describe("filterSnippets", () => {
   it("gets snippets when text exists in group", () => {
@@ -45,6 +51,13 @@ describe("sortSnippets", () => {
     expect(snippets[2].id).toEqual(3);
     expect(snippets[3].id).toEqual(2);
   })
+});
+
+describe("parseJSON", () => {
+  it("parses json with camel case keys", () => {
+    const string = `{ "key": "value", "snake_case_key": "value", "camelCaseKey": "value" }`;
+    expect(parseJSON(string)).toEqual({ key: "value", snakeCaseKey: "value", camelCaseKey: "value" });
+  });
 });
 
 describe("composeRubyGeneratedSnippet", () => {

@@ -40,6 +40,25 @@ export function sortSnippets(snippets: Snippet[], text: string): Snippet[] {
   });
 }
 
+const snakeToCamel = (str: string): string => str.replace(/([-_]\w)/g, g => g[1].toUpperCase());
+
+/**
+ * Parse json string to JSON object, with camel case keys.
+ * @param str json string
+ * @returns JSON object
+ */
+export const parseJSON = (str: string) => {
+  return JSON.parse(str, function(key, value) {
+    const camelCaseKey = snakeToCamel(key);
+
+    if (this instanceof Array || camelCaseKey === key) {
+      return value;
+    } else {
+      this[camelCaseKey] = value;
+    }
+  });
+};
+
 type GenerateRubySnippetParams = {
   filePattern: string,
   rubyVersion: string,
