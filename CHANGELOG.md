@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.4.0 (2023/02/04)
+
+* Add `parseJSON` function
+* Add `runShellCommand` function
+
 ## 1.3.0 (2023/01/14)
 
 * Add `composeRubyGeneratedSnippet` and `composeJavascriptGeneratedSnippet` functions
