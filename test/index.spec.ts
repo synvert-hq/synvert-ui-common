@@ -97,8 +97,6 @@ describe("composeJavascriptGeneratedSnippet", () => {
       });
     `;
     const composedSnippet = dedent`
-      const Synvert = require("synvert-core");
-
       new Synvert.Rewriter("group", "name", () => {
         ifNode("14.0.0");
         ifNpm("jquery", ">= 3.0.0");

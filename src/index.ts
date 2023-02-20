@@ -94,7 +94,7 @@ type GenerateJavascriptSnippetParams = {
   snippet: string,
 }
 export function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet }: GenerateJavascriptSnippetParams): string {
-  let generatedSnippet = `const Synvert = require("synvert-core");\n\nnew Synvert.Rewriter("group", "name", () => {\n`;
+  let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n`;
   if (nodeVersion) {
     generatedSnippet += `  ifNode("${nodeVersion}");\n`;
   }
