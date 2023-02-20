@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.5.1 (2023/02/20)
+
+* No need to generate `const Synvert = require("synvert-core");`
+
 ## 1.5.0 (2023/02/04)
 
 * Add `formatCommandResult` function
