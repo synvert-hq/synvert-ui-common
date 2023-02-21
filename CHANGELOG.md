@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.6.0 (2023/02/21)
+
+* Add `composeGeneratedSnippets` function
+
 ## 1.5.1 (2023/02/20)
 
 * No need to generate `const Synvert = require("synvert-core");`
