@@ -65,7 +65,7 @@ type GenerateRubySnippetParams = {
   gemVersion: string,
   snippet: string,
 }
-export function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet }: GenerateRubySnippetParams): string {
+function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet }: GenerateRubySnippetParams): string {
   let generatedSnippet = "Synvert::Rewriter.new 'group', 'name' do\n";
   if (rubyVersion) {
     generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
@@ -93,7 +93,7 @@ type GenerateJavascriptSnippetParams = {
   npmVersion: string,
   snippet: string,
 }
-export function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet }: GenerateJavascriptSnippetParams): string {
+function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet }: GenerateJavascriptSnippetParams): string {
   let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n`;
   if (nodeVersion) {
     generatedSnippet += `  ifNode("${nodeVersion}");\n`;
@@ -114,6 +114,37 @@ export function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, np
   generatedSnippet += "});";
   return generatedSnippet;
 };
+
+type GenerateSnippetParams = {
+  language: "ruby",
+  rubyVersion: string,
+  gemVersion: string,
+  filePattern: string,
+  snippets: string[],
+} | {
+  language: "javascript" | "typescript",
+  nodeVersion: string,
+  npmVersion: string,
+  filePattern: string,
+  snippets: string[],
+};
+export function composeGeneratedSnippets(data: GenerateSnippetParams): string[] {
+  if (data.language === "ruby") {
+    return data.snippets.map((snippet) => composeRubyGeneratedSnippet({
+      filePattern: data.filePattern,
+      rubyVersion: data.rubyVersion,
+      gemVersion: data.gemVersion,
+      snippet,
+    }));
+  } else {
+    return data.snippets.map((snippet) => composeJavascriptGeneratedSnippet({
+      filePattern: data.filePattern,
+      nodeVersion: data.nodeVersion,
+      npmVersion: data.npmVersion,
+      snippet,
+    }));
+  }
+}
 
 function isRealError(stderr: string): boolean {
   return (

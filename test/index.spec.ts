@@ -3,8 +3,7 @@ import {
   filterSnippets,
   sortSnippets,
   parseJSON,
-  composeRubyGeneratedSnippet,
-  composeJavascriptGeneratedSnippet,
+  composeGeneratedSnippets,
   formatCommandResult,
 } from "../src/index";
 
@@ -61,17 +60,18 @@ describe("parseJSON", () => {
   });
 });
 
-describe("composeRubyGeneratedSnippet", () => {
-  it("compose snippet for ruby", () => {
+describe("composeGeneratedSnippet", () => {
+  it("compose snippets for ruby", () => {
+    const language = 'ruby';
     const filePattern = '**/*.rb';
     const rubyVersion = '2.5.0';
     const gemVersion = 'factory_girl >= 2.0.0';
-    const snippet = dedent`
+    const snippets = [dedent`
       find_node '.const[name=FactoryGirl]' do
         replace :name, with: 'FactoryBot'
       end
-    `;
-    const composedSnippet = dedent`
+    `];
+    const composedSnippets = [dedent`
       Synvert::Rewriter.new 'group', 'name' do
         if_ruby '2.5.0'
         if_gem 'factory_girl', '>= 2.0.0'
@@ -81,22 +81,21 @@ describe("composeRubyGeneratedSnippet", () => {
           end
         end
       end
-    `;
-    expect(composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet })).toEqual(composedSnippet);
+    `];
+    expect(composeGeneratedSnippets({ language, filePattern, rubyVersion, gemVersion, snippets })).toEqual(composedSnippets);
   });
-});
 
-describe("composeJavascriptGeneratedSnippet", () => {
   it("compose snippet for javascript", () => {
+    const language = 'javascript';
     const filePattern = '**/*.js';
     const nodeVersion = '14.0.0';
     const npmVersion = 'jquery >= 3.0.0';
-    const snippet = dedent`
+    const snippets = [dedent`
       findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
         replace("callee.object", { with: "Array" });
       });
-    `;
-    const composedSnippet = dedent`
+    `];
+    const composedSnippets = [dedent`
       new Synvert.Rewriter("group", "name", () => {
         ifNode("14.0.0");
         ifNpm("jquery", ">= 3.0.0");
@@ -106,8 +105,8 @@ describe("composeJavascriptGeneratedSnippet", () => {
           });
         });
       });
-    `;
-    expect(composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet })).toEqual(composedSnippet);
+    `];
+    expect(composeGeneratedSnippets({ language, filePattern, nodeVersion, npmVersion, snippets })).toEqual(composedSnippets);
   });
 });
 
