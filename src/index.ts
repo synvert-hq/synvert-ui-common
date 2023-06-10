@@ -64,9 +64,10 @@ type GenerateRubySnippetParams = {
   rubyVersion: string,
   gemVersion: string,
   snippet: string,
+  parser: string,
 }
-function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet }: GenerateRubySnippetParams): string {
-  let generatedSnippet = "Synvert::Rewriter.new 'group', 'name' do\n";
+function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }: GenerateRubySnippetParams): string {
+  let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::PARSER_${parser.toUpperCase()})\n`;
   if (rubyVersion) {
     generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
   }
@@ -92,9 +93,10 @@ type GenerateJavascriptSnippetParams = {
   nodeVersion: string,
   npmVersion: string,
   snippet: string,
+  parser: string,
 }
-function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet }: GenerateJavascriptSnippetParams): string {
-  let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n`;
+function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet, parser }: GenerateJavascriptSnippetParams): string {
+  let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n  configure({ parser: Synvert.Parser.${parser.toUpperCase()} });\n`;
   if (nodeVersion) {
     generatedSnippet += `  ifNode("${nodeVersion}");\n`;
   }
@@ -117,23 +119,32 @@ function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersio
 
 type GenerateSnippetParams = {
   language: "ruby",
+  parser: "parser",
   rubyVersion: string,
   gemVersion: string,
   filePattern: string,
   snippets: string[],
 } | {
   language: "javascript" | "typescript",
+  parser: "parser" | "syntax_tree" | "espree" | "typescript" | "gonzales_pe",
   nodeVersion: string,
   npmVersion: string,
   filePattern: string,
   snippets: string[],
 };
+
+/**
+ * Compose generated snippets.
+ * @param data {GenerateSnippetParams}
+ * @returns {string[]}
+ */
 export function composeGeneratedSnippets(data: GenerateSnippetParams): string[] {
   if (data.language === "ruby") {
     return data.snippets.map((snippet) => composeRubyGeneratedSnippet({
       filePattern: data.filePattern,
       rubyVersion: data.rubyVersion,
       gemVersion: data.gemVersion,
+      parser: data.parser,
       snippet,
     }));
   } else {
@@ -141,6 +152,7 @@ export function composeGeneratedSnippets(data: GenerateSnippetParams): string[] 
       filePattern: data.filePattern,
       nodeVersion: data.nodeVersion,
       npmVersion: data.npmVersion,
+      parser: data.parser,
       snippet,
     }));
   }

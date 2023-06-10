@@ -62,10 +62,11 @@ describe("parseJSON", () => {
 
 describe("composeGeneratedSnippet", () => {
   it("compose snippets for ruby", () => {
-    const language = 'ruby';
-    const filePattern = '**/*.rb';
-    const rubyVersion = '2.5.0';
-    const gemVersion = 'factory_girl >= 2.0.0';
+    const language = "ruby";
+    const parser = "parser";
+    const filePattern = "**/*.rb";
+    const rubyVersion = "2.5.0";
+    const gemVersion = "factory_girl >= 2.0.0";
     const snippets = [dedent`
       find_node '.const[name=FactoryGirl]' do
         replace :name, with: 'FactoryBot'
@@ -73,6 +74,7 @@ describe("composeGeneratedSnippet", () => {
     `];
     const composedSnippets = [dedent`
       Synvert::Rewriter.new 'group', 'name' do
+        configure(parser: Synvert::PARSER_PARSER)
         if_ruby '2.5.0'
         if_gem 'factory_girl', '>= 2.0.0'
         within_files '**/*.rb' do
@@ -82,14 +84,15 @@ describe("composeGeneratedSnippet", () => {
         end
       end
     `];
-    expect(composeGeneratedSnippets({ language, filePattern, rubyVersion, gemVersion, snippets })).toEqual(composedSnippets);
+    expect(composeGeneratedSnippets({ language, parser, filePattern, rubyVersion, gemVersion, snippets })).toEqual(composedSnippets);
   });
 
   it("compose snippet for javascript", () => {
-    const language = 'javascript';
-    const filePattern = '**/*.js';
-    const nodeVersion = '14.0.0';
-    const npmVersion = 'jquery >= 3.0.0';
+    const language = "javascript";
+    const parser = "typescript";
+    const filePattern = "**/*.js";
+    const nodeVersion = "14.0.0";
+    const npmVersion = "jquery >= 3.0.0";
     const snippets = [dedent`
       findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
         replace("callee.object", { with: "Array" });
@@ -97,6 +100,7 @@ describe("composeGeneratedSnippet", () => {
     `];
     const composedSnippets = [dedent`
       new Synvert.Rewriter("group", "name", () => {
+        configure({ parser: Synvert.Parser.TYPESCRIPT });
         ifNode("14.0.0");
         ifNpm("jquery", ">= 3.0.0");
         withinFiles("**/*.js", () => {
@@ -106,7 +110,7 @@ describe("composeGeneratedSnippet", () => {
         });
       });
     `];
-    expect(composeGeneratedSnippets({ language, filePattern, nodeVersion, npmVersion, snippets })).toEqual(composedSnippets);
+    expect(composeGeneratedSnippets({ language, parser, filePattern, nodeVersion, npmVersion, snippets })).toEqual(composedSnippets);
   });
 });
 
