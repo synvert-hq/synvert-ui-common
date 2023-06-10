@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.6.1 (2023/06/10)
+
+* Add `parser` to `composeGeneratedSnippets`
+
 ## 1.6.0 (2023/02/21)
 
 * Add `composeGeneratedSnippets` function
