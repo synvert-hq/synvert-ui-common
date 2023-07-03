@@ -119,14 +119,14 @@ function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersio
 
 type GenerateSnippetParams = {
   language: "ruby",
-  parser: "parser",
+  parser: string,
   rubyVersion: string,
   gemVersion: string,
   filePattern: string,
   snippets: string[],
 } | {
-  language: "javascript" | "typescript",
-  parser: "parser" | "syntax_tree" | "espree" | "typescript" | "gonzales_pe",
+  language: "javascript" | "typescript" | "css" | "less" | "sass" | "scss",
+  parser: string,
   nodeVersion: string,
   npmVersion: string,
   filePattern: string,
@@ -188,7 +188,7 @@ function outputContainsError(stdout: string): boolean {
  * Format shell command result, convert stdout and stderr to a json object { output, error }.
  * @param {string} stdout
  * @param {string} stderr
- * @returns {{ output: string, error: string }
+ * @returns { output: string, error: string }
  */
 export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr: string }): { output: string, error?: string } {
   let error;
