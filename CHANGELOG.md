@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.6.3 (2023-07-04)
+
+* Fix ruby configuration parser
+
 ## 1.6.2 (2023-07-03)
 
 * Support `css` language in GenerateSnippetParams
