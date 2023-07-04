@@ -67,7 +67,7 @@ type GenerateRubySnippetParams = {
   parser: string,
 }
 function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }: GenerateRubySnippetParams): string {
-  let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::PARSER_${parser.toUpperCase()})\n`;
+  let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::${parser.toUpperCase()}_PARSER)\n`;
   if (rubyVersion) {
     generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
   }
