@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.6.2 (2023-07-03)
+
+* Support `css` language in GenerateSnippetParams
+
 ## 1.6.1 (2023/06/10)
 
 * Add `parser` to `composeGeneratedSnippets`
