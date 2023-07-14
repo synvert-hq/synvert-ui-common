@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.7.1 (2023-07-14)
+
+* Export type `Snippet`
+
 ## 1.7.0 (2023-07-14)
 
 * Add `placeholderByLanguage` function
