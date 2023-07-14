@@ -1,6 +1,7 @@
 import dedent from "dedent";
 import {
   placeholderByLanguage,
+  parsersByLanguage,
   filterSnippets,
   sortSnippets,
   parseJSON,
@@ -21,6 +22,16 @@ describe("placeholderByLanguage", () => {
       input: "foo.substring(indexStart, indexEnd)",
       output: "foo.slice(indexStart, indexEnd)",
     });
+  });
+});
+
+describe("parsersByLanguage", () => {
+  it("gets parsers for ruby", () => {
+    expect(parsersByLanguage("ruby")).toEqual(["parser", "syntax_tree"]);
+  });
+
+  it("gets parsers for javascript", () => {
+    expect(parsersByLanguage("javascript")).toEqual(["typescript", "espree"]);
   });
 });
 
