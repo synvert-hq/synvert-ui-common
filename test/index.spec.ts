@@ -1,5 +1,6 @@
 import dedent from "dedent";
 import {
+  filePatternByLanguage,
   placeholderByLanguage,
   parsersByLanguage,
   filterSnippets,
@@ -8,6 +9,16 @@ import {
   composeGeneratedSnippets,
   formatCommandResult,
 } from "../src/index";
+
+describe("filePatternByLanguage", () => {
+  it("gets file pattern for ruby", () => {
+    expect(filePatternByLanguage("ruby")).toEqual("**/*.rb");
+  });
+
+  it("gets file pattern for javascript", () => {
+    expect(filePatternByLanguage("javascript")).toEqual("**/*.js");
+  });
+});
 
 describe("placeholderByLanguage", () => {
   it("gets placeholders for ruby", () => {

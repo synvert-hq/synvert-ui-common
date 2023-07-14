@@ -1,3 +1,13 @@
+export const FILE_PATTERNS: { [language:string]: string } = {
+  ruby: "**/*.rb",
+  javascript: "**/*.js",
+  typescript: "**/*.ts",
+  css: "**/*.css",
+  less: "**/*.less",
+  sass: "**/*.sass",
+  scss: "**/*.scss",
+};
+
 export const PLACEHODERS: { [language: string]: { [name: string]: string } } = {
   ruby: {
     input: "FactoryBot.create(:user)",
