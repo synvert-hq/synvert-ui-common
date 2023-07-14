@@ -1,9 +1,15 @@
+import { PLACEHODERS } from './constants';
+
 export interface Snippet {
   readonly id: number;
   readonly group: string;
   readonly name: string;
   readonly description?: string;
   readonly source_code: string;
+}
+
+export function placeholderByLanguage(language: string): { [name: string]: string } {
+  return PLACEHODERS[language];
 }
 
 /**

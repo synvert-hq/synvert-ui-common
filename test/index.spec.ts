@@ -1,11 +1,28 @@
 import dedent from "dedent";
 import {
+  placeholderByLanguage,
   filterSnippets,
   sortSnippets,
   parseJSON,
   composeGeneratedSnippets,
   formatCommandResult,
 } from "../src/index";
+
+describe("placeholderByLanguage", () => {
+  it("gets placeholders for ruby", () => {
+    expect(placeholderByLanguage("ruby")).toEqual({
+      input: "FactoryBot.create(:user)",
+      output: "create(:user)",
+    });
+  });
+
+  it("gets placeholders for javascript", () => {
+    expect(placeholderByLanguage("javascript")).toEqual({
+      input: "foo.substring(indexStart, indexEnd)",
+      output: "foo.slice(indexStart, indexEnd)",
+    });
+  });
+});
 
 describe("filterSnippets", () => {
   it("gets snippets when text exists in group", () => {
