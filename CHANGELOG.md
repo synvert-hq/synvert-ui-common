@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.8.0 (2023-07-14)
+
+* Add `filePatternByLanguage` function
+
 ## 1.7.1 (2023-07-14)
 
 * Export type `Snippet`
