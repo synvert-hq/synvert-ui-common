@@ -1,10 +1,21 @@
 import { PARSERS, PLACEHODERS } from './constants';
-import { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams } from './types';
+import type { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams } from './types';
+export type { Snippet };
 
+/**
+ * Get placeholder by language.
+ * @param {string} language
+ * @returns {string}
+ */
 export function placeholderByLanguage(language: string): { [name: string]: string } {
   return PLACEHODERS[language];
 }
 
+/**
+ * Get parsers by language.
+ * @param {string} language
+ * @returns {string[]}
+ */
 export function parsersByLanguage(language: string): string[] {
   return PARSERS[language];
 }
