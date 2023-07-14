@@ -1,12 +1,5 @@
 import { PLACEHODERS } from './constants';
-
-export interface Snippet {
-  readonly id: number;
-  readonly group: string;
-  readonly name: string;
-  readonly description?: string;
-  readonly source_code: string;
-}
+import { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams } from './types';
 
 export function placeholderByLanguage(language: string): { [name: string]: string } {
   return PLACEHODERS[language];
@@ -65,13 +58,6 @@ export const parseJSON = (str: string) => {
   });
 };
 
-type GenerateRubySnippetParams = {
-  filePattern: string,
-  rubyVersion: string,
-  gemVersion: string,
-  snippet: string,
-  parser: string,
-}
 function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }: GenerateRubySnippetParams): string {
   let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::${parser.toUpperCase()}_PARSER)\n`;
   if (rubyVersion) {
@@ -94,13 +80,6 @@ function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, sni
   return generatedSnippet;
 };
 
-type GenerateJavascriptSnippetParams = {
-  filePattern: string,
-  nodeVersion: string,
-  npmVersion: string,
-  snippet: string,
-  parser: string,
-}
 function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet, parser }: GenerateJavascriptSnippetParams): string {
   let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n  configure({ parser: Synvert.Parser.${parser.toUpperCase()} });\n`;
   if (nodeVersion) {
@@ -121,22 +100,6 @@ function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersio
   generatedSnippet += "  });\n";
   generatedSnippet += "});";
   return generatedSnippet;
-};
-
-type GenerateSnippetParams = {
-  language: "ruby",
-  parser: string,
-  rubyVersion: string,
-  gemVersion: string,
-  filePattern: string,
-  snippets: string[],
-} | {
-  language: "javascript" | "typescript" | "css" | "less" | "sass" | "scss",
-  parser: string,
-  nodeVersion: string,
-  npmVersion: string,
-  filePattern: string,
-  snippets: string[],
 };
 
 /**
