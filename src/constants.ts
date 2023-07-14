@@ -15,7 +15,7 @@ export const PLACEHODERS: { [language: string]: { [name: string]: string } } = {
     input: "",
     output: "",
   },
-  lss: {
+  less: {
     input: "",
     output: "",
   },
