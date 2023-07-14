@@ -28,3 +28,13 @@ export const PLACEHODERS: { [language: string]: { [name: string]: string } } = {
     output: "",
   },
 }
+
+export const PARSERS: { [language: string]: string[] } = {
+  ruby: ["parser", "syntax_tree"],
+  javascript: ["typescript", "espree"],
+  typescript: ["typescript"],
+  css: ["gonzales-pe"],
+  less: ["gonzales-pe"],
+  sass: ["gonzales-pe"],
+  scss: ["gonzales-pe"],
+}
