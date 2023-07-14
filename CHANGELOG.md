@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.7.0 (2023-07-14)
+
+* Add `placeholderByLanguage` function
+* Add `parsersByLanguage` function
+
 ## 1.6.3 (2023-07-04)
 
 * Fix ruby configuration parser
