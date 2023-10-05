@@ -156,7 +156,9 @@ function isRealError(stderr: string): boolean {
     Boolean(stderr) &&
     !stderr.startsWith('warning:') &&
     !stderr.startsWith('Cloning into ') &&
-    !stderr.startsWith("error: pathspec '.' did not match any file(s) known to git")
+    !stderr.startsWith("error: pathspec '.' did not match any file(s) known to git") &&
+    !stderr.startsWith('npm WARN') && // npm install
+    !stderr.startsWith('Updated 0 paths from the index') // git pull
   );
 }
 
