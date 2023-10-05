@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.8.1 (2023-10-05)
+
+* Handle more cases in `isRealError`
+
 ## 1.8.0 (2023-07-14)
 
 * Add `filePatternByLanguage` function
