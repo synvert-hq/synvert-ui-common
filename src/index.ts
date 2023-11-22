@@ -183,7 +183,7 @@ function outputContainsError(stdout: string): boolean {
  * Format shell command result, convert stdout and stderr to a json object { output, error }.
  * @param {string} stdout
  * @param {string} stderr
- * @returns { output: string, error: string }
+ * @returns { { output: string, error: string } }
  */
 export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr: string }): { output: string, error?: string } {
   let error;
@@ -196,6 +196,17 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
   return { output: stdout, error };
 }
 
+/**
+ * Runs synvert-ruby command line.
+ * @param {Function} runCommand - The function to run the command.
+ * @param {string} executeCommand - The command to execute ("run" or "test").
+ * @param {string} rootPath - The root path.
+ * @param {string} onlyPaths - The paths to include.
+ * @param {string} skipPaths - The paths to skip.
+ * @param {Object} additionalOptions - Additional options for the command.
+ * @param {string} snippetCode - The code snippet to process.
+ * @returns A promise that resolves to an object containing the output and error messages.
+ */
 export async function runSynvertRuby(
   runCommand: (command: string, args: string[], options: { input: string }) => Promise<{ output: string, error: string }>,
   executeCommand: "run" | "test",
@@ -239,6 +250,17 @@ export function buildRubyCommandArgs(
   return commandArgs;
 }
 
+/**
+ * Runs synvert-javascript command line.
+ * @param {Function} runCommand - The function to run the command.
+ * @param {string} executeCommand - The command to execute ("run" or "test").
+ * @param {string} rootPath - The root path.
+ * @param {string} onlyPaths - The paths to include.
+ * @param {string} skipPaths - The paths to skip.
+ * @param {Object} additionalOptions - Additional options for the command.
+ * @param {string} snippetCode - The code snippet to process.
+ * @returns A promise that resolves to an object containing the output and error messages.
+ */
 export async function runSynvertJavascript(
   runCommand: (command: string, args: string[], options: { input: string }) => Promise<{ output: string, error: string }>,
   executeCommand: "run" | "test",
