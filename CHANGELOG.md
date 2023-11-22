@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.9.0 (2023-11-22)
+
+* Add `runSynvertRuby` and `runSynvertJavascript` functions
+
 ## 1.8.1 (2023-10-05)
 
 * Handle more cases in `isRealError`
