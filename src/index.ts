@@ -195,3 +195,90 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
   }
   return { output: stdout, error };
 }
+
+export async function runSynvertRuby(
+  runCommand: (command: string, args: string[], options: { input: string }) => Promise<{ output: string, error: string }>,
+  executeCommand: "run" | "test",
+  rootPath: string,
+  onlyPaths: string,
+  skipPaths: string,
+  additionalOptions: { [option: string]: string },
+  snippetCode: string,
+) {
+  const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions);
+  return await runCommand("synvert-ruby", commandArgs, { input: snippetCode })
+}
+
+export function buildRubyCommandArgs(
+  executeCommand: "run" | "test",
+  rootPath: string,
+  onlyPaths: string,
+  skipPaths: string,
+  additionalOptions: { [option: string]: string },
+): string[] {
+  const commandArgs = ["--execute", executeCommand];
+  if (executeCommand === "run") {
+    commandArgs.push("--format");
+    commandArgs.push("json");
+  }
+  if (onlyPaths.length > 0) {
+    commandArgs.push("--only-paths");
+    commandArgs.push(onlyPaths);
+  }
+  if (skipPaths.length > 0) {
+    commandArgs.push("--skip-paths");
+    commandArgs.push(skipPaths);
+  }
+  for (const [option, value] of Object.entries(additionalOptions)) {
+    commandArgs.push(option);
+    if (value !== "") {
+      commandArgs.push(value);
+    }
+  }
+  commandArgs.push(rootPath);
+  return commandArgs;
+}
+
+export async function runSynvertJavascript(
+  runCommand: (command: string, args: string[], options: { input: string }) => Promise<{ output: string, error: string }>,
+  executeCommand: "run" | "test",
+  rootPath: string,
+  onlyPaths: string,
+  skipPaths: string,
+  additionalOptions: { [option: string]: string },
+  snippetCode: string,
+) {
+  const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions);
+  return await runCommand("synvert-javascript", commandArgs, { input: snippetCode })
+}
+
+export function buildJavascriptCommandArgs(
+  executeCommand: "run" | "test",
+  rootPath: string,
+  onlyPaths: string,
+  skipPaths: string,
+  additionalOptions: { [option: string]: string },
+): string[] {
+  const commandArgs = ["--execute", executeCommand];
+  if (executeCommand === "run") {
+    commandArgs.push("--format");
+    commandArgs.push("json");
+  }
+  if (onlyPaths.length > 0) {
+    commandArgs.push("--only-paths");
+    commandArgs.push(onlyPaths);
+  }
+  if (skipPaths.length > 0) {
+    commandArgs.push("--skip-paths");
+    commandArgs.push(skipPaths);
+  }
+  for (const [option, value] of Object.entries(additionalOptions)) {
+    commandArgs.push(option);
+    if (value !== "") {
+      commandArgs.push(value);
+    }
+  }
+  commandArgs.push("--root-path");
+  commandArgs.push(rootPath);
+  return commandArgs;
+}

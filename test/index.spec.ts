@@ -8,6 +8,8 @@ import {
   parseJSON,
   composeGeneratedSnippets,
   formatCommandResult,
+  buildRubyCommandArgs,
+  buildJavascriptCommandArgs,
 } from "../src/index";
 
 describe("filePatternByLanguage", () => {
@@ -164,5 +166,29 @@ describe("formatCommandResult", () => {
 
   it("formats with warning", () => {
     expect(formatCommandResult({ stdout: "hello world", stderr: "warning: hello world" })).toEqual({ output: "hello world", error: undefined });
+  });
+});
+
+describe("buildRubyCommandArgs", () => {
+  it("gets run command args", () => {
+    const commandArgs = buildRubyCommandArgs("run", ".", "app,spec", "node_modules", { "--double-quote": "", "--tab-width": "2" });
+    expect(commandArgs).toEqual(["--execute", "run", "--format", "json", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+  });
+
+  it("gets test command args", () => {
+    const commandArgs = buildRubyCommandArgs("test", ".", "app,spec", "node_modules", { "--double-quote": "", "--tab-width": "2" });
+    expect(commandArgs).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+  });
+});
+
+describe("buildJavascriptCommandArgs", () => {
+  it("gets run command args", () => {
+    const commandArgs = buildJavascriptCommandArgs("run", ".", "lib,spec", "node_modules", { "--single-quote": "", "--no-semi": "", "--tab-width": "2" });
+    expect(commandArgs).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
+  });
+
+  it("gets test command args", () => {
+    const commandArgs = buildJavascriptCommandArgs("test", ".", "lib,spec", "node_modules", { "--single-quote": "", "--no-semi": "", "--tab-width": "2" });
+    expect(commandArgs).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
   });
 });
