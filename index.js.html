@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>index.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#composeGeneratedSnippets">composeGeneratedSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildJavascriptCommandArgs = exports.runSynvertJavascript = exports.buildRubyCommandArgs = exports.runSynvertRuby = exports.formatCommandResult = exports.composeGeneratedSnippets = exports.parseJSON = exports.sortSnippets = exports.filterSnippets = exports.parsersByLanguage = exports.placeholderByLanguage = exports.filePatternByLanguage = void 0;
+const constants_1 = require("./constants");
+/**
+ * Get file pattern by language.
+ * @param {string} language
+ * @returns {string}
+ */
+function filePatternByLanguage(language) {
+    return constants_1.FILE_PATTERNS[language];
+}
+exports.filePatternByLanguage = filePatternByLanguage;
+/**
+ * Get placeholder by language.
+ * @param {string} language
+ * @returns {string}
+ */
+function placeholderByLanguage(language) {
+    return constants_1.PLACEHODERS[language];
+}
+exports.placeholderByLanguage = placeholderByLanguage;
+/**
+ * Get parsers by language.
+ * @param {string} language
+ * @returns {string[]}
+ */
+function parsersByLanguage(language) {
+    return constants_1.PARSERS[language];
+}
+exports.parsersByLanguage = parsersByLanguage;
+/**
+ * Filter snippets by text.
+ * @param {Snippet[]} snippets
+ * @param {string} text
+ * @returns {Snippet[]}
+ */
+function filterSnippets(snippets, text) {
+    const lowerCaseText = text.toLowerCase();
+    return snippets.filter(snippet => (snippet.group.toLowerCase().includes(lowerCaseText) ||
+        snippet.name.toLowerCase().includes(lowerCaseText) ||
+        (!!snippet.description &amp;&amp; snippet.description.toLowerCase().includes(lowerCaseText))));
+}
+exports.filterSnippets = filterSnippets;
+/**
+ * Sort snippets by text.
+ * @param {Snippet[]} snippets
+ * @param {string} text
+ * @returns {Snippet[]}
+ */
+function sortSnippets(snippets, text) {
+    const lowerCaseText = text.toLowerCase();
+    return snippets.sort((a, b) => {
+        if (a.group.toLowerCase().includes(lowerCaseText) &amp;&amp; !b.group.toLowerCase().includes(lowerCaseText))
+            return -1;
+        if (!a.group.toLowerCase().includes(lowerCaseText) &amp;&amp; b.group.toLowerCase().includes(lowerCaseText))
+            return 1;
+        if (a.name.toLowerCase().includes(lowerCaseText) &amp;&amp; !b.name.toLowerCase().includes(lowerCaseText))
+            return -1;
+        if (!a.name.toLowerCase().includes(lowerCaseText) &amp;&amp; b.name.toLowerCase().includes(lowerCaseText))
+            return 1;
+        if (`${a.group}/${a.name}` &lt; `${b.group}/${b.name}`)
+            return -1;
+        if (`${a.group}/${a.name}` > `${b.group}/${b.name}`)
+            return 1;
+        return 0;
+    });
+}
+exports.sortSnippets = sortSnippets;
+const snakeToCamel = (str) => str.replace(/([-_]\w)/g, g => g[1].toUpperCase());
+/**
+ * Parse json string to JSON object, with camel case keys.
+ * @param str json string
+ * @returns JSON object
+ */
+const parseJSON = (str) => {
+    return JSON.parse(str, function (key, value) {
+        const camelCaseKey = snakeToCamel(key);
+        if (this instanceof Array || camelCaseKey === key) {
+            return value;
+        }
+        else {
+            this[camelCaseKey] = value;
+        }
+    });
+};
+exports.parseJSON = parseJSON;
+function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }) {
+    let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::${parser.toUpperCase()}_PARSER)\n`;
+    if (rubyVersion) {
+        generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
+    }
+    if (gemVersion) {
+        const index = gemVersion.indexOf(" ");
+        const name = gemVersion.substring(0, index);
+        const version = gemVersion.substring(index + 1);
+        generatedSnippet += `  if_gem '${name}', '${version}'\n`;
+    }
+    generatedSnippet += `  within_files '${filePattern}' do\n`;
+    if (snippet) {
+        generatedSnippet += "    ";
+        generatedSnippet += snippet.replace(/\n/g, "\n    ");
+        generatedSnippet += "\n";
+    }
+    generatedSnippet += "  end\n";
+    generatedSnippet += "end";
+    return generatedSnippet;
+}
+;
+function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet, parser }) {
+    let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n  configure({ parser: Synvert.Parser.${parser.toUpperCase()} });\n`;
+    if (nodeVersion) {
+        generatedSnippet += `  ifNode("${nodeVersion}");\n`;
+    }
+    if (npmVersion) {
+        const index = npmVersion.indexOf(" ");
+        const name = npmVersion.substring(0, index);
+        const version = npmVersion.substring(index + 1);
+        generatedSnippet += `  ifNpm("${name}", "${version}");\n`;
+    }
+    generatedSnippet += `  withinFiles("${filePattern}", () => {\n`;
+    if (snippet) {
+        generatedSnippet += "    ";
+        generatedSnippet += snippet.replace(/\n/g, "\n    ");
+        generatedSnippet += "\n";
+    }
+    generatedSnippet += "  });\n";
+    generatedSnippet += "});";
+    return generatedSnippet;
+}
+;
+/**
+ * Compose generated snippets.
+ * @param data {GenerateSnippetParams}
+ * @returns {string[]}
+ */
+function composeGeneratedSnippets(data) {
+    if (data.language === "ruby") {
+        return data.snippets.map((snippet) => composeRubyGeneratedSnippet({
+            filePattern: data.filePattern,
+            rubyVersion: data.rubyVersion,
+            gemVersion: data.gemVersion,
+            parser: data.parser,
+            snippet,
+        }));
+    }
+    else {
+        return data.snippets.map((snippet) => composeJavascriptGeneratedSnippet({
+            filePattern: data.filePattern,
+            nodeVersion: data.nodeVersion,
+            npmVersion: data.npmVersion,
+            parser: data.parser,
+            snippet,
+        }));
+    }
+}
+exports.composeGeneratedSnippets = composeGeneratedSnippets;
+function isRealError(stderr) {
+    return (Boolean(stderr) &amp;&amp;
+        !stderr.startsWith('warning:') &amp;&amp;
+        !stderr.startsWith('Cloning into ') &amp;&amp;
+        !stderr.startsWith("error: pathspec '.' did not match any file(s) known to git") &amp;&amp;
+        !stderr.startsWith('npm WARN') &amp;&amp; // npm install
+        !stderr.startsWith('Updated 0 paths from the index') // git pull
+    );
+}
+function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+}
+function outputContainsError(stdout) {
+    return (Boolean(stdout) &amp;&amp;
+        isJsonString(stdout) &amp;&amp;
+        JSON.parse(stdout).error);
+}
+/**
+ * Format shell command result, convert stdout and stderr to a json object { output, error }.
+ * @param {string} stdout
+ * @param {string} stderr
+ * @returns { { output: string, error: string } }
+ */
+function formatCommandResult({ stdout, stderr }) {
+    let error;
+    if (isRealError(stderr)) {
+        error = stderr;
+    }
+    if (outputContainsError(stdout)) {
+        error = JSON.parse(stdout).error;
+    }
+    return { output: stdout, error };
+}
+exports.formatCommandResult = formatCommandResult;
+/**
+ * Runs synvert-ruby command line.
+ * @param {Function} runCommand - The function to run the command.
+ * @param {string} executeCommand - The command to execute ("run" or "test").
+ * @param {string} rootPath - The root path.
+ * @param {string} onlyPaths - The paths to include.
+ * @param {string} skipPaths - The paths to skip.
+ * @param {Object} additionalOptions - Additional options for the command.
+ * @param {string} snippetCode - The code snippet to process.
+ * @returns A promise that resolves to an object containing the output and error messages.
+ */
+function runSynvertRuby(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions, snippetCode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions);
+        return yield runCommand("synvert-ruby", commandArgs, { input: snippetCode });
+    });
+}
+exports.runSynvertRuby = runSynvertRuby;
+function buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions) {
+    const commandArgs = ["--execute", executeCommand];
+    if (executeCommand === "run") {
+        commandArgs.push("--format");
+        commandArgs.push("json");
+    }
+    if (onlyPaths.length > 0) {
+        commandArgs.push("--only-paths");
+        commandArgs.push(onlyPaths);
+    }
+    if (skipPaths.length > 0) {
+        commandArgs.push("--skip-paths");
+        commandArgs.push(skipPaths);
+    }
+    for (const [option, value] of Object.entries(additionalOptions)) {
+        commandArgs.push(option);
+        if (value !== "") {
+            commandArgs.push(value);
+        }
+    }
+    commandArgs.push(rootPath);
+    return commandArgs;
+}
+exports.buildRubyCommandArgs = buildRubyCommandArgs;
+/**
+ * Runs synvert-javascript command line.
+ * @param {Function} runCommand - The function to run the command.
+ * @param {string} executeCommand - The command to execute ("run" or "test").
+ * @param {string} rootPath - The root path.
+ * @param {string} onlyPaths - The paths to include.
+ * @param {string} skipPaths - The paths to skip.
+ * @param {Object} additionalOptions - Additional options for the command.
+ * @param {string} snippetCode - The code snippet to process.
+ * @returns A promise that resolves to an object containing the output and error messages.
+ */
+function runSynvertJavascript(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions, snippetCode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions);
+        return yield runCommand("synvert-javascript", commandArgs, { input: snippetCode });
+    });
+}
+exports.runSynvertJavascript = runSynvertJavascript;
+function buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions) {
+    const commandArgs = ["--execute", executeCommand];
+    if (executeCommand === "run") {
+        commandArgs.push("--format");
+        commandArgs.push("json");
+    }
+    if (onlyPaths.length > 0) {
+        commandArgs.push("--only-paths");
+        commandArgs.push(onlyPaths);
+    }
+    if (skipPaths.length > 0) {
+        commandArgs.push("--skip-paths");
+        commandArgs.push(skipPaths);
+    }
+    for (const [option, value] of Object.entries(additionalOptions)) {
+        commandArgs.push(option);
+        if (value !== "") {
+            commandArgs.push(value);
+        }
+    }
+    commandArgs.push("--root-path");
+    commandArgs.push(rootPath);
+    return commandArgs;
+}
+exports.buildJavascriptCommandArgs = buildJavascriptCommandArgs;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Nov 22 2023 12:53:16 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
