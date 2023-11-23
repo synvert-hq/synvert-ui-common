@@ -8,7 +8,7 @@ export const FILE_PATTERNS: { [language:string]: string } = {
   scss: "**/*.scss",
 };
 
-export const PLACEHODERS: { [language: string]: { [name: string]: string } } = {
+export const PLACEHOLDERS: { [language: string]: { [name: string]: string } } = {
   ruby: {
     input: "FactoryBot.create(:user)",
     output: "create(:user)",

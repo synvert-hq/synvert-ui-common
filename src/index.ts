@@ -1,4 +1,4 @@
-import { PARSERS, FILE_PATTERNS, PLACEHODERS } from './constants';
+import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constants';
 import type { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams } from './types';
 export type { Snippet };
 
@@ -17,7 +17,7 @@ export function filePatternByLanguage(language: string): string {
  * @returns {string}
  */
 export function placeholderByLanguage(language: string): { [name: string]: string } {
-  return PLACEHODERS[language];
+  return PLACEHOLDERS[language];
 }
 
 /**
