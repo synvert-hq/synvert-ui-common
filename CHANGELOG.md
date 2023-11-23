@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.9.1 (2023-11-23)
+
+* Make `input` and `error` optional type
+
 ## 1.9.0 (2023-11-22)
 
 * Add `runSynvertRuby` and `runSynvertJavascript` functions
