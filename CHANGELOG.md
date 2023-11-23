@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.9.2 (2023-11-23)
+
+* Make `additionalArgs` an array of strings
+
 ## 1.9.1 (2023-11-23)
 
 * Make `input` and `error` optional type
