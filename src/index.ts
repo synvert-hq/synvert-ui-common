@@ -203,7 +203,7 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
  * @param {string} rootPath - The root path.
  * @param {string} onlyPaths - The paths to include.
  * @param {string} skipPaths - The paths to skip.
- * @param {Object} additionalOptions - Additional options for the command.
+ * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @returns A promise that resolves to an object containing the output and error messages.
  */
@@ -213,10 +213,10 @@ export async function runSynvertRuby(
   rootPath: string,
   onlyPaths: string,
   skipPaths: string,
-  additionalOptions: { [option: string]: string },
+  additionalArgs: string[],
   snippetCode: string,
 ) {
-  const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions);
+  const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
   return await runCommand("synvert-ruby", commandArgs, { input: snippetCode })
 }
 
@@ -225,7 +225,7 @@ export function buildRubyCommandArgs(
   rootPath: string,
   onlyPaths: string,
   skipPaths: string,
-  additionalOptions: { [option: string]: string },
+  additionalArgs: string[],
 ): string[] {
   const commandArgs = ["--execute", executeCommand];
   if (executeCommand === "run") {
@@ -240,12 +240,7 @@ export function buildRubyCommandArgs(
     commandArgs.push("--skip-paths");
     commandArgs.push(skipPaths);
   }
-  for (const [option, value] of Object.entries(additionalOptions)) {
-    commandArgs.push(option);
-    if (value !== "") {
-      commandArgs.push(value);
-    }
-  }
+  commandArgs.push(...additionalArgs);
   commandArgs.push(rootPath);
   return commandArgs;
 }
@@ -257,7 +252,7 @@ export function buildRubyCommandArgs(
  * @param {string} rootPath - The root path.
  * @param {string} onlyPaths - The paths to include.
  * @param {string} skipPaths - The paths to skip.
- * @param {Object} additionalOptions - Additional options for the command.
+ * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @returns A promise that resolves to an object containing the output and error messages.
  */
@@ -267,10 +262,10 @@ export async function runSynvertJavascript(
   rootPath: string,
   onlyPaths: string,
   skipPaths: string,
-  additionalOptions: { [option: string]: string },
+  additionalArgs: string[],
   snippetCode: string,
 ) {
-  const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalOptions);
+  const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
   return await runCommand("synvert-javascript", commandArgs, { input: snippetCode })
 }
 
@@ -279,7 +274,7 @@ export function buildJavascriptCommandArgs(
   rootPath: string,
   onlyPaths: string,
   skipPaths: string,
-  additionalOptions: { [option: string]: string },
+  additionalArgs: string[],
 ): string[] {
   const commandArgs = ["--execute", executeCommand];
   if (executeCommand === "run") {
@@ -294,12 +289,7 @@ export function buildJavascriptCommandArgs(
     commandArgs.push("--skip-paths");
     commandArgs.push(skipPaths);
   }
-  for (const [option, value] of Object.entries(additionalOptions)) {
-    commandArgs.push(option);
-    if (value !== "") {
-      commandArgs.push(value);
-    }
-  }
+  commandArgs.push(...additionalArgs);
   commandArgs.push("--root-path");
   commandArgs.push(rootPath);
   return commandArgs;
