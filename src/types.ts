@@ -37,3 +37,5 @@ export type GenerateSnippetParams = {
   filePattern: string,
   snippets: string[],
 };
+
+export type RunCommandType = (command: string, args: string[], options?: { input?: string }) => Promise<{ output: string, error?: string }>;

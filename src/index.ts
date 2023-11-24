@@ -1,5 +1,5 @@
 import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constants';
-import type { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams } from './types';
+import type { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams, RunCommandType } from './types';
 export type { Snippet };
 
 /**
@@ -208,7 +208,7 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
  * @returns A promise that resolves to an object containing the output and error messages.
  */
 export async function runSynvertRuby(
-  runCommand: (command: string, args: string[], options: { input?: string }) => Promise<{ output: string, error?: string }>,
+  runCommand: RunCommandType,
   executeCommand: "run" | "test",
   rootPath: string,
   onlyPaths: string,
@@ -257,7 +257,7 @@ export function buildRubyCommandArgs(
  * @returns A promise that resolves to an object containing the output and error messages.
  */
 export async function runSynvertJavascript(
-  runCommand: (command: string, args: string[], options: { input?: string }) => Promise<{ output: string, error?: string }>,
+  runCommand: RunCommandType,
   executeCommand: "run" | "test",
   rootPath: string,
   onlyPaths: string,
