@@ -1,3 +1,5 @@
+import { compareVersions } from 'compare-versions';
+
 import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constants';
 import type { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams, RunCommandType } from './types';
 export type { Snippet };
@@ -293,4 +295,119 @@ export function buildJavascriptCommandArgs(
   commandArgs.push("--root-path");
   commandArgs.push(rootPath);
   return commandArgs;
+}
+
+export enum DependencyResponse {
+  OK,
+  RUBY_NOT_AVAILABLE,
+  JAVASCRIPT_NOT_AVAILABLE,
+  SYNVERT_NOT_AVAILABLE,
+  SYNVERT_OUTDATED,
+  SYNVERT_CORE_OUTDATED,
+  ERROR,
+}
+
+type CheckDependencyResult = {
+  code: DependencyResponse;
+  error?: string;
+  remoteSynvertVersion?: string;
+  localSynvertVersion?: string;
+  remoteSynvertCoreVersion?: string;
+  localSynvertCoreVersion?: string;
+}
+
+const VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with synvert-core (\d+\.\d+\.\d+)/;
+
+async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synvertCoreVersion: string }> {
+  const url = "https://api-ruby.synvert.net/check-versions";
+  const response = await fetch(url);
+  const data = await response.json();
+  const { synvert_version, synvert_core_version } = data as { synvert_version: string, synvert_core_version: string };
+  return { synvertVersion: synvert_version, synvertCoreVersion: synvert_core_version };
+}
+
+/**
+ * Checks the Ruby dependencies required for the application.
+ *
+ * @param {Function} runCommand - The function used to run commands.
+ * @returns A promise that resolves to a CheckDependencyResult object.
+ */
+export async function checkRubyDependencies(runCommand: RunCommandType): Promise<CheckDependencyResult> {
+  try {
+    const { error: rubyError } = await runCommand("ruby", ["-v"]);
+    if (rubyError) {
+      return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
+    }
+    const { output, error } = await runCommand("synvert-ruby", ["-v"]);
+    if (error) {
+      return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+    }
+    const result = output.match(VERSION_REGEXP);
+    if (result) {
+      const localSynvertVersion = result[1];
+      const localSynvertCoreVersion = result[2];
+      const data = await checkGemRemoteVersions();
+      console.log('data', data)
+      const remoteSynvertVersion = data.synvertVersion;
+      const remoteSynvertCoreVersion = data.synvertCoreVersion;
+      if (compareVersions(remoteSynvertVersion, localSynvertVersion) === 1) {
+        return { code: DependencyResponse.SYNVERT_OUTDATED, remoteSynvertVersion, localSynvertVersion };
+      }
+      if (compareVersions(remoteSynvertCoreVersion, localSynvertCoreVersion) === 1) {
+        return { code: DependencyResponse.SYNVERT_CORE_OUTDATED, remoteSynvertCoreVersion, localSynvertCoreVersion };
+      }
+      return { code: DependencyResponse.OK };
+    } else {
+      return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return { code: DependencyResponse.ERROR, error: error.message };
+    }
+    return { code: DependencyResponse.ERROR, error: String(error) };
+  }
+}
+
+async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synvertCoreVersion: string }> {
+  const url = "https://api-javascript.synvert.net/check-versions";
+  const response = await fetch(url);
+  const data = await response.json();
+  const { synvert_version, synvert_core_version } = data as { synvert_version: string, synvert_core_version: string };
+  return { synvertVersion: synvert_version, synvertCoreVersion: synvert_core_version };
+}
+
+/**
+ * Checks the JavaScript dependencies.
+ * @param {Function} runCommand - The function to run a command.
+ * @returns A promise that resolves to a CheckDependencyResult object.
+ */
+export async function checkJavascriptDependencies(runCommand: RunCommandType): Promise<CheckDependencyResult> {
+  try {
+    const { error: javascriptError } = await runCommand("node", ["-v"]);
+    if (javascriptError) {
+      return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
+    }
+    const { output, error } = await runCommand("synvert-javascript", ["-v"]);
+    if (error) {
+      return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+    }
+    const result = output.match(VERSION_REGEXP);
+    if (result) {
+      const localSynvertVersion = result[1];
+      const data = await checkNpmRemoteVersions();
+      const remoteSynvertVersion = data.synvertVersion;
+      // const remoteSynvertCoreVersion = data.synvertCoreVersion;
+      if (compareVersions(remoteSynvertVersion, localSynvertVersion) === 1) {
+        return { code: DependencyResponse.SYNVERT_OUTDATED, remoteSynvertVersion, localSynvertVersion };
+      }
+      return { code: DependencyResponse.OK };
+    } else {
+      return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return { code: DependencyResponse.ERROR, error: error.message };
+    }
+    return { code: DependencyResponse.ERROR, error: String(error) };
+  }
 }
