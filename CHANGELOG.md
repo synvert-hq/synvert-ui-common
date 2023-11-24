@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.10.0 (2023-11-24)
+
+* Add `checkRubyDependencies` and `checkJavascriptDependencies` functions
+
 ## 1.9.2 (2023-11-23)
 
 * Make `additionalArgs` an array of strings
