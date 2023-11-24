@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#composeGeneratedSnippets">composeGeneratedSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#composeGeneratedSnippets">composeGeneratedSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
 </nav>
 
 <div id="main">
@@ -50,7 +50,8 @@ var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _argument
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildJavascriptCommandArgs = exports.runSynvertJavascript = exports.buildRubyCommandArgs = exports.runSynvertRuby = exports.formatCommandResult = exports.composeGeneratedSnippets = exports.parseJSON = exports.sortSnippets = exports.filterSnippets = exports.parsersByLanguage = exports.placeholderByLanguage = exports.filePatternByLanguage = void 0;
+exports.checkJavascriptDependencies = exports.checkRubyDependencies = exports.DependencyResponse = exports.buildJavascriptCommandArgs = exports.runSynvertJavascript = exports.buildRubyCommandArgs = exports.runSynvertRuby = exports.formatCommandResult = exports.composeGeneratedSnippets = exports.parseJSON = exports.sortSnippets = exports.filterSnippets = exports.parsersByLanguage = exports.placeholderByLanguage = exports.filePatternByLanguage = void 0;
+const compare_versions_1 = require("compare-versions");
 const constants_1 = require("./constants");
 /**
  * Get file pattern by language.
@@ -320,6 +321,121 @@ function buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPat
     return commandArgs;
 }
 exports.buildJavascriptCommandArgs = buildJavascriptCommandArgs;
+var DependencyResponse;
+(function (DependencyResponse) {
+    DependencyResponse[DependencyResponse["OK"] = 0] = "OK";
+    DependencyResponse[DependencyResponse["RUBY_NOT_AVAILABLE"] = 1] = "RUBY_NOT_AVAILABLE";
+    DependencyResponse[DependencyResponse["JAVASCRIPT_NOT_AVAILABLE"] = 2] = "JAVASCRIPT_NOT_AVAILABLE";
+    DependencyResponse[DependencyResponse["SYNVERT_NOT_AVAILABLE"] = 3] = "SYNVERT_NOT_AVAILABLE";
+    DependencyResponse[DependencyResponse["SYNVERT_OUTDATED"] = 4] = "SYNVERT_OUTDATED";
+    DependencyResponse[DependencyResponse["SYNVERT_CORE_OUTDATED"] = 5] = "SYNVERT_CORE_OUTDATED";
+    DependencyResponse[DependencyResponse["ERROR"] = 6] = "ERROR";
+})(DependencyResponse = exports.DependencyResponse || (exports.DependencyResponse = {}));
+const VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with synvert-core (\d+\.\d+\.\d+)/;
+function checkGemRemoteVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = "https://api-ruby.synvert.net/check-versions";
+        const response = yield fetch(url);
+        const data = yield response.json();
+        const { synvert_version, synvert_core_version } = data;
+        return { synvertVersion: synvert_version, synvertCoreVersion: synvert_core_version };
+    });
+}
+/**
+ * Checks the Ruby dependencies required for the application.
+ *
+ * @param {Function} runCommand - The function used to run commands.
+ * @returns A promise that resolves to a CheckDependencyResult object.
+ */
+function checkRubyDependencies(runCommand) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { error: rubyError } = yield runCommand("ruby", ["-v"]);
+            if (rubyError) {
+                return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
+            }
+            const { output, error } = yield runCommand("synvert-ruby", ["-v"]);
+            if (error) {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+            const result = output.match(VERSION_REGEXP);
+            if (result) {
+                const localSynvertVersion = result[1];
+                const localSynvertCoreVersion = result[2];
+                const data = yield checkGemRemoteVersions();
+                console.log('data', data);
+                const remoteSynvertVersion = data.synvertVersion;
+                const remoteSynvertCoreVersion = data.synvertCoreVersion;
+                if ((0, compare_versions_1.compareVersions)(remoteSynvertVersion, localSynvertVersion) === 1) {
+                    return { code: DependencyResponse.SYNVERT_OUTDATED, remoteSynvertVersion, localSynvertVersion };
+                }
+                if ((0, compare_versions_1.compareVersions)(remoteSynvertCoreVersion, localSynvertCoreVersion) === 1) {
+                    return { code: DependencyResponse.SYNVERT_CORE_OUTDATED, remoteSynvertCoreVersion, localSynvertCoreVersion };
+                }
+                return { code: DependencyResponse.OK };
+            }
+            else {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return { code: DependencyResponse.ERROR, error: error.message };
+            }
+            return { code: DependencyResponse.ERROR, error: String(error) };
+        }
+    });
+}
+exports.checkRubyDependencies = checkRubyDependencies;
+function checkNpmRemoteVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = "https://api-javascript.synvert.net/check-versions";
+        const response = yield fetch(url);
+        const data = yield response.json();
+        const { synvert_version, synvert_core_version } = data;
+        return { synvertVersion: synvert_version, synvertCoreVersion: synvert_core_version };
+    });
+}
+/**
+ * Checks the JavaScript dependencies.
+ * @param {Function} runCommand - The function to run a command.
+ * @returns A promise that resolves to a CheckDependencyResult object.
+ */
+function checkJavascriptDependencies(runCommand) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { error: javascriptError } = yield runCommand("node", ["-v"]);
+            if (javascriptError) {
+                return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
+            }
+            const { output, error } = yield runCommand("synvert-javascript", ["-v"]);
+            if (error) {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+            const result = output.match(VERSION_REGEXP);
+            if (result) {
+                const localSynvertVersion = result[1];
+                const data = yield checkNpmRemoteVersions();
+                const remoteSynvertVersion = data.synvertVersion;
+                // const remoteSynvertCoreVersion = data.synvertCoreVersion;
+                if ((0, compare_versions_1.compareVersions)(remoteSynvertVersion, localSynvertVersion) === 1) {
+                    return { code: DependencyResponse.SYNVERT_OUTDATED, remoteSynvertVersion, localSynvertVersion };
+                }
+                return { code: DependencyResponse.OK };
+            }
+            else {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return { code: DependencyResponse.ERROR, error: error.message };
+            }
+            return { code: DependencyResponse.ERROR, error: String(error) };
+        }
+    });
+}
+exports.checkJavascriptDependencies = checkJavascriptDependencies;
 </code></pre>
         </article>
     </section>
@@ -332,7 +448,7 @@ exports.buildJavascriptCommandArgs = buildJavascriptCommandArgs;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Nov 23 2023 06:54:12 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Nov 24 2023 02:08:26 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
