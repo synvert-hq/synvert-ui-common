@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>snippet.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#composeGeneratedSnippets">composeGeneratedSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">snippet.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.composeGeneratedSnippets = exports.sortSnippets = exports.filterSnippets = void 0;
+/**
+ * Filter snippets by text.
+ * @param {Snippet[]} snippets
+ * @param {string} text
+ * @returns {Snippet[]}
+ */
+function filterSnippets(snippets, text) {
+    const lowerCaseText = text.toLowerCase();
+    return snippets.filter(snippet => (snippet.group.toLowerCase().includes(lowerCaseText) ||
+        snippet.name.toLowerCase().includes(lowerCaseText) ||
+        (!!snippet.description &amp;&amp; snippet.description.toLowerCase().includes(lowerCaseText))));
+}
+exports.filterSnippets = filterSnippets;
+/**
+ * Sort snippets by text.
+ * @param {Snippet[]} snippets
+ * @param {string} text
+ * @returns {Snippet[]}
+ */
+function sortSnippets(snippets, text) {
+    const lowerCaseText = text.toLowerCase();
+    return snippets.sort((a, b) => {
+        if (a.group.toLowerCase().includes(lowerCaseText) &amp;&amp; !b.group.toLowerCase().includes(lowerCaseText))
+            return -1;
+        if (!a.group.toLowerCase().includes(lowerCaseText) &amp;&amp; b.group.toLowerCase().includes(lowerCaseText))
+            return 1;
+        if (a.name.toLowerCase().includes(lowerCaseText) &amp;&amp; !b.name.toLowerCase().includes(lowerCaseText))
+            return -1;
+        if (!a.name.toLowerCase().includes(lowerCaseText) &amp;&amp; b.name.toLowerCase().includes(lowerCaseText))
+            return 1;
+        if (`${a.group}/${a.name}` &lt; `${b.group}/${b.name}`)
+            return -1;
+        if (`${a.group}/${a.name}` > `${b.group}/${b.name}`)
+            return 1;
+        return 0;
+    });
+}
+exports.sortSnippets = sortSnippets;
+function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }) {
+    let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::${parser.toUpperCase()}_PARSER)\n`;
+    if (rubyVersion) {
+        generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
+    }
+    if (gemVersion) {
+        const index = gemVersion.indexOf(" ");
+        const name = gemVersion.substring(0, index);
+        const version = gemVersion.substring(index + 1);
+        generatedSnippet += `  if_gem '${name}', '${version}'\n`;
+    }
+    generatedSnippet += `  within_files '${filePattern}' do\n`;
+    if (snippet) {
+        generatedSnippet += "    ";
+        generatedSnippet += snippet.replace(/\n/g, "\n    ");
+        generatedSnippet += "\n";
+    }
+    generatedSnippet += "  end\n";
+    generatedSnippet += "end";
+    return generatedSnippet;
+}
+;
+function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet, parser }) {
+    let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n  configure({ parser: Synvert.Parser.${parser.toUpperCase()} });\n`;
+    if (nodeVersion) {
+        generatedSnippet += `  ifNode("${nodeVersion}");\n`;
+    }
+    if (npmVersion) {
+        const index = npmVersion.indexOf(" ");
+        const name = npmVersion.substring(0, index);
+        const version = npmVersion.substring(index + 1);
+        generatedSnippet += `  ifNpm("${name}", "${version}");\n`;
+    }
+    generatedSnippet += `  withinFiles("${filePattern}", () => {\n`;
+    if (snippet) {
+        generatedSnippet += "    ";
+        generatedSnippet += snippet.replace(/\n/g, "\n    ");
+        generatedSnippet += "\n";
+    }
+    generatedSnippet += "  });\n";
+    generatedSnippet += "});";
+    return generatedSnippet;
+}
+;
+/**
+ * Compose generated snippets.
+ * @param data {GenerateSnippetParams}
+ * @returns {string[]}
+ */
+function composeGeneratedSnippets(data) {
+    if (data.language === "ruby") {
+        return data.snippets.map((snippet) => composeRubyGeneratedSnippet({
+            filePattern: data.filePattern,
+            rubyVersion: data.rubyVersion,
+            gemVersion: data.gemVersion,
+            parser: data.parser,
+            snippet,
+        }));
+    }
+    else {
+        return data.snippets.map((snippet) => composeJavascriptGeneratedSnippet({
+            filePattern: data.filePattern,
+            nodeVersion: data.nodeVersion,
+            npmVersion: data.npmVersion,
+            parser: data.parser,
+            snippet,
+        }));
+    }
+}
+exports.composeGeneratedSnippets = composeGeneratedSnippets;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Dec 07 2023 05:57:44 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>command.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#composeGeneratedSnippets">composeGeneratedSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">command.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkJavascriptDependencies = exports.checkRubyDependencies = exports.DependencyResponse = exports.runSynvertJavascript = exports.runSynvertRuby = exports.formatCommandResult = void 0;
+const compare_versions_1 = require("compare-versions");
+function isRealError(stderr) {
+    return (Boolean(stderr) &amp;&amp;
+        !stderr.startsWith('warning:') &amp;&amp;
+        !stderr.startsWith('Cloning into ') &amp;&amp;
+        !stderr.startsWith("error: pathspec '.' did not match any file(s) known to git") &amp;&amp;
+        !stderr.startsWith('npm WARN') &amp;&amp; // npm install
+        !stderr.startsWith('Updated 0 paths from the index') // git pull
+    );
+}
+function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+}
+function outputContainsError(stdout) {
+    return (Boolean(stdout) &amp;&amp;
+        isJsonString(stdout) &amp;&amp;
+        JSON.parse(stdout).error);
+}
+/**
+ * Format shell command result, convert stdout and stderr to a json object { output, error }.
+ * @param {string} stdout
+ * @param {string} stderr
+ * @returns { { output: string, error: string } }
+ */
+function formatCommandResult({ stdout, stderr }) {
+    let error;
+    if (isRealError(stderr)) {
+        error = stderr;
+    }
+    if (outputContainsError(stdout)) {
+        error = JSON.parse(stdout).error;
+    }
+    return { output: stdout, error };
+}
+exports.formatCommandResult = formatCommandResult;
+/**
+ * Runs synvert-ruby command line.
+ * @param {Function} runCommand - The function to run the command.
+ * @param {string} executeCommand - The command to execute ("run" or "test").
+ * @param {string} rootPath - The root path.
+ * @param {string} onlyPaths - The paths to include.
+ * @param {string} skipPaths - The paths to skip.
+ * @param {string[]} additionalArgs - Additional arguments for the command.
+ * @param {string} snippetCode - The code snippet to process.
+ * @returns A promise that resolves to an object containing the output and error messages.
+ */
+function runSynvertRuby(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
+        return yield runCommand("synvert-ruby", commandArgs, { input: snippetCode });
+    });
+}
+exports.runSynvertRuby = runSynvertRuby;
+function buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs) {
+    const commandArgs = ["--execute", executeCommand];
+    if (executeCommand === "run") {
+        commandArgs.push("--format");
+        commandArgs.push("json");
+    }
+    if (onlyPaths.length > 0) {
+        commandArgs.push("--only-paths");
+        commandArgs.push(onlyPaths);
+    }
+    if (skipPaths.length > 0) {
+        commandArgs.push("--skip-paths");
+        commandArgs.push(skipPaths);
+    }
+    commandArgs.push(...additionalArgs);
+    commandArgs.push(rootPath);
+    return commandArgs;
+}
+/**
+ * Runs synvert-javascript command line.
+ * @param {Function} runCommand - The function to run the command.
+ * @param {string} executeCommand - The command to execute ("run" or "test").
+ * @param {string} rootPath - The root path.
+ * @param {string} onlyPaths - The paths to include.
+ * @param {string} skipPaths - The paths to skip.
+ * @param {Object} additionalArgs - Additional arguments for the command.
+ * @param {string} snippetCode - The code snippet to process.
+ * @returns A promise that resolves to an object containing the output and error messages.
+ */
+function runSynvertJavascript(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
+        return yield runCommand("synvert-javascript", commandArgs, { input: snippetCode });
+    });
+}
+exports.runSynvertJavascript = runSynvertJavascript;
+function buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs) {
+    const commandArgs = ["--execute", executeCommand];
+    if (executeCommand === "run") {
+        commandArgs.push("--format");
+        commandArgs.push("json");
+    }
+    if (onlyPaths.length > 0) {
+        commandArgs.push("--only-paths");
+        commandArgs.push(onlyPaths);
+    }
+    if (skipPaths.length > 0) {
+        commandArgs.push("--skip-paths");
+        commandArgs.push(skipPaths);
+    }
+    commandArgs.push(...additionalArgs);
+    commandArgs.push("--root-path");
+    commandArgs.push(rootPath);
+    return commandArgs;
+}
+var DependencyResponse;
+(function (DependencyResponse) {
+    DependencyResponse[DependencyResponse["OK"] = 0] = "OK";
+    DependencyResponse[DependencyResponse["RUBY_NOT_AVAILABLE"] = 1] = "RUBY_NOT_AVAILABLE";
+    DependencyResponse[DependencyResponse["JAVASCRIPT_NOT_AVAILABLE"] = 2] = "JAVASCRIPT_NOT_AVAILABLE";
+    DependencyResponse[DependencyResponse["SYNVERT_NOT_AVAILABLE"] = 3] = "SYNVERT_NOT_AVAILABLE";
+    DependencyResponse[DependencyResponse["SYNVERT_OUTDATED"] = 4] = "SYNVERT_OUTDATED";
+    DependencyResponse[DependencyResponse["SYNVERT_CORE_OUTDATED"] = 5] = "SYNVERT_CORE_OUTDATED";
+    DependencyResponse[DependencyResponse["ERROR"] = 6] = "ERROR";
+})(DependencyResponse = exports.DependencyResponse || (exports.DependencyResponse = {}));
+const VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with synvert-core (\d+\.\d+\.\d+)/;
+function checkGemRemoteVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = "https://api-ruby.synvert.net/check-versions";
+        const response = yield fetch(url);
+        const data = yield response.json();
+        const { synvert_version, synvert_core_version } = data;
+        return { synvertVersion: synvert_version, synvertCoreVersion: synvert_core_version };
+    });
+}
+/**
+ * Checks the Ruby dependencies required for the application.
+ *
+ * @param {Function} runCommand - The function used to run commands.
+ * @returns A promise that resolves to a CheckDependencyResult object.
+ */
+function checkRubyDependencies(runCommand) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { error: rubyError } = yield runCommand("ruby", ["-v"]);
+            if (rubyError) {
+                return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
+            }
+            const { output, error } = yield runCommand("synvert-ruby", ["-v"]);
+            if (error) {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+            const result = output.match(VERSION_REGEXP);
+            if (result) {
+                const localSynvertVersion = result[1];
+                const localSynvertCoreVersion = result[2];
+                const data = yield checkGemRemoteVersions();
+                const remoteSynvertVersion = data.synvertVersion;
+                const remoteSynvertCoreVersion = data.synvertCoreVersion;
+                if ((0, compare_versions_1.compareVersions)(remoteSynvertVersion, localSynvertVersion) === 1) {
+                    return { code: DependencyResponse.SYNVERT_OUTDATED, remoteSynvertVersion, localSynvertVersion };
+                }
+                if ((0, compare_versions_1.compareVersions)(remoteSynvertCoreVersion, localSynvertCoreVersion) === 1) {
+                    return { code: DependencyResponse.SYNVERT_CORE_OUTDATED, remoteSynvertCoreVersion, localSynvertCoreVersion };
+                }
+                return { code: DependencyResponse.OK };
+            }
+            else {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return { code: DependencyResponse.ERROR, error: error.message };
+            }
+            return { code: DependencyResponse.ERROR, error: String(error) };
+        }
+    });
+}
+exports.checkRubyDependencies = checkRubyDependencies;
+function checkNpmRemoteVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = "https://api-javascript.synvert.net/check-versions";
+        const response = yield fetch(url);
+        const data = yield response.json();
+        const { synvert_version, synvert_core_version } = data;
+        return { synvertVersion: synvert_version, synvertCoreVersion: synvert_core_version };
+    });
+}
+/**
+ * Checks the JavaScript dependencies.
+ * @param {Function} runCommand - The function to run a command.
+ * @returns A promise that resolves to a CheckDependencyResult object.
+ */
+function checkJavascriptDependencies(runCommand) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { error: javascriptError } = yield runCommand("node", ["-v"]);
+            if (javascriptError) {
+                return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
+            }
+            const { output, error } = yield runCommand("synvert-javascript", ["-v"]);
+            if (error) {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+            const result = output.match(VERSION_REGEXP);
+            if (result) {
+                const localSynvertVersion = result[1];
+                const data = yield checkNpmRemoteVersions();
+                const remoteSynvertVersion = data.synvertVersion;
+                // const remoteSynvertCoreVersion = data.synvertCoreVersion;
+                if ((0, compare_versions_1.compareVersions)(remoteSynvertVersion, localSynvertVersion) === 1) {
+                    return { code: DependencyResponse.SYNVERT_OUTDATED, remoteSynvertVersion, localSynvertVersion };
+                }
+                return { code: DependencyResponse.OK };
+            }
+            else {
+                return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
+            }
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return { code: DependencyResponse.ERROR, error: error.message };
+            }
+            return { code: DependencyResponse.ERROR, error: String(error) };
+        }
+    });
+}
+exports.checkJavascriptDependencies = checkJavascriptDependencies;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Dec 07 2023 05:57:44 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
