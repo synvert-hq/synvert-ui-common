@@ -2,8 +2,8 @@ import fetchMock from 'jest-fetch-mock';
 
 import {
   formatCommandResult,
-  buildRubyCommandArgs,
-  buildJavascriptCommandArgs,
+  runSynvertRuby,
+  runSynvertJavascript,
   DependencyResponse,
   checkRubyDependencies,
   checkJavascriptDependencies,
@@ -23,27 +23,39 @@ describe("formatCommandResult", () => {
   });
 });
 
-describe("buildRubyCommandArgs", () => {
+describe("runSynvertRuby", () => {
   it("gets run command args", () => {
-    const commandArgs = buildRubyCommandArgs("run", ".", "app,spec", "node_modules", ["--double-quote", "--tab-width", "2"]);
-    expect(commandArgs).toEqual(["--execute", "run", "--format", "json", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+    const runCommand = async (command: string, args: string[]) => {
+      expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+      return { output: "", error: "" };
+    };
+    runSynvertRuby(runCommand, "run", ".", "app,spec", "node_modules", ["--double-quote", "--tab-width", "2"], "snippet code");
   });
 
   it("gets test command args", () => {
-    const commandArgs = buildRubyCommandArgs("test", ".", "app,spec", "node_modules", ["--double-quote", "--tab-width", "2"]);
-    expect(commandArgs).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+    const runCommand = async (command: string, args: string[]) => {
+      expect(args).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+      return { output: "", error: "" };
+    };
+    runSynvertRuby(runCommand, "test", ".", "app,spec", "node_modules", ["--double-quote", "--tab-width", "2"], "snippet code");
   });
 });
 
-describe("buildJavascriptCommandArgs", () => {
+describe("runSynvertJavascritp", () => {
   it("gets run command args", () => {
-    const commandArgs = buildJavascriptCommandArgs("run", ".", "lib,spec", "node_modules", ["--single-quote", "--no-semi", "--tab-width", "2"]);
-    expect(commandArgs).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
+    const runCommand = async (command: string, args: string[]) => {
+      expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
+      return { output: "", error: "" };
+    };
+    runSynvertJavascript(runCommand, "run", ".", "lib,spec", "node_modules", ["--single-quote", "--no-semi", "--tab-width", "2"], "snippet code");
   });
 
   it("gets test command args", () => {
-    const commandArgs = buildJavascriptCommandArgs("test", ".", "lib,spec", "node_modules", ["--single-quote", "--no-semi", "--tab-width", "2"]);
-    expect(commandArgs).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
+    const runCommand = async (command: string, args: string[]) => {
+      expect(args).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
+      return { output: "", error: "" };
+    };
+    runSynvertJavascript(runCommand, "test", ".", "lib,spec", "node_modules", ["--single-quote", "--no-semi", "--tab-width", "2"], "snippet code");
   });
 });
 

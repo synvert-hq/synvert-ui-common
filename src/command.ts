@@ -71,7 +71,7 @@ export async function runSynvertRuby(
   return await runCommand("synvert-ruby", commandArgs, { input: snippetCode })
 }
 
-export function buildRubyCommandArgs(
+function buildRubyCommandArgs(
   executeCommand: "run" | "test",
   rootPath: string,
   onlyPaths: string,
@@ -120,7 +120,7 @@ export async function runSynvertJavascript(
   return await runCommand("synvert-javascript", commandArgs, { input: snippetCode })
 }
 
-export function buildJavascriptCommandArgs(
+function buildJavascriptCommandArgs(
   executeCommand: "run" | "test",
   rootPath: string,
   onlyPaths: string,
