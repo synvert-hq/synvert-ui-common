@@ -1,4 +1,4 @@
-import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constants';
+import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constant';
 
 export { formatCommandResult, runSynvertRuby, runSynvertJavascript, checkRubyDependencies, checkJavascriptDependencies } from './command';
 export { filterSnippets, sortSnippets, composeGeneratedSnippets } from './snippet';
