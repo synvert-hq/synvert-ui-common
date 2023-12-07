@@ -1,7 +1,42 @@
-import { replaceTestAction } from '../src/action';
+import { replaceTestResult, replaceTestAction } from '../src/action';
+
+describe("replaceTestResult", () => {
+  it("replaces the result", () => {
+    const results = [{
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }, {
+        type: "group",
+        start: 0,
+        end: 11,
+        actions: [{
+          type: "replace",
+          start: 0,
+          end: 5,
+          newCode: "hi"
+        }, {
+          type: "replace",
+          start: 6,
+          end: 11,
+          newCode: "foo"
+        }]
+      }]
+    }];
+    const source = replaceTestResult(results, 0, "hello world");
+    expect(source).toEqual("hi--foo");
+  });
+});
 
 describe("replaceResultAction", () => {
-  it("removes only result and action", () => {
+  it("replaces only result and action", () => {
     const results = [{
       rootPath: "/root",
       fileSource: "hello world",
@@ -20,7 +55,7 @@ describe("replaceResultAction", () => {
     expect(results.length).toEqual(0);
   });
 
-  it("removes the action", () => {
+  it("replaces the action", () => {
     const results = [{
       rootPath: "/root",
       fileSource: "hello world",
@@ -51,7 +86,7 @@ describe("replaceResultAction", () => {
     });
   });
 
-  it("removes the action when result contains group action", () => {
+  it("replaces the action when result contains group action", () => {
     const results = [{
       rootPath: "/root",
       fileSource: "hello world",
@@ -102,7 +137,7 @@ describe("replaceResultAction", () => {
     });
   });
 
-  it("removes the group action", () => {
+  it("replaces the group action", () => {
     const results = [{
       rootPath: "/root",
       fileSource: "hello world",
