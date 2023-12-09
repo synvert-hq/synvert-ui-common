@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.11.0 (2023-12-09)
+
+* Extract `command` functions
+* Extract `snippet` functions
+* Add `replaceTestResult` and `replaceTestAction` functions
+
 ## 1.10.0 (2023-11-24)
 
 * Add `checkRubyDependencies` and `checkJavascriptDependencies` functions
