@@ -2,7 +2,7 @@ import { replaceTestResult, replaceTestAction } from '../src/action';
 
 describe("replaceTestResult", () => {
   it("replaces the result", () => {
-    const results = [{
+    const result = {
       rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
@@ -29,15 +29,15 @@ describe("replaceTestResult", () => {
           newCode: "foo"
         }]
       }]
-    }];
-    const source = replaceTestResult(results, 0, "hello world");
+    };
+    const source = replaceTestResult(result, "hello world");
     expect(source).toEqual("hi--foo");
   });
 });
 
 describe("replaceResultAction", () => {
   it("replaces only result and action", () => {
-    const results = [{
+    const result = {
       rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
@@ -49,14 +49,13 @@ describe("replaceResultAction", () => {
         end: 5,
         newCode: "hi"
       }]
-    }];
-    const source = replaceTestAction(results, 0, 0, "hello world");
+    };
+    const source = replaceTestAction(result, result.actions[0], "hello world");
     expect(source).toEqual("hi world");
-    expect(results.length).toEqual(0);
   });
 
   it("replaces the action", () => {
-    const results = [{
+    const result = {
       rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
@@ -73,12 +72,10 @@ describe("replaceResultAction", () => {
         end: 11,
         newCode: "foo"
       }]
-    }];
-    const source = replaceTestAction(results, 0, 0, "hello world");
+    };
+    const source = replaceTestAction(result, result.actions[0], "hello world");
     expect(source).toEqual("hi world");
-    expect(results.length).toEqual(1);
-    expect(results[0].actions.length).toEqual(1);
-    expect(results[0].actions[0]).toEqual({
+    expect(result.actions[1]).toEqual({
       type: "replace",
       start: 3,
       end: 8,
@@ -87,7 +84,7 @@ describe("replaceResultAction", () => {
   });
 
   it("replaces the action when result contains group action", () => {
-    const results = [{
+    const result = {
       rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
@@ -114,12 +111,10 @@ describe("replaceResultAction", () => {
           newCode: "foo"
         }]
       }]
-    }];
-    const source = replaceTestAction(results, 0, 0, "hello world");
+    };
+    const source = replaceTestAction(result, result.actions[0], "hello world");
     expect(source).toEqual("hello--world");
-    expect(results.length).toEqual(1);
-    expect(results[0].actions.length).toEqual(1);
-    expect(results[0].actions[0]).toEqual({
+    expect(result.actions[1]).toEqual({
       type: "group",
       start: 0,
       end: 12,
@@ -138,7 +133,7 @@ describe("replaceResultAction", () => {
   });
 
   it("replaces the group action", () => {
-    const results = [{
+    const result = {
       rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
@@ -165,12 +160,10 @@ describe("replaceResultAction", () => {
           newCode: "foo"
         }]
       }]
-    }];
-    const source = replaceTestAction(results, 0, 1, "hello world");
+    };
+    const source = replaceTestAction(result, result.actions[1], "hello world");
     expect(source).toEqual("hi foo");
-    expect(results.length).toEqual(1);
-    expect(results[0].actions.length).toEqual(1);
-    expect(results[0].actions[0]).toEqual({
+    expect(result.actions[0]).toEqual({
       type: "replace",
       start: 2,
       end: 3,
