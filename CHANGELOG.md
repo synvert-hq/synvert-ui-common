@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.11.1 (2023-12-10)
+
+* `DependencyResponse` is not a type
+
 ## 1.11.0 (2023-12-09)
 
 * Extract `command` functions
