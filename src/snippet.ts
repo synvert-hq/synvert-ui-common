@@ -102,3 +102,30 @@ export function composeGeneratedSnippets(data: GenerateSnippetParams): string[] 
     }));
   }
 }
+
+function baseUrlByLanguage(language: string): string {
+  return language === "ruby" ? "https://api-ruby.synvert.net" : "https://api-javascript.synvert.net";
+}
+
+export async function fetchSnippets(language: string, token: string, platform: string) {
+  const url = `${baseUrlByLanguage(language)}/snippets`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        // @ts-ignore
+        "X-SYNVERT-TOKEN": token,
+        "X-SYNVERT-PLATFORM": platform,
+      }
+    })
+    const data = await response.json();
+    return { snippets: data.snippets.map((snippet: Snippet) => (
+      {
+        ...snippet,
+        id: `${snippet.group}/${snippet.name}`,
+      }
+    )) };
+  } catch (error) {
+    return { errorMessage: (error as Error).message };
+  }
+}

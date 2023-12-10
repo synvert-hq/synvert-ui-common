@@ -1,10 +1,12 @@
 import dedent from "dedent";
+import fetchMock from 'jest-fetch-mock';
 
 import {
   filterSnippets,
   sortSnippets,
   composeGeneratedSnippets,
-} from "../src/index";
+  fetchSnippets,
+} from "../src/snippet";
 
 describe("filterSnippets", () => {
   it("gets snippets when text exists in group", () => {
@@ -103,5 +105,56 @@ describe("composeGeneratedSnippet", () => {
       });
     `];
     expect(composeGeneratedSnippets({ language, parser, filePattern, nodeVersion, npmVersion, snippets })).toEqual(composedSnippets);
+  });
+});
+
+describe("fetchSnippets", () => {
+  afterEach(() => {
+    fetchMock.resetMocks();
+  });
+
+  describe("javascript", () => {
+    beforeEach(() => {
+      fetchMock.mockIf("https://api-javascript.synvert.net/snippets", JSON.stringify({ snippets: [
+        { group: "group1", name: "name1", description: "description1", source_code: "" },
+        { group: "group2", name: "name2", description: "description2", source_code: "" },
+      ] }));
+    });
+
+    it("fetches snippets", async () => {
+      const data = await fetchSnippets("javascript", "token", "platform");
+      expect(data.snippets).toEqual([
+        { id: "group1/name1", group: "group1", name: "name1", description: "description1", source_code: "" },
+        { id: "group2/name2", group: "group2", name: "name2", description: "description2", source_code: "" },
+      ]);
+    });
+  });
+
+  describe("ruby", () => {
+    beforeEach(() => {
+      fetchMock.mockIf("https://api-ruby.synvert.net/snippets", JSON.stringify({ snippets: [
+        { group: "group1", name: "name1", description: "description1", source_code: "" },
+        { group: "group2", name: "name2", description: "description2", source_code: "" },
+      ] }));
+    });
+
+    it("fetches snippets", async () => {
+      const data = await fetchSnippets("ruby", "token", "platform");
+      expect(data.snippets).toEqual([
+        { id: "group1/name1", group: "group1", name: "name1", description: "description1", source_code: "" },
+        { id: "group2/name2", group: "group2", name: "name2", description: "description2", source_code: "" },
+      ]);
+    });
+  });
+
+  describe("error", () => {
+    beforeEach(() => {
+      fetchMock.mockIf("https://api-ruby.synvert.net/snippets", "");
+    });
+
+    it("gets error", async () => {
+      const data = await fetchSnippets("ruby", "token", "platform");
+      expect(data.errorMessage).toEqual("invalid json response body at  reason: Unexpected end of JSON input");
+    });
   });
 });

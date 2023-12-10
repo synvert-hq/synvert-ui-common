@@ -41,7 +41,7 @@ describe("runSynvertRuby", () => {
   });
 });
 
-describe("runSynvertJavascritp", () => {
+describe("runSynvertJavascript", () => {
   it("gets run command args", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
@@ -62,6 +62,10 @@ describe("runSynvertJavascritp", () => {
 describe("checkRubyDependencies", () => {
   beforeEach(() => {
     fetchMock.mockIf("https://api-ruby.synvert.net/check-versions", JSON.stringify({ synvert_version: "2.0.0", synvert_core_version: "3.0.0" }));
+  });
+
+  afterEach(() => {
+    fetchMock.resetMocks();
   });
 
   it("returns RUBY_NOT_AVAILABLE if ruby command returns an error", async () => {
@@ -139,6 +143,10 @@ describe("checkRubyDependencies", () => {
 describe("checkJavascriptDependencies", () => {
   beforeEach(() => {
     fetchMock.mockIf("https://api-javascript.synvert.net/check-versions", JSON.stringify({ synvert_version: "2.0.0", synvert_core_version: "3.0.0" }));
+  });
+
+  afterEach(() => {
+    fetchMock.resetMocks();
   });
 
   it("returns JAVASCRIPT_NOT_AVAILABLE if node command returns an error", async () => {
