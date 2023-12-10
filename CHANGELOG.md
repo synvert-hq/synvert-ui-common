@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.12.0 (2023-12-10)
+
+* Add `fetchSnippets` function
+* Add `generateSnippets` function
+
 ## 1.11.1 (2023-12-10)
 
 * `DependencyResponse` is not a type
