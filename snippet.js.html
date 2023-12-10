@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#composeGeneratedSnippets">composeGeneratedSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestAction">replaceTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestResult">replaceTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestAction">replaceTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestResult">replaceTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
 </nav>
 
 <div id="main">
@@ -40,8 +40,17 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.composeGeneratedSnippets = exports.sortSnippets = exports.filterSnippets = void 0;
+exports.generateSnippets = exports.fetchSnippets = exports.sortSnippets = exports.filterSnippets = void 0;
 /**
  * Filter snippets by text.
  * @param {Snippet[]} snippets
@@ -124,32 +133,84 @@ function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersio
     return generatedSnippet;
 }
 ;
-/**
- * Compose generated snippets.
- * @param data {GenerateSnippetParams}
- * @returns {string[]}
- */
-function composeGeneratedSnippets(data) {
-    if (data.language === "ruby") {
-        return data.snippets.map((snippet) => composeRubyGeneratedSnippet({
-            filePattern: data.filePattern,
-            rubyVersion: data.rubyVersion,
-            gemVersion: data.gemVersion,
-            parser: data.parser,
-            snippet,
-        }));
-    }
-    else {
-        return data.snippets.map((snippet) => composeJavascriptGeneratedSnippet({
-            filePattern: data.filePattern,
-            nodeVersion: data.nodeVersion,
-            npmVersion: data.npmVersion,
-            parser: data.parser,
-            snippet,
-        }));
-    }
+function baseUrlByLanguage(language) {
+    return language === "ruby" ? "https://api-ruby.synvert.net" : "https://api-javascript.synvert.net";
 }
-exports.composeGeneratedSnippets = composeGeneratedSnippets;
+function fetchSnippets(language, token, platform) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = `${baseUrlByLanguage(language)}/snippets`;
+        try {
+            const response = yield fetch(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                    // @ts-ignore
+                    "X-SYNVERT-TOKEN": token,
+                    "X-SYNVERT-PLATFORM": platform,
+                }
+            });
+            const data = yield response.json();
+            return { snippets: data.snippets.map((snippet) => (Object.assign(Object.assign({}, snippet), { id: `${snippet.group}/${snippet.name}` }))) };
+        }
+        catch (error) {
+            return { errorMessage: error.message };
+        }
+    });
+}
+exports.fetchSnippets = fetchSnippets;
+function generateSnippets(token, platform, params) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { language, parser, filePattern, inputs, outputs, nqlOrRules } = params;
+        const url = `${baseUrlByLanguage(language)}/generate-snippet`;
+        try {
+            const response = yield fetch(url, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    // @ts-ignore
+                    "X-SYNVERT-TOKEN": token,
+                    "X-SYNVERT-PLATFORM": platform,
+                },
+                body: JSON.stringify({ language, inputs, outputs, nql_or_rules: nqlOrRules })
+            });
+            const data = yield response.json();
+            if (data.error) {
+                return { errorMessage: data.error };
+            }
+            else if (data.snippets.length === 0) {
+                return { errorMessage: "Failed to generate snippet" };
+            }
+            else {
+                if (language === "ruby") {
+                    const { rubyVersion, gemVersion } = params;
+                    const generatedSnippets = data.snippets.map((snippet) => composeRubyGeneratedSnippet({
+                        parser,
+                        filePattern,
+                        rubyVersion,
+                        gemVersion,
+                        snippet,
+                    }));
+                    return { generatedSnippets };
+                }
+                else {
+                    const { nodeVersion, npmVersion } = params;
+                    const generatedSnippets = data.snippets.map((snippet) => composeJavascriptGeneratedSnippet({
+                        parser,
+                        filePattern,
+                        nodeVersion,
+                        npmVersion,
+                        snippet,
+                    }));
+                    return { generatedSnippets };
+                }
+            }
+        }
+        catch (error) {
+            return { errorMessage: error.message };
+        }
+    });
+}
+exports.generateSnippets = generateSnippets;
 </code></pre>
         </article>
     </section>
@@ -162,7 +223,7 @@ exports.composeGeneratedSnippets = composeGeneratedSnippets;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Dec 10 2023 05:10:18 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Dec 10 2023 09:21:18 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
