@@ -4,8 +4,8 @@ import fetchMock from 'jest-fetch-mock';
 import {
   filterSnippets,
   sortSnippets,
-  composeGeneratedSnippets,
   fetchSnippets,
+  generateSnippets,
 } from "../src/snippet";
 
 describe("filterSnippets", () => {
@@ -52,60 +52,6 @@ describe("sortSnippets", () => {
     expect(snippets[2].id).toEqual(3);
     expect(snippets[3].id).toEqual(2);
   })
-});
-
-describe("composeGeneratedSnippet", () => {
-  it("compose snippets for ruby", () => {
-    const language = "ruby";
-    const parser = "parser";
-    const filePattern = "**/*.rb";
-    const rubyVersion = "2.5.0";
-    const gemVersion = "factory_girl >= 2.0.0";
-    const snippets = [dedent`
-      find_node '.const[name=FactoryGirl]' do
-        replace :name, with: 'FactoryBot'
-      end
-    `];
-    const composedSnippets = [dedent`
-      Synvert::Rewriter.new 'group', 'name' do
-        configure(parser: Synvert::PARSER_PARSER)
-        if_ruby '2.5.0'
-        if_gem 'factory_girl', '>= 2.0.0'
-        within_files '**/*.rb' do
-          find_node '.const[name=FactoryGirl]' do
-            replace :name, with: 'FactoryBot'
-          end
-        end
-      end
-    `];
-    expect(composeGeneratedSnippets({ language, parser, filePattern, rubyVersion, gemVersion, snippets })).toEqual(composedSnippets);
-  });
-
-  it("compose snippet for javascript", () => {
-    const language = "javascript";
-    const parser = "typescript";
-    const filePattern = "**/*.js";
-    const nodeVersion = "14.0.0";
-    const npmVersion = "jquery >= 3.0.0";
-    const snippets = [dedent`
-      findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
-        replace("callee.object", { with: "Array" });
-      });
-    `];
-    const composedSnippets = [dedent`
-      new Synvert.Rewriter("group", "name", () => {
-        configure({ parser: Synvert.Parser.TYPESCRIPT });
-        ifNode("14.0.0");
-        ifNpm("jquery", ">= 3.0.0");
-        withinFiles("**/*.js", () => {
-          findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
-            replace("callee.object", { with: "Array" });
-          });
-        });
-      });
-    `];
-    expect(composeGeneratedSnippets({ language, parser, filePattern, nodeVersion, npmVersion, snippets })).toEqual(composedSnippets);
-  });
 });
 
 describe("fetchSnippets", () => {
@@ -155,6 +101,64 @@ describe("fetchSnippets", () => {
     it("gets error", async () => {
       const data = await fetchSnippets("ruby", "token", "platform");
       expect(data.errorMessage).toEqual("invalid json response body at  reason: Unexpected end of JSON input");
+    });
+  });
+});
+
+describe("generateSnippets", () => {
+  afterEach(() => {
+    fetchMock.resetMocks();
+  });
+
+  describe("javascript", () => {
+    beforeEach(() => {
+      fetchMock.mockIf("https://api-javascript.synvert.net/generate-snippet", JSON.stringify({ snippets: [dedent`
+        findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
+          replace("callee.object", { with: "Array" });
+        });
+      `] }));
+    });
+
+    it("generates snippet", async () => {
+      const { generatedSnippets } = await generateSnippets("token", "platform", { language: "javascript", parser: "typescript", filePattern: "**/*.js", nodeVersion: "14.0.0", npmVersion: "jquery >= 3.0.0", inputs: ["input"], outputs: ["output"], nqlOrRules: true });
+      expect(generatedSnippets).toEqual([dedent`
+        new Synvert.Rewriter("group", "name", () => {
+          configure({ parser: Synvert.Parser.TYPESCRIPT });
+          ifNode("14.0.0");
+          ifNpm("jquery", ">= 3.0.0");
+          withinFiles("**/*.js", () => {
+            findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
+              replace("callee.object", { with: "Array" });
+            });
+          });
+        });
+      `]);
+    });
+  });
+
+  describe("ruby", () => {
+    beforeEach(() => {
+      fetchMock.mockIf("https://api-ruby.synvert.net/generate-snippet", JSON.stringify({ snippets: [dedent`
+        find_node '.const[name=FactoryGirl]' do
+          replace :name, with: 'FactoryBot'
+        end
+      `] }));
+    });
+
+    it("generates snippet", async () => {
+      const { generatedSnippets } = await generateSnippets("token", "platform", { language: "ruby", parser: "parser", filePattern: "**/*.rb", rubyVersion: "2.5.0", gemVersion: "factory_girl >= 2.0.0", inputs: ["input"], outputs: ["output"], nqlOrRules: true });
+      expect(generatedSnippets).toEqual([dedent`
+        Synvert::Rewriter.new 'group', 'name' do
+          configure(parser: Synvert::PARSER_PARSER)
+          if_ruby '2.5.0'
+          if_gem 'factory_girl', '>= 2.0.0'
+          within_files '**/*.rb' do
+            find_node '.const[name=FactoryGirl]' do
+              replace :name, with: 'FactoryBot'
+            end
+          end
+        end
+      `]);
     });
   });
 });

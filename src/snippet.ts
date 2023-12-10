@@ -1,4 +1,4 @@
-import type { Snippet, GenerateRubySnippetParams, GenerateJavascriptSnippetParams, GenerateSnippetParams } from './types';
+import type { Snippet, ComposeRubySnippetParams, ComposeJavascriptSnippetParams, LANGUAGE, GenerateSnippetsParams } from './types';
 
 /**
  * Filter snippets by text.
@@ -34,7 +34,7 @@ export function sortSnippets(snippets: Snippet[], text: string): Snippet[] {
   });
 }
 
-function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }: GenerateRubySnippetParams): string {
+function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, snippet, parser }: ComposeRubySnippetParams): string {
   let generatedSnippet = `Synvert::Rewriter.new 'group', 'name' do\n  configure(parser: Synvert::${parser.toUpperCase()}_PARSER)\n`;
   if (rubyVersion) {
     generatedSnippet += `  if_ruby '${rubyVersion}'\n`;
@@ -56,7 +56,7 @@ function composeRubyGeneratedSnippet({ filePattern, rubyVersion, gemVersion, sni
   return generatedSnippet;
 };
 
-function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet, parser }: GenerateJavascriptSnippetParams): string {
+function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersion, snippet, parser }: ComposeJavascriptSnippetParams): string {
   let generatedSnippet = `new Synvert.Rewriter("group", "name", () => {\n  configure({ parser: Synvert.Parser.${parser.toUpperCase()} });\n`;
   if (nodeVersion) {
     generatedSnippet += `  ifNode("${nodeVersion}");\n`;
@@ -78,36 +78,11 @@ function composeJavascriptGeneratedSnippet({ filePattern, nodeVersion, npmVersio
   return generatedSnippet;
 };
 
-/**
- * Compose generated snippets.
- * @param data {GenerateSnippetParams}
- * @returns {string[]}
- */
-export function composeGeneratedSnippets(data: GenerateSnippetParams): string[] {
-  if (data.language === "ruby") {
-    return data.snippets.map((snippet) => composeRubyGeneratedSnippet({
-      filePattern: data.filePattern,
-      rubyVersion: data.rubyVersion,
-      gemVersion: data.gemVersion,
-      parser: data.parser,
-      snippet,
-    }));
-  } else {
-    return data.snippets.map((snippet) => composeJavascriptGeneratedSnippet({
-      filePattern: data.filePattern,
-      nodeVersion: data.nodeVersion,
-      npmVersion: data.npmVersion,
-      parser: data.parser,
-      snippet,
-    }));
-  }
-}
-
-function baseUrlByLanguage(language: string): string {
+function baseUrlByLanguage(language: LANGUAGE): string {
   return language === "ruby" ? "https://api-ruby.synvert.net" : "https://api-javascript.synvert.net";
 }
 
-export async function fetchSnippets(language: string, token: string, platform: string) {
+export async function fetchSnippets(language: LANGUAGE, token: string, platform: string) {
   const url = `${baseUrlByLanguage(language)}/snippets`;
   try {
     const response = await fetch(url, {
@@ -125,6 +100,54 @@ export async function fetchSnippets(language: string, token: string, platform: s
         id: `${snippet.group}/${snippet.name}`,
       }
     )) };
+  } catch (error) {
+    return { errorMessage: (error as Error).message };
+  }
+}
+
+export async function generateSnippets(token: string, platform: string, params: GenerateSnippetsParams) {
+  const { language, parser, filePattern, inputs, outputs, nqlOrRules } = params;
+  const url = `${baseUrlByLanguage(language)}/generate-snippet`;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        // @ts-ignore
+        "X-SYNVERT-TOKEN": token,
+        "X-SYNVERT-PLATFORM": platform,
+      },
+      body: JSON.stringify({ language, inputs, outputs, nql_or_rules: nqlOrRules })
+    })
+    const data = await response.json();
+    if (data.error) {
+      return { errorMessage: data.error };
+    } else if (data.snippets.length === 0) {
+      return { errorMessage: "Failed to generate snippet" };
+    } else {
+      if (language === "ruby")  {
+        const { rubyVersion, gemVersion } = params;
+        const generatedSnippets = (data.snippets as string[]).map((snippet) => composeRubyGeneratedSnippet({
+          parser,
+          filePattern,
+          rubyVersion,
+          gemVersion,
+          snippet,
+        }));
+        return { generatedSnippets };
+      } else {
+        const { nodeVersion, npmVersion } = params;
+        const generatedSnippets = (data.snippets as string[]).map((snippet) => composeJavascriptGeneratedSnippet({
+          parser,
+          filePattern,
+          nodeVersion,
+          npmVersion,
+          snippet,
+        }));
+        return { generatedSnippets };
+      }
+    }
   } catch (error) {
     return { errorMessage: (error as Error).message };
   }

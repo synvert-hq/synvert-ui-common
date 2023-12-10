@@ -6,7 +6,13 @@ export interface Snippet {
   readonly source_code: string;
 }
 
-export type GenerateRubySnippetParams = {
+export type LANGUAGE = "ruby" | "javascript" | "typescript" | "css" | "less" | "sass" | "scss";
+export type RUBY_PARSER = "parser" | "syntax_tree";
+export type JAVASCRIPT_PARSER = "espree" | "typescript";
+export type TYPESCRIPT_PARSER = "typescript";
+export type CSS_PARSER = "gonzales-pe";
+
+export type ComposeRubySnippetParams = {
   filePattern: string,
   rubyVersion: string,
   gemVersion: string,
@@ -14,7 +20,7 @@ export type GenerateRubySnippetParams = {
   parser: string,
 }
 
-export type GenerateJavascriptSnippetParams = {
+export type ComposeJavascriptSnippetParams = {
   filePattern: string,
   nodeVersion: string,
   npmVersion: string,
@@ -22,21 +28,25 @@ export type GenerateJavascriptSnippetParams = {
   parser: string,
 }
 
-export type GenerateSnippetParams = {
+export type GenerateSnippetsParams = {
   language: "ruby",
   parser: string,
+  filePattern: string,
   rubyVersion: string,
   gemVersion: string,
-  filePattern: string,
-  snippets: string[],
+  inputs: string[],
+  outputs: string[],
+  nqlOrRules: boolean,
 } | {
   language: "javascript" | "typescript" | "css" | "less" | "sass" | "scss",
   parser: string,
+  filePattern: string,
   nodeVersion: string,
   npmVersion: string,
-  filePattern: string,
-  snippets: string[],
-};
+  inputs: string[],
+  outputs: string[],
+  nqlOrRules: boolean,
+}
 
 export type RunCommandType = (command: string, args: string[], options?: { input?: string }) => Promise<{ output: string, error?: string }>;
 
