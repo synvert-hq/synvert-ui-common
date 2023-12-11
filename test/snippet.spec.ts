@@ -61,7 +61,7 @@ describe("fetchSnippets", () => {
 
   describe("javascript", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-javascript.synvert.net/snippets", JSON.stringify({ snippets: [
+      fetchMock.mockIf("https://api-javascript.synvert.net/snippets?language=javascript", JSON.stringify({ snippets: [
         { group: "group1", name: "name1", description: "description1", source_code: "" },
         { group: "group2", name: "name2", description: "description2", source_code: "" },
       ] }));
@@ -78,7 +78,7 @@ describe("fetchSnippets", () => {
 
   describe("ruby", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-ruby.synvert.net/snippets", JSON.stringify({ snippets: [
+      fetchMock.mockIf("https://api-ruby.synvert.net/snippets?language=ruby", JSON.stringify({ snippets: [
         { group: "group1", name: "name1", description: "description1", source_code: "" },
         { group: "group2", name: "name2", description: "description2", source_code: "" },
       ] }));
@@ -95,7 +95,7 @@ describe("fetchSnippets", () => {
 
   describe("error", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-ruby.synvert.net/snippets", "");
+      fetchMock.mockIf("https://api-ruby.synvert.net/snippets?language=ruby", "");
     });
 
     it("gets error", async () => {

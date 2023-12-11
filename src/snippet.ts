@@ -83,7 +83,7 @@ function baseUrlByLanguage(language: LANGUAGE): string {
 }
 
 export async function fetchSnippets(language: LANGUAGE, token: string, platform: string) {
-  const url = `${baseUrlByLanguage(language)}/snippets`;
+  const url = `${baseUrlByLanguage(language)}/snippets?language=${language}`;
   try {
     const response = await fetch(url, {
       headers: {
