@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.12.1 (2023-12-11)
+
+* Pass `language` query string to GET /snippets
+
 ## 1.12.0 (2023-12-10)
 
 * Add `fetchSnippets` function
