@@ -44,7 +44,8 @@ function compareActions(actionA: Action, actionB: Action): 0 | 1 | -1 {
  * @param {string} source - The source code to perform the replacements on.
  * @returns {string} The modified source code.
  */
-export function replaceTestResult(result: TestResultExtExt, source: string): string {
+export function replaceTestResult(result: TestResultExtExt, source?: string): string {
+  source ||= "";
   for (const action of sortFlattenActions(flatActions(result.actions)).reverse()) {
     if (action.type === 'group') {
       for (const childAction of sortActions(action.actions!).reverse()) {
@@ -73,11 +74,12 @@ function iterateActions(actions: Action[], func: (action: Action) => void) {
  * @param {string} source - The source code.
  * @returns {string} The modified source code.
  */
-export function replaceTestAction(result: TestResultExtExt, action: Action, source: string): string {
+export function replaceTestAction(result: TestResultExtExt, action: Action, source?: string): string {
+  source ||= "";
   const offsets: { start: number, end: number, size: number }[] = [];
   if (action.type === "group") {
     action.actions!.reverse().forEach((childAction) => {
-      source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
+      source = source!.slice(0, childAction.start) + childAction.newCode + source!.slice(childAction.end);
       offsets.push({ start: childAction.start, end: childAction.end, size: childAction.newCode!.length - (childAction.end - childAction.start) });
     });
   } else {

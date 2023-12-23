@@ -33,6 +33,24 @@ describe("replaceTestResult", () => {
     const source = replaceTestResult(result, "hello world");
     expect(source).toEqual("hi--foo");
   });
+
+  it("replaces the result if source is undefined", () => {
+    const result = {
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "add_file",
+        start: 0,
+        end: 0,
+        newCode: "class ApplicationRecord; end"
+      }]
+    }
+    const source = replaceTestResult(result, undefined);
+    expect(source).toEqual("class ApplicationRecord; end");
+  });
 });
 
 describe("replaceResultAction", () => {
@@ -169,5 +187,23 @@ describe("replaceResultAction", () => {
       end: 3,
       newCode: "--"
     });
+  });
+
+  it("replaces the action if source is undefined", () => {
+    const result = {
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "add_file",
+        start: 0,
+        end: 0,
+        newCode: "class ApplicationRecord; end"
+      }]
+    }
+    const source = replaceTestAction(result, result.actions[0], undefined);
+    expect(source).toEqual("class ApplicationRecord; end");
   });
 });
