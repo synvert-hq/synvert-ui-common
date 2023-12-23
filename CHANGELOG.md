@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.12.2 (2023-12-23)
+
+* `replaceTestResult` and `replaceTestAction` argument `source` can be undefined
+
 ## 1.12.1 (2023-12-11)
 
 * Pass `language` query string to GET /snippets
