@@ -2,7 +2,6 @@ import {
   filePatternByLanguage,
   placeholderByLanguage,
   parsersByLanguage,
-  parseJSON,
 } from "../src/index";
 
 describe("filePatternByLanguage", () => {
@@ -38,12 +37,5 @@ describe("parsersByLanguage", () => {
 
   it("gets parsers for javascript", () => {
     expect(parsersByLanguage("javascript")).toEqual(["typescript", "espree"]);
-  });
-});
-
-describe("parseJSON", () => {
-  it("parses json with camel case keys", () => {
-    const string = `{ "key": "value", "snake_case_key": "value", "camelCaseKey": "value" }`;
-    expect(parseJSON(string)).toEqual({ key: "value", snakeCaseKey: "value", camelCaseKey: "value" });
   });
 });

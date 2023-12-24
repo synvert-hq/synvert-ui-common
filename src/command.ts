@@ -1,6 +1,6 @@
 import { compareVersions } from 'compare-versions';
 
-import { RunCommandType } from './types';
+import { PromiseFsAPI, PathAPI, RunCommandType, SearchResults, TestResultExtExt } from './types';
 
 function isRealError(stderr: string): boolean {
   return (
@@ -56,7 +56,7 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
  * @param {string} skipPaths - The paths to skip.
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
- * @returns A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
 export async function runSynvertRuby(
   runCommand: RunCommandType,
@@ -105,7 +105,7 @@ function buildRubyCommandArgs(
  * @param {string} skipPaths - The paths to skip.
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
- * @returns A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
 export async function runSynvertJavascript(
   runCommand: RunCommandType,
@@ -179,7 +179,7 @@ async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synve
  * Checks the Ruby dependencies required for the application.
  *
  * @param {Function} runCommand - The function used to run commands.
- * @returns A promise that resolves to a CheckDependencyResult object.
+ * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
 export async function checkRubyDependencies(runCommand: RunCommandType): Promise<CheckDependencyResult> {
   try {
@@ -227,7 +227,7 @@ async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synve
 /**
  * Checks the JavaScript dependencies.
  * @param {Function} runCommand - The function to run a command.
- * @returns A promise that resolves to a CheckDependencyResult object.
+ * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
 export async function checkJavascriptDependencies(runCommand: RunCommandType): Promise<CheckDependencyResult> {
   try {
@@ -259,3 +259,72 @@ export async function checkJavascriptDependencies(runCommand: RunCommandType): P
     return { code: DependencyResponse.ERROR, error: String(error) };
   }
 }
+
+function mergeRenameFileTestResults(snippets: TestResultExtExt[]) {
+  const renameFileResults = snippets.filter(snippet => snippet.actions[0].type === "rename_file");
+  if (renameFileResults.length === 0) {
+    return snippets;
+  }
+  renameFileResults.forEach(renameFileResult => {
+    snippets.filter(snippet => snippet != renameFileResult && snippet.filePath === renameFileResult.filePath)
+            .forEach(snippet => renameFileResult.actions = [...renameFileResult.actions, ...snippet.actions]);
+  });
+  const renameFileResultFilePaths = renameFileResults.map(renameFileResult => renameFileResult.filePath);
+  return [...snippets.filter(snippet => !renameFileResultFilePaths.includes(snippet.filePath)), ...renameFileResults];
+}
+
+async function addFileSourceToSnippets(snippets: TestResultExtExt[], rootPath: string, pathAPI: PathAPI, fsAPI: PromiseFsAPI) {
+  for (const snippet of snippets) {
+    const absolutePath = pathAPI.join(rootPath, snippet.filePath);
+    if (!!(await fsAPI.stat(absolutePath).catch(e => false))) {
+      const fileSource = await fsAPI.readFile(absolutePath, { encoding: "utf-8" });
+      snippet.fileSource = fileSource;
+    }
+    snippet.rootPath = rootPath;
+  }
+  return snippets;
+}
+
+/**
+ * Handles the test results.
+ * @param {string} output output of run command
+ * @param {string} error  error of run command
+ * @param {string} rootPath root path
+ * @param {object} pathAPI api of path
+ * @param {object} fsAPI api of fs/promises
+ * @returns {Promise<SearchResults>} search results
+ */
+export async function handleTestResults(output: string, error: string | undefined, rootPath: string, pathAPI: PathAPI, fsAPI: PromiseFsAPI): Promise<SearchResults> {
+  if (error) {
+    return { results: [], errorMessage: error };
+  }
+  try {
+    const results = parseJSON(output);
+    if (results.error) {
+      return { results: [], errorMessage: results.error };
+    }
+    const snippets = await addFileSourceToSnippets(mergeRenameFileTestResults(results), rootPath, pathAPI, fsAPI);
+    return { results: snippets, errorMessage: "" };
+  } catch (e) {
+    return { results: [], errorMessage: (e as Error).message };
+  }
+}
+
+const snakeToCamel = (str: string): string => str.replace(/([-_]\w)/g, g => g[1].toUpperCase());
+
+/**
+ * Parse json string to JSON object, with camel case keys.
+ * @param {string} json string
+ * @returns {object} JSON object
+ */
+export const parseJSON = (str: string) => {
+  return JSON.parse(str, function(key, value) {
+    const camelCaseKey = snakeToCamel(key);
+
+    if (this instanceof Array || camelCaseKey === key) {
+      return value;
+    } else {
+      this[camelCaseKey] = value;
+    }
+  });
+};

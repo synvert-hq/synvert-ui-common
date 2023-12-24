@@ -1,4 +1,7 @@
+import path from "path";
+import promiseFs from "fs/promises";
 import fetchMock from 'jest-fetch-mock';
+import mock from "mock-fs";
 
 import {
   formatCommandResult,
@@ -7,6 +10,8 @@ import {
   DependencyResponse,
   checkRubyDependencies,
   checkJavascriptDependencies,
+  parseJSON,
+  handleTestResults,
 } from "../src/command";
 
 describe("formatCommandResult", () => {
@@ -203,5 +208,68 @@ describe("checkJavascriptDependencies", () => {
     const result = await checkJavascriptDependencies(runCommand);
     expect(result.code).toEqual(DependencyResponse.ERROR);
     expect(result.error).toEqual("An error occurred");
+  });
+});
+
+describe("parseJSON", () => {
+  it("parses json with camel case keys", () => {
+    const string = `{ "key": "value", "snake_case_key": "value", "camelCaseKey": "value" }`;
+    expect(parseJSON(string)).toEqual({ key: "value", snakeCaseKey: "value", camelCaseKey: "value" });
+  });
+});
+
+describe("handleTestResults", () => {
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it("handles test results", async () => {
+    const result = {
+      rootPath: "/root",
+      filePath: "foo.ts",
+      newFilePath: "bar.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "rename_file",
+        start: 0,
+        end: -1,
+      }]
+    };
+    const result2 = {
+      rootPath: "/root",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 6,
+        end: -1,
+        newCode: "synvert"
+      }]
+    };
+    mock({ "/root/foo.ts": "hello world" });
+    const results = await handleTestResults(JSON.stringify([result, result2]), undefined, "/root", path, promiseFs);
+    expect(results).toEqual({
+      errorMessage: "",
+      results: [{
+        actions: [{
+          end: -1,
+          start: 0,
+          type: "rename_file"
+        }, {
+          end: -1,
+          newCode: "synvert",
+          start: 6,
+          type: "replace"
+        }],
+        affected: true,
+        conflicted: false,
+        filePath: "foo.ts",
+        fileSource: "hello world",
+        newFilePath: "bar.ts",
+        rootPath: "/root"
+      }]
+    });
   });
 });

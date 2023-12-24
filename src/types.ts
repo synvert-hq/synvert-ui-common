@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs/promises";
+
 export interface Snippet {
   readonly id: number;
   readonly group: string;
@@ -70,3 +73,15 @@ type TestResult = {
 type TestResultExt = TestResult & { filePath: string };
 
 export type TestResultExtExt = TestResultExt & { rootPath?: string, fileSource?: string };
+
+export type SearchResults = { results: TestResultExtExt[], errorMessage: string };
+
+export type PathAPI = {
+  join: typeof path.join,
+}
+
+export type PromiseFsAPI = {
+  stat: typeof fs.stat,
+  writeFile: typeof fs.writeFile,
+  readFile: typeof fs.readFile,
+}
