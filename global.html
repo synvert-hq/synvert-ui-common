@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestAction">replaceTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestResult">replaceTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#handleTestResults">handleTestResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestAction">replaceTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestResult">replaceTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
 </nav>
 
 <div id="main">
@@ -117,7 +117,7 @@
 
     
 
-    <h4 class="name" id="checkJavascriptDependencies"><span class="type-signature"></span>checkJavascriptDependencies<span class="signature">(runCommand)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="checkJavascriptDependencies"><span class="type-signature"></span>checkJavascriptDependencies<span class="signature">(runCommand)</span><span class="type-signature"> &rarr; {Promise.&lt;{code: DependencyResponse, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -248,6 +248,18 @@
 
         
 
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;{code: DependencyResponse, error: (string|undefined)}></code></span>
+
+
+    </dd>
+</dl>
+
 
 <div class="param-desc">
     A promise that resolves to a CheckDependencyResult object.
@@ -265,7 +277,7 @@
 
     
 
-    <h4 class="name" id="checkRubyDependencies"><span class="type-signature"></span>checkRubyDependencies<span class="signature">(runCommand)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="checkRubyDependencies"><span class="type-signature"></span>checkRubyDependencies<span class="signature">(runCommand)</span><span class="type-signature"> &rarr; {Promise.&lt;{code: DependencyResponse, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -396,6 +408,18 @@
 
         
 
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;{code: DependencyResponse, error: (string|undefined)}></code></span>
+
+
+    </dd>
+</dl>
+
 
 <div class="param-desc">
     A promise that resolves to a CheckDependencyResult object.
@@ -456,7 +480,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line25">line 25</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line26">line 26</a>
     </li></ul></dd>
     
 
@@ -933,14 +957,14 @@
 
     
 
-    <h4 class="name" id="parseJSON"><span class="type-signature"></span>parseJSON<span class="signature">(str)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="handleTestResults"><span class="type-signature"></span>handleTestResults<span class="signature">(output, error, rootPath, pathAPI, fsAPI)</span><span class="type-signature"> &rarr; {Promise.&lt;SearchResults>}</span></h4>
 
     
 
 
 
 <div class="description">
-    Parse json string to JSON object, with camel case keys.
+    Handles the test results.
 </div>
 
 
@@ -976,7 +1000,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line53">line 53</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -1020,10 +1044,15 @@
 
         <tr>
             
-                <td class="name"><code>str</code></td>
+                <td class="name"><code>output</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
             
             </td>
 
@@ -1032,7 +1061,111 @@
             
 
             <td class="description last">
-                json string
+                output of run command
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                error of run command
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rootPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                root path
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pathAPI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                api of path
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fsAPI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                api of fs/promises
                 
             </td>
         </tr>
@@ -1058,6 +1191,178 @@
 <h5>Returns:</h5>
 
         
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;SearchResults></code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    search results
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="parseJSON"><span class="type-signature"></span>parseJSON<span class="signature">(json)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Parse json string to JSON object, with camel case keys.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line300">line 300</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>json</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                string
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>object</code></span>
+
+
+    </dd>
+</dl>
 
 
 <div class="param-desc">
@@ -1119,7 +1424,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line43">line 43</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -1275,7 +1580,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line34">line 34</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -1786,7 +2091,7 @@
 
     
 
-    <h4 class="name" id="runSynvertJavascript"><span class="type-signature"></span>runSynvertJavascript<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="runSynvertJavascript"><span class="type-signature"></span>runSynvertJavascript<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode)</span><span class="type-signature"> &rarr; {Promise.&lt;{output: string, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -2073,6 +2378,18 @@
 
         
 
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;{output: string, error: (string|undefined)}></code></span>
+
+
+    </dd>
+</dl>
+
 
 <div class="param-desc">
     A promise that resolves to an object containing the output and error messages.
@@ -2090,7 +2407,7 @@
 
     
 
-    <h4 class="name" id="runSynvertRuby"><span class="type-signature"></span>runSynvertRuby<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="runSynvertRuby"><span class="type-signature"></span>runSynvertRuby<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode)</span><span class="type-signature"> &rarr; {Promise.&lt;{output: string, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -2377,6 +2694,18 @@
 
         
 
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;{output: string, error: (string|undefined)}></code></span>
+
+
+    </dd>
+</dl>
+
 
 <div class="param-desc">
     A promise that resolves to an object containing the output and error messages.
@@ -2588,7 +2917,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Dec 24 2023 02:20:50 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Dec 24 2023 11:52:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
