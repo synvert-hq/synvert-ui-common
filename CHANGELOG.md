@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.13.0 (2023-12-24)
+
+* Add `handleTestResults` function
+
 ## 1.12.3 (2023-12-24)
 
 * `replaceTestResult` and `replaceTestAction` result can be undefined
