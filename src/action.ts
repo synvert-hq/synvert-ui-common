@@ -44,15 +44,18 @@ function compareActions(actionA: Action, actionB: Action): 0 | 1 | -1 {
  * @param {string} source - The source code to perform the replacements on.
  * @returns {string} The modified source code.
  */
-export function replaceTestResult(result: TestResultExtExt, source?: string): string {
-  source ||= "";
+export function replaceTestResult(result: TestResultExtExt, source?: string): string | undefined {
   for (const action of sortFlattenActions(flatActions(result.actions)).reverse()) {
     if (action.type === 'group') {
       for (const childAction of sortActions(action.actions!).reverse()) {
-        source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
+        source = source!.slice(0, childAction.start) + childAction.newCode + source!.slice(childAction.end);
       }
+    } else if (action.type === 'add_file') {
+      source = action.newCode;
+    } else if (action.type === 'remove_file' || action.type === 'rename_file') {
+      source = undefined;
     } else {
-      source = source.slice(0, action.start) + action.newCode + source.slice(action.end);
+      source = source!.slice(0, action.start) + action.newCode + source!.slice(action.end);
     }
   }
   return source;
@@ -74,16 +77,19 @@ function iterateActions(actions: Action[], func: (action: Action) => void) {
  * @param {string} source - The source code.
  * @returns {string} The modified source code.
  */
-export function replaceTestAction(result: TestResultExtExt, action: Action, source?: string): string {
-  source ||= "";
+export function replaceTestAction(result: TestResultExtExt, action: Action, source?: string): string | undefined {
   const offsets: { start: number, end: number, size: number }[] = [];
   if (action.type === "group") {
     action.actions!.reverse().forEach((childAction) => {
       source = source!.slice(0, childAction.start) + childAction.newCode + source!.slice(childAction.end);
       offsets.push({ start: childAction.start, end: childAction.end, size: childAction.newCode!.length - (childAction.end - childAction.start) });
     });
+  } else if (action.type === 'add_file') {
+    source = action.newCode;
+  } else if (action.type === 'remove_file' || action.type === 'rename_file') {
+    source = undefined;
   } else {
-    source = source.slice(0, action.start) + action.newCode + source.slice(action.end);
+    source = source!.slice(0, action.start) + action.newCode + source!.slice(action.end);
     offsets.push({ start: action.start, end: action.end, size: action.newCode!.length - (action.end - action.start) });;
   }
   if (result.actions.length > 0) {

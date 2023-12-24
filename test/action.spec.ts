@@ -34,7 +34,7 @@ describe("replaceTestResult", () => {
     expect(source).toEqual("hi--foo");
   });
 
-  it("replaces the result if source is undefined", () => {
+  it("replaces the result for add_file", () => {
     const result = {
       rootPath: "/root",
       fileSource: "hello world",
@@ -50,6 +50,41 @@ describe("replaceTestResult", () => {
     }
     const source = replaceTestResult(result, undefined);
     expect(source).toEqual("class ApplicationRecord; end");
+  });
+
+  it("replaces the result for remove_file", () => {
+    const result = {
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "remove_file",
+        start: 0,
+        end: -1,
+      }]
+    }
+    const source = replaceTestResult(result, undefined);
+    expect(source).toBeUndefined();
+  });
+
+  it("replaces the result for rename_file", () => {
+    const result = {
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      newFilePath: "bar.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "rename_file",
+        start: 0,
+        end: -1,
+      }]
+    }
+    const source = replaceTestResult(result, undefined);
+    expect(source).toBeUndefined();
   });
 });
 
@@ -189,7 +224,7 @@ describe("replaceResultAction", () => {
     });
   });
 
-  it("replaces the action if source is undefined", () => {
+  it("replaces the action for add_file", () => {
     const result = {
       rootPath: "/root",
       fileSource: "hello world",
@@ -205,5 +240,40 @@ describe("replaceResultAction", () => {
     }
     const source = replaceTestAction(result, result.actions[0], undefined);
     expect(source).toEqual("class ApplicationRecord; end");
+  });
+
+  it("replaces the result for remove_file", () => {
+    const result = {
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "remove_file",
+        start: 0,
+        end: -1,
+      }]
+    }
+    const source = replaceTestAction(result, result.actions[0], undefined);
+    expect(source).toBeUndefined();
+  });
+
+  it("replaces the result for rename_file", () => {
+    const result = {
+      rootPath: "/root",
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      newFilePath: "bar.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "rename_file",
+        start: 0,
+        end: -1,
+      }]
+    }
+    const source = replaceTestAction(result, result.actions[0], undefined);
+    expect(source).toBeUndefined();
   });
 });
