@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.14.1 (2023-12-27)
+
+* Read `rootPath` from test result
+
 ## 1.14.0 (2023-12-26)
 
 * `replaceTestResult` and `replaceTestAction` can write file
