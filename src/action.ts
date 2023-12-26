@@ -102,14 +102,13 @@ export function getNewSourceByTestResult(result: TestResultExtExt): string | und
  *
  * @param results - The array of test results.
  * @param resultIndex - The index of the test result to replace.
- * @param rootPath - The root path of the project.
  * @param pathAPI - The path API object.
  * @param promiseFsAPI - The promise-based file system API object.
  * @returns A promise that resolves to the updated array of test results.
  */
-export async function replaceTestResult(results: TestResultExtExt[], resultIndex: number, rootPath: string, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
+export async function replaceTestResult(results: TestResultExtExt[], resultIndex: number, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
   const result = results[resultIndex];
-  const absolutePath = pathAPI.join(rootPath, result.filePath);
+  const absolutePath = pathAPI.join(result.rootPath!, result.filePath);
   if (isAddFileAction(result)) {
     const dirPath = pathAPI.dirname(absolutePath);
     await promiseFsAPI.mkdir(dirPath, { recursive: true });
@@ -118,7 +117,7 @@ export async function replaceTestResult(results: TestResultExtExt[], resultIndex
     await promiseFsAPI.unlink(absolutePath);
   } else if (isRenameFileAction(result)) {
     const newSource = getNewSourceByTestResult(result);
-    const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath!);
+    const newAbsolutePath = pathAPI.join(result.rootPath!, result.newFilePath!);
     await promiseFsAPI.unlink(absolutePath);
     await promiseFsAPI.writeFile(newAbsolutePath, newSource!);
   } else {
@@ -133,14 +132,13 @@ export async function replaceTestResult(results: TestResultExtExt[], resultIndex
  * Replaces the source code by all test results.
  *
  * @param results - The array of test results to be replaced.
- * @param rootPath - The root path.
  * @param pathAPI - The PathAPI object.
  * @param promiseFsAPI - The PromiseFsAPI object.
  * @returns A promise that resolves to an array of replaced test results.
  */
-export async function replaceAllTestResults(results: TestResultExtExt[], rootPath: string, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
+export async function replaceAllTestResults(results: TestResultExtExt[], pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
   while (results.length > 0) {
-    await replaceTestResult(results, 0, rootPath, pathAPI, promiseFsAPI);
+    await replaceTestResult(results, 0, pathAPI, promiseFsAPI);
   }
   return [];
 }
@@ -173,15 +171,14 @@ function fixActionRanges(result: TestResultExtExt, offsets: { start: number, end
  * @param results - The array of test results.
  * @param resultIndex - The index of the test result.
  * @param actionIndex - The index of the action within the test result.
- * @param rootPath - The root path of the project.
  * @param pathAPI - The path API object.
  * @param promiseFsAPI - The promise-based file system API object.
  * @returns The updated array of test results.
  */
-export async function replaceTestAction(results: TestResultExtExt[], resultIndex: number, actionIndex: number, rootPath: string, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
+export async function replaceTestAction(results: TestResultExtExt[], resultIndex: number, actionIndex: number, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
   const result = results[resultIndex];
   const action = result.actions[actionIndex];
-  const absolutePath = pathAPI.join(rootPath, result.filePath);
+  const absolutePath = pathAPI.join(result.rootPath!, result.filePath);
   if (action.type === 'add_file') {
     const dirPath = pathAPI.dirname(absolutePath);
     await promiseFsAPI.mkdir(dirPath, { recursive: true });
@@ -191,7 +188,7 @@ export async function replaceTestAction(results: TestResultExtExt[], resultIndex
     await promiseFsAPI.unlink(absolutePath);
     results.splice(resultIndex, 1);
   } else if (action.type === 'rename_file') {
-    const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath!);
+    const newAbsolutePath = pathAPI.join(result.rootPath!, result.newFilePath!);
     await promiseFsAPI.rename(absolutePath, newAbsolutePath);
     results.splice(resultIndex, 1);
   } else {

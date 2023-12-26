@@ -191,6 +191,7 @@ describe("replaceTestResult", () => {
   it("replaces the result", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
@@ -217,7 +218,7 @@ describe("replaceTestResult", () => {
         }]
       }]
     };
-    const results = await replaceTestResult([result], 0, "/root", path, fs);
+    const results = await replaceTestResult([result], 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.readFile("/root/foo.ts", "utf-8")).toEqual("hi--foo");
   });
@@ -225,6 +226,7 @@ describe("replaceTestResult", () => {
   it("replaces the result for add_file", async () => {
     mock({ "/root": {} });
     const result = {
+      rootPath: "/root",
       filePath: "foo.ts",
       affected: true,
       conflicted: false,
@@ -235,7 +237,7 @@ describe("replaceTestResult", () => {
         newCode: "class ApplicationRecord; end"
       }]
     }
-    const results = await replaceTestResult([result], 0, "/root", path, fs);
+    const results = await replaceTestResult([result], 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.readFile("/root/foo.ts", "utf-8")).toEqual("class ApplicationRecord; end");
   });
@@ -243,6 +245,7 @@ describe("replaceTestResult", () => {
   it("replaces the result for remove_file", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
@@ -253,7 +256,7 @@ describe("replaceTestResult", () => {
         end: -1,
       }]
     }
-    const results = await replaceTestResult([result], 0, "/root", path, fs);
+    const results = await replaceTestResult([result], 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.access("/root/foo.ts").then(() => true).catch(() => false)).toBeFalsy();
   });
@@ -261,6 +264,7 @@ describe("replaceTestResult", () => {
   it("replaces the result for rename_file", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       newFilePath: "bar.ts",
@@ -272,7 +276,7 @@ describe("replaceTestResult", () => {
         end: -1,
       }]
     }
-    const results = await replaceTestResult([result], 0, "/root", path, fs);
+    const results = await replaceTestResult([result], 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.access("/root/foo.ts").then(() => true).catch(() => false)).toBeFalsy();
     expect(await fs.readFile("/root/bar.ts", "utf8")).toEqual("hello world");
@@ -292,6 +296,7 @@ describe("replaceAllTestResults", () => {
       "/root/foo3.ts": "hello world",
     });
     const results = [{
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
@@ -318,6 +323,7 @@ describe("replaceAllTestResults", () => {
         }]
       }]
     }, {
+      rootPath: "/root",
       filePath: "foo1.ts",
       affected: true,
       conflicted: false,
@@ -328,6 +334,7 @@ describe("replaceAllTestResults", () => {
         newCode: "class ApplicationRecord; end"
       }]
     }, {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo2.ts",
       affected: true,
@@ -338,6 +345,7 @@ describe("replaceAllTestResults", () => {
         end: -1,
       }]
     }, {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo3.ts",
       newFilePath: "bar.ts",
@@ -349,7 +357,7 @@ describe("replaceAllTestResults", () => {
         end: -1,
       }]
     }];
-    const newResults = await replaceAllTestResults(results, "/root", path, fs);
+    const newResults = await replaceAllTestResults(results, path, fs);
     expect(newResults).toEqual([]);
     expect(await fs.readFile("/root/foo.ts", "utf-8")).toEqual("hi--foo");
     expect(await fs.readFile("/root/foo1.ts", "utf-8")).toEqual("class ApplicationRecord; end");
@@ -378,7 +386,7 @@ describe("replaceResultAction", () => {
         newCode: "hi"
       }]
     };
-    const results = await replaceTestAction([result], 0, 0, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.readFile("/root/foo.ts", "utf-8")).toEqual("hi world");
   });
@@ -386,6 +394,7 @@ describe("replaceResultAction", () => {
   it("replaces the action", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
@@ -402,8 +411,9 @@ describe("replaceResultAction", () => {
         newCode: "foo"
       }]
     };
-    const results = await replaceTestAction([result], 0, 0, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 0, path, fs);
     expect(results).toEqual([{
+      rootPath: "/root",
       fileSource: "hi world",
       filePath: "foo.ts",
       affected: true,
@@ -421,6 +431,7 @@ describe("replaceResultAction", () => {
   it("replaces the action when result contains group action", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
@@ -447,8 +458,9 @@ describe("replaceResultAction", () => {
         }]
       }]
     };
-    const results = await replaceTestAction([result], 0, 0, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 0, path, fs);
     expect(results).toEqual([{
+      rootPath: "/root",
       fileSource: "hello--world",
       filePath: "foo.ts",
       affected: true,
@@ -476,6 +488,7 @@ describe("replaceResultAction", () => {
   it("replaces the group action", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
@@ -502,8 +515,9 @@ describe("replaceResultAction", () => {
         }]
       }]
     };
-    const results = await replaceTestAction([result], 0, 1, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 1, path, fs);
     expect(results).toEqual([{
+      rootPath: "/root",
       fileSource: "hi foo",
       filePath: "foo.ts",
       affected: true,
@@ -521,6 +535,7 @@ describe("replaceResultAction", () => {
   it("replaces the action for add_file", async () => {
     mock({ "/root": {} });
     const result = {
+      rootPath: "/root",
       filePath: "foo.ts",
       affected: true,
       conflicted: false,
@@ -531,7 +546,7 @@ describe("replaceResultAction", () => {
         newCode: "class ApplicationRecord; end"
       }]
     }
-    const results = await replaceTestAction([result], 0, 0, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.readFile("/root/foo.ts", "utf8")).toEqual("class ApplicationRecord; end");
   });
@@ -539,6 +554,7 @@ describe("replaceResultAction", () => {
   it("replaces the result for remove_file", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       filePath: "foo.ts",
       affected: true,
       conflicted: false,
@@ -548,7 +564,7 @@ describe("replaceResultAction", () => {
         end: -1,
       }]
     }
-    const results = await replaceTestAction([result], 0, 0, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.access("/root/foo.ts").then(() => true).catch(() => false)).toBeFalsy();
   });
@@ -556,6 +572,7 @@ describe("replaceResultAction", () => {
   it("replaces the result for rename_file", async () => {
     mock({ "/root/foo.ts": "hello world" });
     const result = {
+      rootPath: "/root",
       filePath: "foo.ts",
       newFilePath: "bar.ts",
       affected: true,
@@ -566,7 +583,7 @@ describe("replaceResultAction", () => {
         end: -1,
       }]
     }
-    const results = await replaceTestAction([result], 0, 0, "/root", path, fs);
+    const results = await replaceTestAction([result], 0, 0, path, fs);
     expect(results).toEqual([]);
     expect(await fs.access("/root/foo.ts").then(() => true).catch(() => false)).toBeFalsy();
     expect(await fs.readFile("/root/bar.ts", "utf8")).toEqual("hello world");
