@@ -157,15 +157,14 @@ exports.getNewSourceByTestResult = getNewSourceByTestResult;
  *
  * @param results - The array of test results.
  * @param resultIndex - The index of the test result to replace.
- * @param rootPath - The root path of the project.
  * @param pathAPI - The path API object.
  * @param promiseFsAPI - The promise-based file system API object.
  * @returns A promise that resolves to the updated array of test results.
  */
-function replaceTestResult(results, resultIndex, rootPath, pathAPI, promiseFsAPI) {
+function replaceTestResult(results, resultIndex, pathAPI, promiseFsAPI) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = results[resultIndex];
-        const absolutePath = pathAPI.join(rootPath, result.filePath);
+        const absolutePath = pathAPI.join(result.rootPath, result.filePath);
         if (isAddFileAction(result)) {
             const dirPath = pathAPI.dirname(absolutePath);
             yield promiseFsAPI.mkdir(dirPath, { recursive: true });
@@ -176,7 +175,7 @@ function replaceTestResult(results, resultIndex, rootPath, pathAPI, promiseFsAPI
         }
         else if (isRenameFileAction(result)) {
             const newSource = getNewSourceByTestResult(result);
-            const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath);
+            const newAbsolutePath = pathAPI.join(result.rootPath, result.newFilePath);
             yield promiseFsAPI.unlink(absolutePath);
             yield promiseFsAPI.writeFile(newAbsolutePath, newSource);
         }
@@ -193,15 +192,14 @@ exports.replaceTestResult = replaceTestResult;
  * Replaces the source code by all test results.
  *
  * @param results - The array of test results to be replaced.
- * @param rootPath - The root path.
  * @param pathAPI - The PathAPI object.
  * @param promiseFsAPI - The PromiseFsAPI object.
  * @returns A promise that resolves to an array of replaced test results.
  */
-function replaceAllTestResults(results, rootPath, pathAPI, promiseFsAPI) {
+function replaceAllTestResults(results, pathAPI, promiseFsAPI) {
     return __awaiter(this, void 0, void 0, function* () {
         while (results.length > 0) {
-            yield replaceTestResult(results, 0, rootPath, pathAPI, promiseFsAPI);
+            yield replaceTestResult(results, 0, pathAPI, promiseFsAPI);
         }
         return [];
     });
@@ -215,22 +213,33 @@ function iterateActions(actions, func) {
         }
     });
 }
+function fixActionRanges(result, offsets) {
+    iterateActions(result.actions, (action) => {
+        for (const offset of offsets) {
+            if (action.start >= offset.end) {
+                action.start = action.start + offset.size;
+            }
+            if (action.end >= offset.end) {
+                action.end = action.end + offset.size;
+            }
+        }
+    });
+}
 /**
  * Replaces the source code by the given test action.
  *
  * @param results - The array of test results.
  * @param resultIndex - The index of the test result.
  * @param actionIndex - The index of the action within the test result.
- * @param rootPath - The root path of the project.
  * @param pathAPI - The path API object.
  * @param promiseFsAPI - The promise-based file system API object.
  * @returns The updated array of test results.
  */
-function replaceTestAction(results, resultIndex, actionIndex, rootPath, pathAPI, promiseFsAPI) {
+function replaceTestAction(results, resultIndex, actionIndex, pathAPI, promiseFsAPI) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = results[resultIndex];
         const action = result.actions[actionIndex];
-        const absolutePath = pathAPI.join(rootPath, result.filePath);
+        const absolutePath = pathAPI.join(result.rootPath, result.filePath);
         if (action.type === 'add_file') {
             const dirPath = pathAPI.dirname(absolutePath);
             yield promiseFsAPI.mkdir(dirPath, { recursive: true });
@@ -242,7 +251,7 @@ function replaceTestAction(results, resultIndex, actionIndex, rootPath, pathAPI,
             results.splice(resultIndex, 1);
         }
         else if (action.type === 'rename_file') {
-            const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath);
+            const newAbsolutePath = pathAPI.join(result.rootPath, result.newFilePath);
             yield promiseFsAPI.rename(absolutePath, newAbsolutePath);
             results.splice(resultIndex, 1);
         }
@@ -258,16 +267,7 @@ function replaceTestAction(results, resultIndex, actionIndex, rootPath, pathAPI,
             result.fileSource = source;
             result.actions.splice(actionIndex, 1);
             if (result.actions.length > 0) {
-                iterateActions(result.actions, (action) => {
-                    for (const offset of offsets) {
-                        if (action.start >= offset.end) {
-                            action.start = action.start + offset.size;
-                        }
-                        if (action.end >= offset.end) {
-                            action.end = action.end + offset.size;
-                        }
-                    }
-                });
+                fixActionRanges(result, offsets);
             }
             else {
                 results.splice(resultIndex, 1);
@@ -289,7 +289,7 @@ exports.replaceTestAction = replaceTestAction;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Dec 26 2023 06:44:06 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Dec 26 2023 22:06:56 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
