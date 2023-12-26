@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#handleTestResults">handleTestResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestAction">replaceTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestResult">replaceTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkJavascriptDependencies">checkJavascriptDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkRubyDependencies">checkRubyDependencies</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filePatternByLanguage">filePatternByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterSnippets">filterSnippets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#formatCommandResult">formatCommandResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#handleTestResults">handleTestResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseJSON">parseJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parsersByLanguage">parsersByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#placeholderByLanguage">placeholderByLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeTestAction">removeTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeTestResult">removeTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceAllTestResults">replaceAllTestResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestAction">replaceTestAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#replaceTestResult">replaceTestResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertJavascript">runSynvertJavascript</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runSynvertRuby">runSynvertRuby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSnippets">sortSnippets</a></span></li>
 </nav>
 
 <div id="main">
@@ -40,8 +40,17 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.replaceTestAction = exports.replaceTestResult = void 0;
+exports.replaceTestAction = exports.replaceAllTestResults = exports.replaceTestResult = exports.getNewSourceByTestResult = exports.removeTestResult = exports.removeTestAction = void 0;
 function flatActions(actions) {
     const flattenActions = [];
     actions.forEach(action => {
@@ -84,23 +93,57 @@ function compareActions(actionA, actionB) {
     return 0;
 }
 /**
- * Replaces the source code by result actions.
- * @param {TestResultExtExt} result - The test result containing the actions to replace.
- * @param {string} source - The source code to perform the replacements on.
- * @returns {string} The modified source code.
+ * Removes a test action from the given array of test results.
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result.
+ * @param actionIndex - The index of the test action to remove.
+ * @returns The updated array of test results.
  */
-function replaceTestResult(result, source) {
+function removeTestAction(results, resultIndex, actionIndex) {
+    const result = results[resultIndex];
+    result.actions.splice(actionIndex, 1);
+    if (result.actions.length === 0) {
+        results.splice(resultIndex, 1);
+    }
+    return results;
+}
+exports.removeTestAction = removeTestAction;
+/**
+ * Removes a test result from the given array of test results.
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result to remove.
+ * @returns The updated array of test results.
+ */
+function removeTestResult(results, resultIndex) {
+    results.splice(resultIndex, 1);
+    return results;
+}
+exports.removeTestResult = removeTestResult;
+function isAddFileAction(result) {
+    return result.actions.length === 1 &amp;&amp; result.actions[0].type === "add_file";
+}
+function isRemoveFileAction(result) {
+    return result.actions.length === 1 &amp;&amp; result.actions[0].type === "remove_file";
+}
+function isRenameFileAction(result) {
+    return result.actions.length >= 1 &amp;&amp; result.actions[0].type === "rename_file";
+}
+function getNewSourceByTestResult(result) {
+    let source = result.fileSource;
     for (const action of sortFlattenActions(flatActions(result.actions)).reverse()) {
-        if (action.type === 'group') {
-            for (const childAction of sortActions(action.actions).reverse()) {
-                source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
-            }
+        if (action.type === "rename_file") {
+            // nothing to do
         }
         else if (action.type === 'add_file') {
             source = action.newCode;
         }
-        else if (action.type === 'remove_file' || action.type === 'rename_file') {
+        else if (action.type === 'remove_file') {
             source = undefined;
+        }
+        else if (action.type === "group") {
+            for (const childAction of sortActions(action.actions).reverse()) {
+                source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
+            }
         }
         else {
             source = source.slice(0, action.start) + action.newCode + source.slice(action.end);
@@ -108,7 +151,62 @@ function replaceTestResult(result, source) {
     }
     return source;
 }
+exports.getNewSourceByTestResult = getNewSourceByTestResult;
+/**
+ * Replaces the source code by the given test result.
+ *
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result to replace.
+ * @param rootPath - The root path of the project.
+ * @param pathAPI - The path API object.
+ * @param promiseFsAPI - The promise-based file system API object.
+ * @returns A promise that resolves to the updated array of test results.
+ */
+function replaceTestResult(results, resultIndex, rootPath, pathAPI, promiseFsAPI) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = results[resultIndex];
+        const absolutePath = pathAPI.join(rootPath, result.filePath);
+        if (isAddFileAction(result)) {
+            const dirPath = pathAPI.dirname(absolutePath);
+            yield promiseFsAPI.mkdir(dirPath, { recursive: true });
+            yield promiseFsAPI.writeFile(absolutePath, result.actions[0].newCode);
+        }
+        else if (isRemoveFileAction(result)) {
+            yield promiseFsAPI.unlink(absolutePath);
+        }
+        else if (isRenameFileAction(result)) {
+            const newSource = getNewSourceByTestResult(result);
+            const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath);
+            yield promiseFsAPI.unlink(absolutePath);
+            yield promiseFsAPI.writeFile(newAbsolutePath, newSource);
+        }
+        else {
+            const newSource = getNewSourceByTestResult(result);
+            yield promiseFsAPI.writeFile(absolutePath, newSource);
+        }
+        results.splice(resultIndex, 1);
+        return results;
+    });
+}
 exports.replaceTestResult = replaceTestResult;
+/**
+ * Replaces the source code by all test results.
+ *
+ * @param results - The array of test results to be replaced.
+ * @param rootPath - The root path.
+ * @param pathAPI - The PathAPI object.
+ * @param promiseFsAPI - The PromiseFsAPI object.
+ * @returns A promise that resolves to an array of replaced test results.
+ */
+function replaceAllTestResults(results, rootPath, pathAPI, promiseFsAPI) {
+    return __awaiter(this, void 0, void 0, function* () {
+        while (results.length > 0) {
+            yield replaceTestResult(results, 0, rootPath, pathAPI, promiseFsAPI);
+        }
+        return [];
+    });
+}
+exports.replaceAllTestResults = replaceAllTestResults;
 function iterateActions(actions, func) {
     actions.forEach((action) => {
         func(action);
@@ -118,45 +216,65 @@ function iterateActions(actions, func) {
     });
 }
 /**
- * Replaces the source code by the action.
- * @param {TestResultExtExt} result - The test result.
- * @param {Action} action - The action to replace.
- * @param {string} source - The source code.
- * @returns {string} The modified source code.
+ * Replaces the source code by the given test action.
+ *
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result.
+ * @param actionIndex - The index of the action within the test result.
+ * @param rootPath - The root path of the project.
+ * @param pathAPI - The path API object.
+ * @param promiseFsAPI - The promise-based file system API object.
+ * @returns The updated array of test results.
  */
-function replaceTestAction(result, action, source) {
-    const offsets = [];
-    if (action.type === "group") {
-        action.actions.reverse().forEach((childAction) => {
-            source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
-            offsets.push({ start: childAction.start, end: childAction.end, size: childAction.newCode.length - (childAction.end - childAction.start) });
-        });
-    }
-    else if (action.type === 'add_file') {
-        source = action.newCode;
-    }
-    else if (action.type === 'remove_file' || action.type === 'rename_file') {
-        source = undefined;
-    }
-    else {
-        source = source.slice(0, action.start) + action.newCode + source.slice(action.end);
-        offsets.push({ start: action.start, end: action.end, size: action.newCode.length - (action.end - action.start) });
-        ;
-    }
-    if (result.actions.length > 0) {
-        iterateActions(result.actions, (action) => {
-            for (const offset of offsets) {
-                if (action.start >= offset.end) {
-                    action.start = action.start + offset.size;
-                }
-                if (action.end >= offset.end) {
-                    action.end = action.end + offset.size;
-                }
+function replaceTestAction(results, resultIndex, actionIndex, rootPath, pathAPI, promiseFsAPI) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = results[resultIndex];
+        const action = result.actions[actionIndex];
+        const absolutePath = pathAPI.join(rootPath, result.filePath);
+        if (action.type === 'add_file') {
+            const dirPath = pathAPI.dirname(absolutePath);
+            yield promiseFsAPI.mkdir(dirPath, { recursive: true });
+            yield promiseFsAPI.writeFile(absolutePath, action.newCode);
+            results.splice(resultIndex, 1);
+        }
+        else if (action.type === 'remove_file') {
+            yield promiseFsAPI.unlink(absolutePath);
+            results.splice(resultIndex, 1);
+        }
+        else if (action.type === 'rename_file') {
+            const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath);
+            yield promiseFsAPI.rename(absolutePath, newAbsolutePath);
+            results.splice(resultIndex, 1);
+        }
+        else {
+            const offsets = [];
+            const actions = (action.type === "group" ? action.actions.reverse() : [action]);
+            let source = result.fileSource;
+            for (const childAction of actions) {
+                source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
+                offsets.push({ start: childAction.start, end: childAction.end, size: childAction.newCode.length - (childAction.end - childAction.start) });
             }
-        });
-        result.fileSource = source;
-    }
-    return source;
+            yield promiseFsAPI.writeFile(absolutePath, source);
+            result.fileSource = source;
+            result.actions.splice(actionIndex, 1);
+            if (result.actions.length > 0) {
+                iterateActions(result.actions, (action) => {
+                    for (const offset of offsets) {
+                        if (action.start >= offset.end) {
+                            action.start = action.start + offset.size;
+                        }
+                        if (action.end >= offset.end) {
+                            action.end = action.end + offset.size;
+                        }
+                    }
+                });
+            }
+            else {
+                results.splice(resultIndex, 1);
+            }
+        }
+        return results;
+    });
 }
 exports.replaceTestAction = replaceTestAction;
 </code></pre>
@@ -171,7 +289,7 @@ exports.replaceTestAction = replaceTestAction;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Dec 24 2023 11:52:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Dec 26 2023 06:22:27 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
