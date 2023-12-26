@@ -154,6 +154,19 @@ function iterateActions(actions: Action[], func: (action: Action) => void) {
   });
 }
 
+function fixActionRanges(result: TestResultExtExt, offsets: { start: number, end: number, size: number }[]) {
+  iterateActions(result.actions, (action) => {
+    for (const offset of offsets) {
+      if (action.start >= offset.end) {
+        action.start = action.start + offset.size;
+      }
+      if (action.end >= offset.end) {
+        action.end = action.end + offset.size;
+      }
+    }
+  });
+}
+
 /**
  * Replaces the source code by the given test action.
  *
@@ -193,16 +206,7 @@ export async function replaceTestAction(results: TestResultExtExt[], resultIndex
     result.fileSource = source;
     result.actions.splice(actionIndex, 1);
     if (result.actions.length > 0) {
-      iterateActions(result.actions, (action) => {
-        for (const offset of offsets) {
-          if (action.start >= offset.end) {
-            action.start = action.start + offset.size;
-          }
-          if (action.end >= offset.end) {
-            action.end = action.end + offset.size;
-          }
-        }
-      });
+      fixActionRanges(result, offsets);
     } else {
       results.splice(resultIndex, 1);
     }
