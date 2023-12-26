@@ -98,6 +98,22 @@ export async function replaceTestResult(results: TestResultExtExt[], resultIndex
   return results;
 }
 
+/**
+ * Replaces the source code by all test results.
+ *
+ * @param results - The array of test results to be replaced.
+ * @param rootPath - The root path.
+ * @param pathAPI - The PathAPI object.
+ * @param promiseFsAPI - The PromiseFsAPI object.
+ * @returns A promise that resolves to an array of replaced test results.
+ */
+export async function replaceAllTestResults(results: TestResultExtExt[], rootPath: string, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
+  while (results.length > 0) {
+    await replaceTestResult(results, 0, rootPath, pathAPI, promiseFsAPI);
+  }
+  return [];
+}
+
 function iterateActions(actions: Action[], func: (action: Action) => void) {
   actions.forEach((action) => {
     func(action);

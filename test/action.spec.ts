@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs/promises";
 import mock from "mock-fs";
 
-import { replaceTestResult, replaceTestAction } from '../src/action';
+import { replaceAllTestResults,replaceTestResult, replaceTestAction } from '../src/action';
 
 describe("replaceTestResult", () => {
   afterEach(() => {
@@ -46,7 +46,6 @@ describe("replaceTestResult", () => {
   it("replaces the result for add_file", async () => {
     mock({ "/root": {} });
     const result = {
-      fileSource: "hello world",
       filePath: "foo.ts",
       affected: true,
       conflicted: false,
@@ -98,6 +97,85 @@ describe("replaceTestResult", () => {
     expect(results).toEqual([]);
     expect(await fs.access("/root/foo.ts").then(() => true).catch(() => false)).toBeFalsy();
     expect(await fs.readFile("/root/bar.ts", "utf8")).toEqual("hello world");
+  });
+});
+
+describe("replaceAllTestResults", () => {
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it("replaces the result", async () => {
+    mock({
+      "/root/foo.ts": "hello world",
+      "/root/foo1.ts": "hello world",
+      "/root/foo2.ts": "hello world",
+      "/root/foo3.ts": "hello world",
+    });
+    const results = [{
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }, {
+        type: "group",
+        start: 0,
+        end: 11,
+        actions: [{
+          type: "replace",
+          start: 0,
+          end: 5,
+          newCode: "hi"
+        }, {
+          type: "replace",
+          start: 6,
+          end: 11,
+          newCode: "foo"
+        }]
+      }]
+    }, {
+      filePath: "foo1.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "add_file",
+        start: 0,
+        end: 0,
+        newCode: "class ApplicationRecord; end"
+      }]
+    }, {
+      fileSource: "hello world",
+      filePath: "foo2.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "remove_file",
+        start: 0,
+        end: -1,
+      }]
+    }, {
+      fileSource: "hello world",
+      filePath: "foo3.ts",
+      newFilePath: "bar.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "rename_file",
+        start: 0,
+        end: -1,
+      }]
+    }];
+    const newResults = await replaceAllTestResults(results, "/root", path, fs);
+    expect(newResults).toEqual([]);
+    expect(await fs.readFile("/root/foo.ts", "utf-8")).toEqual("hi--foo");
+    expect(await fs.readFile("/root/foo1.ts", "utf-8")).toEqual("class ApplicationRecord; end");
+    expect(await fs.access("/root/foo2.ts").then(() => true).catch(() => false)).toBeFalsy();
+    expect(await fs.readFile("/root/bar.ts", "utf-8")).toEqual("hello world");
   });
 });
 
