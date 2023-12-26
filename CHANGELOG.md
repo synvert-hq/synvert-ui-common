@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.14.0 (2023-12-26)
+
+* `replaceTestResult` and `replaceTestAction` can write file
+* Add `replaceAllTestResults` function
+* Add `removeTestAction` and `removeTestResult` functions
+* Export `getNewSourceByTestResult` function
+
 ## 1.13.0 (2023-12-24)
 
 * Add `handleTestResults` function
