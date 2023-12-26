@@ -1,4 +1,4 @@
-import { TestResultExtExt, Action } from "./types";
+import { TestResultExtExt, Action, PathAPI, PromiseFsAPI } from "./types";
 
 function flatActions(actions: Action[]): Action[] {
   const flattenActions: Action[] = [];
@@ -38,27 +38,64 @@ function compareActions(actionA: Action, actionB: Action): 0 | 1 | -1 {
   return 0;
 }
 
-/**
- * Replaces the source code by result actions.
- * @param {TestResultExtExt} result - The test result containing the actions to replace.
- * @param {string} source - The source code to perform the replacements on.
- * @returns {string} The modified source code.
- */
-export function replaceTestResult(result: TestResultExtExt, source?: string): string | undefined {
-  for (const action of sortFlattenActions(flatActions(result.actions)).reverse()) {
-    if (action.type === 'group') {
+function isAddFileAction(result: TestResultExtExt) {
+  return result.actions.length === 1 && result.actions[0].type === "add_file";
+}
+
+function isRemoveFileAction(result: TestResultExtExt) {
+  return result.actions.length === 1 && result.actions[0].type === "remove_file";
+}
+
+function isRenameFileAction(result: TestResultExtExt) {
+  return result.actions.length >= 1 && result.actions[0].type === "rename_file";
+}
+
+function getNewSource(result: TestResultExtExt) {
+  let source  = result.fileSource!;
+  for (const action of sortFlattenActions(flatActions(result.actions!)).reverse()) {
+    if (action.type === "rename_file") {
+      // nothing to do
+    } else if (action.type === "group") {
       for (const childAction of sortActions(action.actions!).reverse()) {
-        source = source!.slice(0, childAction.start) + childAction.newCode + source!.slice(childAction.end);
+        source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
       }
-    } else if (action.type === 'add_file') {
-      source = action.newCode;
-    } else if (action.type === 'remove_file' || action.type === 'rename_file') {
-      source = undefined;
     } else {
-      source = source!.slice(0, action.start) + action.newCode + source!.slice(action.end);
+      source = source.slice(0, action.start) + action.newCode + source.slice(action.end);
     }
   }
   return source;
+}
+
+/**
+ * Replaces the source code by the given test result.
+ *
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result to replace.
+ * @param rootPath - The root path of the project.
+ * @param pathAPI - The path API object.
+ * @param promiseFsAPI - The promise-based file system API object.
+ * @returns A promise that resolves to the updated array of test results.
+ */
+export async function replaceTestResult(results: TestResultExtExt[], resultIndex: number, rootPath: string, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
+  const result = results[resultIndex];
+  const absolutePath = pathAPI.join(rootPath, result.filePath);
+  if (isAddFileAction(result)) {
+    const dirPath = pathAPI.dirname(absolutePath);
+    await promiseFsAPI.mkdir(dirPath, { recursive: true });
+    await promiseFsAPI.writeFile(absolutePath, result.actions[0].newCode!);
+  } else if (isRemoveFileAction(result)) {
+    await promiseFsAPI.unlink(absolutePath);
+  } else if (isRenameFileAction(result)) {
+    const newSource = getNewSource(result);
+    const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath!);
+    await promiseFsAPI.unlink(absolutePath);
+    await promiseFsAPI.writeFile(newAbsolutePath, newSource);
+  } else {
+    const newSource = getNewSource(result);
+    await promiseFsAPI.writeFile(absolutePath, newSource);
+  }
+  results.splice(resultIndex, 1);
+  return results;
 }
 
 function iterateActions(actions: Action[], func: (action: Action) => void) {
@@ -71,39 +108,57 @@ function iterateActions(actions: Action[], func: (action: Action) => void) {
 }
 
 /**
- * Replaces the source code by the action.
- * @param {TestResultExtExt} result - The test result.
- * @param {Action} action - The action to replace.
- * @param {string} source - The source code.
- * @returns {string} The modified source code.
+ * Replaces the source code by the given test action.
+ *
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result.
+ * @param actionIndex - The index of the action within the test result.
+ * @param rootPath - The root path of the project.
+ * @param pathAPI - The path API object.
+ * @param promiseFsAPI - The promise-based file system API object.
+ * @returns The updated array of test results.
  */
-export function replaceTestAction(result: TestResultExtExt, action: Action, source?: string): string | undefined {
-  const offsets: { start: number, end: number, size: number }[] = [];
-  if (action.type === "group") {
-    action.actions!.reverse().forEach((childAction) => {
-      source = source!.slice(0, childAction.start) + childAction.newCode + source!.slice(childAction.end);
-      offsets.push({ start: childAction.start, end: childAction.end, size: childAction.newCode!.length - (childAction.end - childAction.start) });
-    });
-  } else if (action.type === 'add_file') {
-    source = action.newCode;
-  } else if (action.type === 'remove_file' || action.type === 'rename_file') {
-    source = undefined;
+export async function replaceTestAction(results: TestResultExtExt[], resultIndex: number, actionIndex: number, rootPath: string, pathAPI: PathAPI, promiseFsAPI: PromiseFsAPI): Promise<TestResultExtExt[]> {
+  const result = results[resultIndex];
+  const action = result.actions[actionIndex];
+  const absolutePath = pathAPI.join(rootPath, result.filePath);
+  if (action.type === 'add_file') {
+    const dirPath = pathAPI.dirname(absolutePath);
+    await promiseFsAPI.mkdir(dirPath, { recursive: true });
+    await promiseFsAPI.writeFile(absolutePath, action.newCode!);
+    results.splice(resultIndex, 1);
+  } else if (action.type === 'remove_file') {
+    await promiseFsAPI.unlink(absolutePath);
+    results.splice(resultIndex, 1);
+  } else if (action.type === 'rename_file') {
+    const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath!);
+    await promiseFsAPI.rename(absolutePath, newAbsolutePath);
+    results.splice(resultIndex, 1);
   } else {
-    source = source!.slice(0, action.start) + action.newCode + source!.slice(action.end);
-    offsets.push({ start: action.start, end: action.end, size: action.newCode!.length - (action.end - action.start) });;
-  }
-  if (result.actions.length > 0) {
-    iterateActions(result.actions, (action) => {
-      for (const offset of offsets) {
-        if (action.start >= offset.end) {
-          action.start = action.start + offset.size;
-        }
-        if (action.end >= offset.end) {
-          action.end = action.end + offset.size;
-        }
-      }
-    });
+    const offsets: { start: number, end: number, size: number }[] = [];
+    const actions = (action.type === "group" ? action.actions!.reverse() : [action]);
+    let source = result.fileSource!;
+    for (const childAction of actions) {
+      source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
+      offsets.push({ start: childAction.start, end: childAction.end, size: childAction.newCode!.length - (childAction.end - childAction.start) });
+    }
+    await promiseFsAPI.writeFile(absolutePath, source);
     result.fileSource = source;
+    result.actions.splice(actionIndex, 1);
+    if (result.actions.length > 0) {
+      iterateActions(result.actions, (action) => {
+        for (const offset of offsets) {
+          if (action.start >= offset.end) {
+            action.start = action.start + offset.size;
+          }
+          if (action.end >= offset.end) {
+            action.end = action.end + offset.size;
+          }
+        }
+      });
+    } else {
+      results.splice(resultIndex, 1);
+    }
   }
-  return source;
+  return results;
 }

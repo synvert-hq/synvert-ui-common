@@ -277,7 +277,7 @@ async function addFileSourceToSnippets(snippets: TestResultExtExt[], rootPath: s
   for (const snippet of snippets) {
     const absolutePath = pathAPI.join(rootPath, snippet.filePath);
     if (!!(await fsAPI.stat(absolutePath).catch(e => false))) {
-      const fileSource = await fsAPI.readFile(absolutePath, { encoding: "utf-8" });
+      const fileSource = await fsAPI.readFile(absolutePath, "utf-8");
       snippet.fileSource = fileSource;
     }
     snippet.rootPath = rootPath;

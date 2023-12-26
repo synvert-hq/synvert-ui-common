@@ -70,18 +70,12 @@ type TestResult = {
 };
 
 // Copy from synvert-core
-type TestResultExt = TestResult & { filePath: string };
+type TestResultExt = TestResult & { filePath: string, newFilePath?: string };
 
 export type TestResultExtExt = TestResultExt & { rootPath?: string, fileSource?: string };
 
 export type SearchResults = { results: TestResultExtExt[], errorMessage: string };
 
-export type PathAPI = {
-  join: typeof path.join,
-}
+export type PathAPI = typeof path;
 
-export type PromiseFsAPI = {
-  stat: typeof fs.stat,
-  writeFile: typeof fs.writeFile,
-  readFile: typeof fs.readFile,
-}
+export type PromiseFsAPI = typeof fs;
