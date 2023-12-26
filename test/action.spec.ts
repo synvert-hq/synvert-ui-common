@@ -2,7 +2,103 @@ import path from "path";
 import fs from "fs/promises";
 import mock from "mock-fs";
 
-import { replaceAllTestResults,replaceTestResult, replaceTestAction } from '../src/action';
+import { removeTestAction, removeTestResult, replaceAllTestResults,replaceTestResult, replaceTestAction } from '../src/action';
+
+describe("removeTestAction", () => {
+  it("replaces action", () => {
+    const result = {
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }, {
+        type: "group",
+        start: 0,
+        end: 11,
+        actions: [{
+          type: "replace",
+          start: 0,
+          end: 5,
+          newCode: "hi"
+        }, {
+          type: "replace",
+          start: 6,
+          end: 11,
+          newCode: "foo"
+        }]
+      }]
+    };
+    const results = removeTestAction([result], 0, 1);
+    expect(results).toEqual([{
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }]
+    }]);
+  });
+
+  it("replaces only one action", () => {
+    const result = {
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }]
+    };
+    const results = removeTestAction([result], 0, 0);
+    expect(results).toEqual([]);
+  });
+});
+
+describe("removeTestResult", () => {
+  it("replaces result", () => {
+    const result = {
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }, {
+        type: "group",
+        start: 0,
+        end: 11,
+        actions: [{
+          type: "replace",
+          start: 0,
+          end: 5,
+          newCode: "hi"
+        }, {
+          type: "replace",
+          start: 6,
+          end: 11,
+          newCode: "foo"
+        }]
+      }]
+    };
+    const results = removeTestResult([result], 0);
+    expect(results).toEqual([]);
+  });
+});
 
 describe("replaceTestResult", () => {
   afterEach(() => {

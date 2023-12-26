@@ -2,7 +2,7 @@ import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constant';
 
 export { formatCommandResult, handleTestResults, runSynvertRuby, runSynvertJavascript, checkRubyDependencies, checkJavascriptDependencies, DependencyResponse } from './command';
 export { filterSnippets, sortSnippets, fetchSnippets, generateSnippets } from './snippet';
-export { replaceAllTestResults, replaceTestResult, replaceTestAction } from './action';
+export { removeTestAction, removeTestResult, replaceAllTestResults, replaceTestResult, replaceTestAction } from './action';
 export type { Snippet } from "./types";
 
 /**

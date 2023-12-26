@@ -38,6 +38,33 @@ function compareActions(actionA: Action, actionB: Action): 0 | 1 | -1 {
   return 0;
 }
 
+/**
+ * Removes a test action from the given array of test results.
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result.
+ * @param actionIndex - The index of the test action to remove.
+ * @returns The updated array of test results.
+ */
+export function removeTestAction(results: TestResultExtExt[], resultIndex: number, actionIndex: number): TestResultExtExt[] {
+  const result = results[resultIndex];
+  result.actions.splice(actionIndex, 1);
+  if (result.actions.length === 0) {
+    results.splice(resultIndex, 1);
+  }
+  return results;
+}
+
+/**
+ * Removes a test result from the given array of test results.
+ * @param results - The array of test results.
+ * @param resultIndex - The index of the test result to remove.
+ * @returns The updated array of test results.
+ */
+export function removeTestResult(results: TestResultExtExt[], resultIndex: number): TestResultExtExt[] {
+  results.splice(resultIndex, 1);
+  return results;
+}
+
 function isAddFileAction(result: TestResultExtExt) {
   return result.actions.length === 1 && result.actions[0].type === "add_file";
 }
