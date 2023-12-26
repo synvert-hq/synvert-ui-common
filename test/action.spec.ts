@@ -2,7 +2,90 @@ import path from "path";
 import fs from "fs/promises";
 import mock from "mock-fs";
 
-import { removeTestAction, removeTestResult, replaceAllTestResults,replaceTestResult, replaceTestAction } from '../src/action';
+import { removeTestAction, removeTestResult, replaceAllTestResults,replaceTestResult, replaceTestAction, getNewSourceByTestResult } from '../src/action';
+
+describe("getNewSourceByTestResult", () => {
+  it("returns new source", () => {
+    const result = {
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "replace",
+        start: 5,
+        end: 6,
+        newCode: "--"
+      }, {
+        type: "group",
+        start: 0,
+        end: 11,
+        actions: [{
+          type: "replace",
+          start: 0,
+          end: 5,
+          newCode: "hi"
+        }, {
+          type: "replace",
+          start: 6,
+          end: 11,
+          newCode: "foo"
+        }]
+      }]
+    }
+    const newSource = getNewSourceByTestResult(result);
+    expect(newSource).toEqual("hi--foo");
+  });
+
+  it("returns source when action is add_file", () => {
+    const result = {
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "add_file",
+        start: 0,
+        end: 0,
+        newCode: "class ApplicationRecord; end"
+      }]
+    }
+    const newSource = getNewSourceByTestResult(result);
+    expect(newSource).toEqual("class ApplicationRecord; end");
+  });
+
+  it("returns undefined when action is remove_file", () => {
+    const result = {
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "remove_file",
+        start: 0,
+        end: -1,
+      }]
+    }
+    const newSource = getNewSourceByTestResult(result);
+    expect(newSource).toBeUndefined();
+  });
+
+  it("returns source when action is rename_file", () => {
+    const result = {
+      fileSource: "hello world",
+      filePath: "foo.ts",
+      newFilePath: "bar.ts",
+      affected: true,
+      conflicted: false,
+      actions: [{
+        type: "rename_file",
+        start: 0,
+        end: -1,
+      }]
+    }
+    const newSource = getNewSourceByTestResult(result);
+    expect(newSource).toEqual("hello world");
+  });
+});
 
 describe("removeTestAction", () => {
   it("replaces action", () => {

@@ -77,17 +77,21 @@ function isRenameFileAction(result: TestResultExtExt) {
   return result.actions.length >= 1 && result.actions[0].type === "rename_file";
 }
 
-function getNewSource(result: TestResultExtExt) {
-  let source  = result.fileSource!;
+export function getNewSourceByTestResult(result: TestResultExtExt): string | undefined {
+  let source  = result.fileSource;
   for (const action of sortFlattenActions(flatActions(result.actions!)).reverse()) {
     if (action.type === "rename_file") {
       // nothing to do
+    } else if (action.type === 'add_file') {
+      source = action.newCode;
+    } else if (action.type === 'remove_file') {
+      source = undefined;
     } else if (action.type === "group") {
       for (const childAction of sortActions(action.actions!).reverse()) {
-        source = source.slice(0, childAction.start) + childAction.newCode + source.slice(childAction.end);
+        source = source!.slice(0, childAction.start) + childAction.newCode + source!.slice(childAction.end);
       }
     } else {
-      source = source.slice(0, action.start) + action.newCode + source.slice(action.end);
+      source = source!.slice(0, action.start) + action.newCode + source!.slice(action.end);
     }
   }
   return source;
@@ -113,13 +117,13 @@ export async function replaceTestResult(results: TestResultExtExt[], resultIndex
   } else if (isRemoveFileAction(result)) {
     await promiseFsAPI.unlink(absolutePath);
   } else if (isRenameFileAction(result)) {
-    const newSource = getNewSource(result);
+    const newSource = getNewSourceByTestResult(result);
     const newAbsolutePath = pathAPI.join(rootPath, result.newFilePath!);
     await promiseFsAPI.unlink(absolutePath);
-    await promiseFsAPI.writeFile(newAbsolutePath, newSource);
+    await promiseFsAPI.writeFile(newAbsolutePath, newSource!);
   } else {
-    const newSource = getNewSource(result);
-    await promiseFsAPI.writeFile(absolutePath, newSource);
+    const newSource = getNewSourceByTestResult(result);
+    await promiseFsAPI.writeFile(absolutePath, newSource!);
   }
   results.splice(resultIndex, 1);
   return results;
