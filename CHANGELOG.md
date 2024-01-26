@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.14.2 (2024-01-26)
+
+* Strip `Resolving dependencies...\n` from command output
+
 ## 1.14.1 (2023-12-27)
 
 * Read `rootPath` from test result
