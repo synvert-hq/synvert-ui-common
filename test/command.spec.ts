@@ -26,6 +26,10 @@ describe("formatCommandResult", () => {
   it("formats with warning", () => {
     expect(formatCommandResult({ stdout: "hello world", stderr: "warning: hello world" })).toEqual({ output: "hello world", error: undefined });
   });
+
+  it("formats output", () => {
+    expect(formatCommandResult({ stdout: "Resolving dependencies...\nhello world", stderr: "" })).toEqual({ output: "hello world", error: undefined });
+  });
 });
 
 describe("runSynvertRuby", () => {

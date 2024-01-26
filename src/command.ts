@@ -30,6 +30,12 @@ function outputContainsError(stdout: string): boolean {
   );
 }
 
+// synvert-ruby in ruby 3.3 will output "Resolving dependencies...\n",
+// which we should strip.
+function stripOutput(stdout: string): string {
+  return stdout.replace(/^Resolving dependencies...\n/, "");
+}
+
 /**
  * Format shell command result, convert stdout and stderr to a json object { output, error }.
  * @param {string} stdout
@@ -44,7 +50,7 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
   if (outputContainsError(stdout)) {
     error = JSON.parse(stdout).error;
   }
-  return { output: stdout, error };
+  return { output: stripOutput(stdout), error };
 }
 
 /**
