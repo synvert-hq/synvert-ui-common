@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.15.0 (2024-02-16)
+
+* Add `prism` parser
+
 ## 1.14.2 (2024-01-26)
 
 * Strip `Resolving dependencies...\n` from command output
