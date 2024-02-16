@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.15.1 (2024-02-16)
+
+* `nqlOrRules` is a string "rules" or "nql"
+* `language` is type LANGUAGE
+* Export type `LANGUAGE` and `GenerateSnippetsParams`
+
 ## 1.15.0 (2024-02-16)
 
 * Add `prism` parser
