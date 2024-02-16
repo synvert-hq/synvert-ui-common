@@ -120,7 +120,7 @@ describe("generateSnippets", () => {
     });
 
     it("generates snippet", async () => {
-      const { generatedSnippets } = await generateSnippets("token", "platform", { language: "javascript", parser: "typescript", filePattern: "**/*.js", nodeVersion: "14.0.0", npmVersion: "jquery >= 3.0.0", inputs: ["input"], outputs: ["output"], nqlOrRules: true });
+      const { generatedSnippets } = await generateSnippets("token", "platform", { language: "javascript", parser: "typescript", filePattern: "**/*.js", nodeVersion: "14.0.0", npmVersion: "jquery >= 3.0.0", inputs: ["input"], outputs: ["output"], nqlOrRules: "nql" });
       expect(generatedSnippets).toEqual([dedent`
         new Synvert.Rewriter("group", "name", () => {
           configure({ parser: Synvert.Parser.TYPESCRIPT });
@@ -146,7 +146,7 @@ describe("generateSnippets", () => {
     });
 
     it("generates snippet", async () => {
-      const { generatedSnippets } = await generateSnippets("token", "platform", { language: "ruby", parser: "parser", filePattern: "**/*.rb", rubyVersion: "2.5.0", gemVersion: "factory_girl >= 2.0.0", inputs: ["input"], outputs: ["output"], nqlOrRules: true });
+      const { generatedSnippets } = await generateSnippets("token", "platform", { language: "ruby", parser: "parser", filePattern: "**/*.rb", rubyVersion: "2.5.0", gemVersion: "factory_girl >= 2.0.0", inputs: ["input"], outputs: ["output"], nqlOrRules: "nql" });
       expect(generatedSnippets).toEqual([dedent`
         Synvert::Rewriter.new 'group', 'name' do
           configure(parser: Synvert::PARSER_PARSER)
