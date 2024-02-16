@@ -39,7 +39,7 @@ export type GenerateSnippetsParams = {
   gemVersion: string,
   inputs: string[],
   outputs: string[],
-  nqlOrRules: boolean,
+  nqlOrRules: "nql" | "rules",
 } | {
   language: "javascript" | "typescript" | "css" | "less" | "sass" | "scss",
   parser: string,
@@ -48,7 +48,7 @@ export type GenerateSnippetsParams = {
   npmVersion: string,
   inputs: string[],
   outputs: string[],
-  nqlOrRules: boolean,
+  nqlOrRules: "nql" | "rules",
 }
 
 export type RunCommandType = (command: string, args: string[], options?: { input?: string }) => Promise<{ output: string, error?: string }>;
