@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.15.2 (2024-02-16)
+
+* Send `parser` in /generate-snippet request
+
 ## 1.15.1 (2024-02-16)
 
 * `nqlOrRules` is a string "rules" or "nql"
