@@ -10,7 +10,7 @@ export interface Snippet {
 }
 
 export type LANGUAGE = "ruby" | "javascript" | "typescript" | "css" | "less" | "sass" | "scss";
-export type RUBY_PARSER = "parser" | "syntax_tree";
+export type RUBY_PARSER = "prism" | "parser" | "syntax_tree";
 export type JAVASCRIPT_PARSER = "espree" | "typescript";
 export type TYPESCRIPT_PARSER = "typescript";
 export type CSS_PARSER = "gonzales-pe";

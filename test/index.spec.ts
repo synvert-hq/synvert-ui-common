@@ -32,7 +32,7 @@ describe("placeholderByLanguage", () => {
 
 describe("parsersByLanguage", () => {
   it("gets parsers for ruby", () => {
-    expect(parsersByLanguage("ruby")).toEqual(["parser", "syntax_tree"]);
+    expect(parsersByLanguage("ruby")).toEqual(["prism", "parser", "syntax_tree"]);
   });
 
   it("gets parsers for javascript", () => {

@@ -40,7 +40,7 @@ export const PLACEHOLDERS: { [language: string]: { [name: string]: string } } = 
 }
 
 export const PARSERS: { [language: string]: string[] } = {
-  ruby: ["parser", "syntax_tree"],
+  ruby: ["prism", "parser", "syntax_tree"],
   javascript: ["typescript", "espree"],
   typescript: ["typescript"],
   css: ["gonzales-pe"],
