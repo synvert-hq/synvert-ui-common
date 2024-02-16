@@ -118,7 +118,7 @@ export async function generateSnippets(token: string, platform: string, params: 
         "X-SYNVERT-TOKEN": token,
         "X-SYNVERT-PLATFORM": platform,
       },
-      body: JSON.stringify({ language, inputs, outputs, nql_or_rules: nqlOrRules })
+      body: JSON.stringify({ language, parser, inputs, outputs, nql_or_rules: nqlOrRules })
     })
     const data = await response.json();
     if (data.error) {
