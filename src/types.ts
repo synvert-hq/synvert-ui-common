@@ -53,7 +53,7 @@ export type GenerateSnippetsParams = {
 
 export type RunCommandType = (command: string, args: string[], options?: { input?: string }) => Promise<{ output: string, error?: string }>;
 
-// Copy from @xinminlabs/node-mutation
+// Copy from @synvert-hq/node-mutation
 export type Action = {
   type: string;
   start: number;

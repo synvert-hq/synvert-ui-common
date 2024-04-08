@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xinminlabs/synvert-ui-common.git"
+    "url": "git+https://github.com/synvert-hq/synvert-ui-common.git"
   },
   "keywords": [
     "synvert"
@@ -19,9 +19,9 @@
   "author": "Richard Huang <flyerhzm@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xinminlabs/synvert-ui-common/issues"
+    "url": "https://github.com/synvert-hq/synvert-ui-common/issues"
   },
-  "homepage": "https://github.com/xinminlabs/synvert-ui-common#readme",
+  "homepage": "https://github.com/synvert-hq/synvert-ui-common#readme",
   "devDependencies": {
     "@types/dedent": "^0.7.0",
     "@types/jest": "^29.2.5",
