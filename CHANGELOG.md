@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.15.4 (2024-04-09)
+
+* Rename package to `@synvert-hq/synvert-ui-common`
+
 ## 1.15.3 (2024-04-08)
 
 * Moving from `@xinminlabs` to `@synvert-hq`
