@@ -1,5 +1,5 @@
 {
-  "name": "synvert-ui-common",
+  "name": "@synvert-hq/synvert-ui-common",
   "version": "1.15.3",
   "description": "common methods for synvert ui (GUI, vscode extension and web)",
   "main": "dist/index.js",
