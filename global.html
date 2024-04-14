@@ -117,7 +117,7 @@
 
     
 
-    <h4 class="name" id="checkJavascriptDependencies"><span class="type-signature"></span>checkJavascriptDependencies<span class="signature">(runCommand)</span><span class="type-signature"> &rarr; {Promise.&lt;{code: DependencyResponse, error: (string|undefined)}>}</span></h4>
+    <h4 class="name" id="checkJavascriptDependencies"><span class="type-signature"></span>checkJavascriptDependencies<span class="signature">(runCommand, binPath)</span><span class="type-signature"> &rarr; {Promise.&lt;{code: DependencyResponse, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -160,7 +160,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="command.js.html">command.js</a>, <a href="command.js.html#line211">line 211</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line215">line 215</a>
     </li></ul></dd>
     
 
@@ -227,6 +227,32 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>binPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                The path to the synvert-javascript binary.
+                
+            </td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -277,7 +303,7 @@
 
     
 
-    <h4 class="name" id="checkRubyDependencies"><span class="type-signature"></span>checkRubyDependencies<span class="signature">(runCommand)</span><span class="type-signature"> &rarr; {Promise.&lt;{code: DependencyResponse, error: (string|undefined)}>}</span></h4>
+    <h4 class="name" id="checkRubyDependencies"><span class="type-signature"></span>checkRubyDependencies<span class="signature">(runCommand, binPath)</span><span class="type-signature"> &rarr; {Promise.&lt;{code: DependencyResponse, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -320,7 +346,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="command.js.html">command.js</a>, <a href="command.js.html#line158">line 158</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line161">line 161</a>
     </li></ul></dd>
     
 
@@ -382,6 +408,32 @@
 
             <td class="description last">
                 The function used to run commands.
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>binPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                The path to the synvert-ruby binary.
                 
             </td>
         </tr>
@@ -1000,7 +1052,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="command.js.html">command.js</a>, <a href="command.js.html#line280">line 280</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line284">line 284</a>
     </li></ul></dd>
     
 
@@ -1264,7 +1316,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="command.js.html">command.js</a>, <a href="command.js.html#line305">line 305</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line309">line 309</a>
     </li></ul></dd>
     
 
@@ -2660,7 +2712,7 @@
 
     
 
-    <h4 class="name" id="runSynvertJavascript"><span class="type-signature"></span>runSynvertJavascript<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode)</span><span class="type-signature"> &rarr; {Promise.&lt;{output: string, error: (string|undefined)}>}</span></h4>
+    <h4 class="name" id="runSynvertJavascript"><span class="type-signature"></span>runSynvertJavascript<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath)</span><span class="type-signature"> &rarr; {Promise.&lt;{output: string, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -2703,7 +2755,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="command.js.html">command.js</a>, <a href="command.js.html#line106">line 106</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -2926,6 +2978,32 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>binPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                The path to the synvert-javascript binary.
+                
+            </td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -2976,7 +3054,7 @@
 
     
 
-    <h4 class="name" id="runSynvertRuby"><span class="type-signature"></span>runSynvertRuby<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode)</span><span class="type-signature"> &rarr; {Promise.&lt;{output: string, error: (string|undefined)}>}</span></h4>
+    <h4 class="name" id="runSynvertRuby"><span class="type-signature"></span>runSynvertRuby<span class="signature">(runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath)</span><span class="type-signature"> &rarr; {Promise.&lt;{output: string, error: (string|undefined)}>}</span></h4>
 
     
 
@@ -3019,7 +3097,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="command.js.html">command.js</a>, <a href="command.js.html#line70">line 70</a>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -3237,6 +3315,32 @@
 
             <td class="description last">
                 The code snippet to process.
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>binPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                The path to the synvert-ruby binary.
                 
             </td>
         </tr>
@@ -3486,7 +3590,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Apr 09 2024 10:54:08 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Apr 14 2024 08:59:13 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
