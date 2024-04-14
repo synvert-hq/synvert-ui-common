@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.16.0 (2024-04-14)
+
+* Add `binPath` to `runSynvertRuby` and `runSynvertJavascript`
+* Add `binPath` to `checkRubyDependencies` and `checkJavascriptDependencies`
+
 ## 1.15.4 (2024-04-09)
 
 * Rename package to `@synvert-hq/synvert-ui-common`
