@@ -113,7 +113,7 @@ describe("checkRubyDependencies", () => {
 
   it("returns RUBY_NOT_AVAILABLE if ruby command returns an error", async () => {
     const runCommand = async () => ({ output: "", error: "ruby command not found" });
-    const result = await checkRubyDependencies(runCommand);
+    const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.RUBY_NOT_AVAILABLE);
   });
 
@@ -126,7 +126,20 @@ describe("checkRubyDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkRubyDependencies(runCommand);
+    const result = await checkRubyDependencies({ runCommand });
+    expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
+  });
+
+  it("returns SYNVERT_NOT_AVAILABLE if /bin/synvert-ruby command returns an error", async () => {
+    const runCommand = async (command: string, args: string[]) => {
+      if (command === "ruby" && args[0] === "-v") {
+        return { output: "ruby 2.7.0", error: "" };
+      } else if (command === "/bin/synvert-ruby" && args[0] === "-v") {
+        return { output: "", error: "synvert-ruby command not found" };
+      }
+      return { output: "", error: "" };
+    };
+    const result = await checkRubyDependencies({ runCommand, binPath: "/bin/synvert-ruby" });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
   });
 
@@ -139,7 +152,7 @@ describe("checkRubyDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkRubyDependencies(runCommand);
+    const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_OUTDATED);
     expect(result.remoteSynvertVersion).toEqual("2.0.0");
     expect(result.localSynvertVersion).toEqual("1.0.0");
@@ -154,7 +167,7 @@ describe("checkRubyDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkRubyDependencies(runCommand);
+    const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_CORE_OUTDATED);
     expect(result.remoteSynvertCoreVersion).toEqual("3.0.0");
     expect(result.localSynvertCoreVersion).toEqual("2.0.0");
@@ -169,7 +182,7 @@ describe("checkRubyDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkRubyDependencies(runCommand);
+    const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.OK);
   });
 
@@ -177,7 +190,7 @@ describe("checkRubyDependencies", () => {
     const runCommand = async () => {
       throw new Error("An error occurred");
     };
-    const result = await checkRubyDependencies(runCommand);
+    const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.ERROR);
     expect(result.error).toEqual("An error occurred");
   });
@@ -194,7 +207,7 @@ describe("checkJavascriptDependencies", () => {
 
   it("returns JAVASCRIPT_NOT_AVAILABLE if node command returns an error", async () => {
     const runCommand = async () => ({ output: "", error: "node command not found" });
-    const result = await checkJavascriptDependencies(runCommand);
+    const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.JAVASCRIPT_NOT_AVAILABLE);
   });
 
@@ -207,7 +220,20 @@ describe("checkJavascriptDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkJavascriptDependencies(runCommand);
+    const result = await checkJavascriptDependencies({ runCommand });
+    expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
+  });
+
+  it("returns SYNVERT_NOT_AVAILABLE if /bin/synvert-javascript command returns an error", async () => {
+    const runCommand = async (command: string, args: string[]) => {
+      if (command === "node" && args[0] === "-v") {
+        return { output: "node 20.0.0", error: "" };
+      } else if (command === "/bin/synvert-javascript" && args[0] === "-v") {
+        return { output: "", error: "synvert-javascript command not found" };
+      }
+      return { output: "", error: "" };
+    };
+    const result = await checkJavascriptDependencies({ runCommand, binPath: "/bin/synvert-javascript" });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
   });
 
@@ -220,7 +246,7 @@ describe("checkJavascriptDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkJavascriptDependencies(runCommand);
+    const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_OUTDATED);
     expect(result.remoteSynvertVersion).toEqual("2.0.0");
     expect(result.localSynvertVersion).toEqual("1.0.0");
@@ -235,7 +261,7 @@ describe("checkJavascriptDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkJavascriptDependencies(runCommand);
+    const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.OK);
   });
 
@@ -243,7 +269,7 @@ describe("checkJavascriptDependencies", () => {
     const runCommand = async () => {
       throw new Error("An error occurred");
     };
-    const result = await checkJavascriptDependencies(runCommand);
+    const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.ERROR);
     expect(result.error).toEqual("An error occurred");
   });

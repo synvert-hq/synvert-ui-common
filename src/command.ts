@@ -193,15 +193,16 @@ async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synve
  * Checks the Ruby dependencies required for the application.
  *
  * @param {Function} runCommand - The function used to run commands.
+ * @param {string} binPath - The path to the synvert-ruby binary.
  * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-export async function checkRubyDependencies(runCommand: RunCommandType): Promise<CheckDependencyResult> {
+export async function checkRubyDependencies({ runCommand, binPath }: { runCommand: RunCommandType, binPath?: string }): Promise<CheckDependencyResult> {
   try {
     const { error: rubyError } = await runCommand("ruby", ["-v"]);
     if (rubyError) {
       return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
     }
-    const { output, error } = await runCommand("synvert-ruby", ["-v"]);
+    const { output, error } = await runCommand(binPath === undefined || binPath === "" ? "synvert-ruby" : binPath, ["-v"]);
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
@@ -241,15 +242,16 @@ async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synve
 /**
  * Checks the JavaScript dependencies.
  * @param {Function} runCommand - The function to run a command.
+ * @param {string} binPath - The path to the synvert-javascript binary.
  * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-export async function checkJavascriptDependencies(runCommand: RunCommandType): Promise<CheckDependencyResult> {
+export async function checkJavascriptDependencies({ runCommand, binPath }: { runCommand: RunCommandType, binPath?: string }): Promise<CheckDependencyResult> {
   try {
     const { error: javascriptError } = await runCommand("node", ["-v"]);
     if (javascriptError) {
       return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
     }
-    const { output, error } = await runCommand("synvert-javascript", ["-v"]);
+    const { output, error } = await runCommand(binPath === undefined || binPath === "" ? "synvert-javascript" : binPath, ["-v"]);
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
