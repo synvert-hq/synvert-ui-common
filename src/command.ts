@@ -53,6 +53,17 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
   return { output: stripOutput(stdout), error };
 }
 
+interface RunSynvertRubyParameters {
+  runCommand: RunCommandType;
+  executeCommand: "run" | "test";
+  rootPath: string;
+  onlyPaths: string;
+  skipPaths: string;
+  additionalArgs: string[];
+  snippetCode: string;
+  binPath?: string;
+}
+
 /**
  * Runs synvert-ruby command line.
  * @param {Function} runCommand - The function to run the command.
@@ -62,19 +73,12 @@ export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr
  * @param {string} skipPaths - The paths to skip.
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
+ * @param {string} binPath - The path to the synvert-ruby binary.
  * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
-export async function runSynvertRuby(
-  runCommand: RunCommandType,
-  executeCommand: "run" | "test",
-  rootPath: string,
-  onlyPaths: string,
-  skipPaths: string,
-  additionalArgs: string[],
-  snippetCode: string,
-) {
+export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertRubyParameters) {
   const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return await runCommand("synvert-ruby", commandArgs, { input: snippetCode })
+  return await runCommand(binPath === undefined || binPath === "" ? "synvert-ruby" : binPath, commandArgs, { input: snippetCode })
 }
 
 function buildRubyCommandArgs(
@@ -102,6 +106,17 @@ function buildRubyCommandArgs(
   return commandArgs;
 }
 
+interface RunSynvertJavascriptParameters {
+  runCommand: RunCommandType;
+  executeCommand: "run" | "test";
+  rootPath: string;
+  onlyPaths: string;
+  skipPaths: string;
+  additionalArgs: string[];
+  snippetCode: string;
+  binPath?: string;
+}
+
 /**
  * Runs synvert-javascript command line.
  * @param {Function} runCommand - The function to run the command.
@@ -111,19 +126,12 @@ function buildRubyCommandArgs(
  * @param {string} skipPaths - The paths to skip.
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
+ * @param {string} binPath - The path to the synvert-javascript binary.
  * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
-export async function runSynvertJavascript(
-  runCommand: RunCommandType,
-  executeCommand: "run" | "test",
-  rootPath: string,
-  onlyPaths: string,
-  skipPaths: string,
-  additionalArgs: string[],
-  snippetCode: string,
-) {
+export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertJavascriptParameters) {
   const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return await runCommand("synvert-javascript", commandArgs, { input: snippetCode })
+  return await runCommand(binPath === undefined || binPath === "" ? "synvert-javascript" : binPath, commandArgs, { input: snippetCode })
 }
 
 function buildJavascriptCommandArgs(

@@ -38,7 +38,15 @@ describe("runSynvertRuby", () => {
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
       return { output: "", error: "" };
     };
-    runSynvertRuby(runCommand, "run", ".", "app,spec", "node_modules", ["--double-quote", "--tab-width", "2"], "snippet code");
+    runSynvertRuby({
+      runCommand,
+      executeCommand: "run",
+      rootPath: ".",
+      onlyPaths: "app,spec",
+      skipPaths: "node_modules",
+      additionalArgs: ["--double-quote", "--tab-width", "2"],
+      snippetCode: "snippet code",
+    });
   });
 
   it("gets test command args", () => {
@@ -46,7 +54,16 @@ describe("runSynvertRuby", () => {
       expect(args).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
       return { output: "", error: "" };
     };
-    runSynvertRuby(runCommand, "test", ".", "app,spec", "node_modules", ["--double-quote", "--tab-width", "2"], "snippet code");
+    runSynvertRuby({
+      runCommand,
+      executeCommand: "test",
+      rootPath: ".",
+      onlyPaths: "app,spec",
+      skipPaths: "node_modules",
+      additionalArgs: ["--double-quote", "--tab-width", "2"],
+      snippetCode: "snippet code",
+      binPath: "/bin/synvert-ruby",
+    });
   });
 });
 
@@ -56,7 +73,15 @@ describe("runSynvertJavascript", () => {
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
       return { output: "", error: "" };
     };
-    runSynvertJavascript(runCommand, "run", ".", "lib,spec", "node_modules", ["--single-quote", "--no-semi", "--tab-width", "2"], "snippet code");
+    runSynvertJavascript({
+      runCommand,
+      executeCommand: "run",
+      rootPath: ".",
+      onlyPaths: "lib,spec",
+      skipPaths: "node_modules",
+      additionalArgs: ["--single-quote", "--no-semi", "--tab-width", "2"],
+      snippetCode: "snippet code",
+    });
   });
 
   it("gets test command args", () => {
@@ -64,7 +89,16 @@ describe("runSynvertJavascript", () => {
       expect(args).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
       return { output: "", error: "" };
     };
-    runSynvertJavascript(runCommand, "test", ".", "lib,spec", "node_modules", ["--single-quote", "--no-semi", "--tab-width", "2"], "snippet code");
+    runSynvertJavascript({
+      runCommand,
+      executeCommand: "test",
+      rootPath: ".",
+      onlyPaths: "lib,spec",
+      skipPaths: "node_modules",
+      additionalArgs: ["--single-quote", "--no-semi", "--tab-width", "2"],
+      snippetCode: "snippet code",
+      binPath: "/bin/synvert-javascript",
+    });
   });
 });
 
