@@ -106,13 +106,13 @@ exports.formatCommandResult = formatCommandResult;
  * @param {string} skipPaths - The paths to skip.
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
- * @param {string} binPath - The path to the synvert-ruby binary.
+ * @param {string} commandPath - The path to the synvert-ruby binary.
  * @returns {Promise&lt;{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
-function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }) {
+function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, commandPath }) {
     return __awaiter(this, void 0, void 0, function* () {
         const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-        return yield runCommand(binPath === undefined || binPath === "" ? "synvert-ruby" : binPath, commandArgs, { input: snippetCode });
+        return yield runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, commandArgs, { input: snippetCode });
     });
 }
 exports.runSynvertRuby = runSynvertRuby;
@@ -143,13 +143,13 @@ function buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, ad
  * @param {string} skipPaths - The paths to skip.
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
- * @param {string} binPath - The path to the synvert-javascript binary.
+ * @param {string} commandPath - The path to the synvert-javascript binary.
  * @returns {Promise&lt;{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
-function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }) {
+function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, commandPath }) {
     return __awaiter(this, void 0, void 0, function* () {
         const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-        return yield runCommand(binPath === undefined || binPath === "" ? "synvert-javascript" : binPath, commandArgs, { input: snippetCode });
+        return yield runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, commandArgs, { input: snippetCode });
     });
 }
 exports.runSynvertJavascript = runSynvertJavascript;
@@ -196,17 +196,17 @@ function checkGemRemoteVersions() {
  * Checks the Ruby dependencies required for the application.
  *
  * @param {Function} runCommand - The function used to run commands.
- * @param {string} binPath - The path to the synvert-ruby binary.
+ * @param {string} commandPath - The path to the synvert-ruby binary.
  * @returns {Promise&lt;{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-function checkRubyDependencies({ runCommand, binPath }) {
+function checkRubyDependencies({ runCommand, commandPath }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { error: rubyError } = yield runCommand("ruby", ["-v"]);
             if (rubyError) {
                 return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
             }
-            const { output, error } = yield runCommand(binPath === undefined || binPath === "" ? "synvert-ruby" : binPath, ["-v"]);
+            const { output, error } = yield runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, ["-v"]);
             if (error) {
                 return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
             }
@@ -250,17 +250,17 @@ function checkNpmRemoteVersions() {
 /**
  * Checks the JavaScript dependencies.
  * @param {Function} runCommand - The function to run a command.
- * @param {string} binPath - The path to the synvert-javascript binary.
+ * @param {string} commandPath - The path to the synvert-javascript binary.
  * @returns {Promise&lt;{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-function checkJavascriptDependencies({ runCommand, binPath }) {
+function checkJavascriptDependencies({ runCommand, commandPath }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { error: javascriptError } = yield runCommand("node", ["-v"]);
             if (javascriptError) {
                 return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
             }
-            const { output, error } = yield runCommand(binPath === undefined || binPath === "" ? "synvert-javascript" : binPath, ["-v"]);
+            const { output, error } = yield runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, ["-v"]);
             if (error) {
                 return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
             }
@@ -371,7 +371,7 @@ exports.parseJSON = parseJSON;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Apr 14 2024 08:59:13 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Apr 15 2024 07:43:51 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
