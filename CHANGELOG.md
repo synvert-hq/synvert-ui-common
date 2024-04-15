@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.16.1 (2024-04-15)
+
+* Rename `binPath` to `commandPath`
+
 ## 1.16.0 (2024-04-14)
 
 * Add `binPath` to `runSynvertRuby` and `runSynvertJavascript`
