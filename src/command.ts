@@ -9,7 +9,8 @@ function isRealError(stderr: string): boolean {
     !stderr.startsWith('Cloning into ') &&
     !stderr.startsWith("error: pathspec '.' did not match any file(s) known to git") &&
     !stderr.startsWith('npm WARN') && // npm install
-    !stderr.startsWith('Updated 0 paths from the index') // git pull
+    !stderr.startsWith('Updated 0 paths from the index') && // git pull
+    !/^\(node:\d+\) \[\w+\] DeprecationWarning:/.test(stderr)
   );
 }
 
@@ -46,7 +47,7 @@ export function formatCommandResult({ output, error }: RunCommandResult): RunCom
   if (error && isRealError(error)) {
     realError = error;
   }
-  if (outputContainsError(output)) {
+  if (isJsonString(output) && outputContainsError(output)) {
     realError = JSON.parse(output).error;
   }
   return { output: stripOutput(output), error: realError };
