@@ -178,7 +178,8 @@ type CheckDependencyResult = {
   localSynvertCoreVersion?: string;
 }
 
-const VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with synvert-core (\d+\.\d+\.\d+)/;
+const RUBY_VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with synvert-core (\d+\.\d+\.\d+)/;
+const JAVASCRIPT_VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with @synvert-hq\/synvert-core (\d+\.\d+\.\d+)/;
 
 async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synvertCoreVersion: string }> {
   const url = "https://api-ruby.synvert.net/check-versions";
@@ -205,7 +206,7 @@ export async function checkRubyDependencies({ runCommand, binPath }: { runComman
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
-    const result = output.match(VERSION_REGEXP);
+    const result = output.match(RUBY_VERSION_REGEXP);
     if (result) {
       const localSynvertVersion = result[1];
       const localSynvertCoreVersion = result[2];
@@ -254,7 +255,7 @@ export async function checkJavascriptDependencies({ runCommand, binPath }: { run
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
-    const result = output.match(VERSION_REGEXP);
+    const result = output.match(JAVASCRIPT_VERSION_REGEXP);
     if (result) {
       const localSynvertVersion = result[1];
       const data = await checkNpmRemoteVersions();

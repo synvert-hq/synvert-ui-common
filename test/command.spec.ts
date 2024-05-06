@@ -250,7 +250,7 @@ describe("checkJavascriptDependencies", () => {
       if (command === "node" && args[0] === "-v") {
         return { output: "node 20.0.0", error: "" };
       } else if (command === "synvert-javascript" && args[0] === "-v") {
-        return { output: "1.0.0 (with synvert-core 2.0.0)", error: "" };
+        return { output: "1.0.0 (with @synvert-hq/synvert-core 2.0.0)", error: "" };
       }
       return { output: "", error: "" };
     };
@@ -265,7 +265,7 @@ describe("checkJavascriptDependencies", () => {
       if (command === "node" && args[0] === "-v") {
         return { output: "node 20.0.0", error: "" };
       } else if (command === "synvert-javascript" && args[0] === "-v") {
-        return { output: "2.0.0 (with synvert-core 3.0.0)", error: "" };
+        return { output: "2.0.0 (with @synvert-hq/synvert-core 3.0.0)", error: "" };
       }
       return { output: "", error: "" };
     };
