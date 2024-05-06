@@ -317,6 +317,17 @@ export async function syncRubySnippets({ runCommand, binPath }: { runCommand: Ru
   return formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), ["--sync"]));
 }
 
+/**
+ * Sync javascript snippets.
+ *
+ * @param {Function} runCommand - The function to run a command.
+ * @param {string} binPath - The directory containing the synvert-javascript binary.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ */
+export async function syncJavascriptSnippets({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<RunCommandResult> {
+  return formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), ["--sync"]));
+}
+
 function mergeRenameFileTestResults(snippets: TestResultExtExt[]) {
   const renameFileResults = snippets.filter(snippet => snippet.actions[0].type === "rename_file");
   if (renameFileResults.length === 0) {

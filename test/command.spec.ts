@@ -12,6 +12,8 @@ import {
   checkJavascriptDependencies,
   installGem,
   installNpm,
+  syncRubySnippets,
+  syncJavascriptSnippets,
   parseJSON,
   handleTestResults,
 } from "../src/command";
@@ -319,6 +321,19 @@ describe("syncRubySnippets", () => {
       return { output: "", error: "" };
     };
     syncRubySnippets({
+      runCommand,
+    });
+  });
+});
+
+describe("syncJavascriptSnippets", () => {
+  it("gets run command args", () => {
+    const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("synvert-javascript");
+      expect(args).toEqual(["--sync"]);
+      return { output: "", error: "" };
+    };
+    syncJavascriptSnippets({
       runCommand,
     });
   });

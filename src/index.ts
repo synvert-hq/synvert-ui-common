@@ -1,7 +1,7 @@
 import { PARSERS, FILE_PATTERNS, PLACEHOLDERS } from './constant';
 import { LANGUAGE } from './types';
 
-export { handleTestResults, runSynvertRuby, runSynvertJavascript, checkRubyDependencies, checkJavascriptDependencies, installGem, installNpm, DependencyResponse } from './command';
+export { handleTestResults, runSynvertRuby, runSynvertJavascript, checkRubyDependencies, checkJavascriptDependencies, installGem, installNpm, syncRubySnippets, syncJavascriptSnippets, DependencyResponse } from './command';
 export { filterSnippets, sortSnippets, fetchSnippets, generateSnippets } from './snippet';
 export { getNewSourceByTestResult, removeTestAction, removeTestResult, replaceAllTestResults, replaceTestResult, replaceTestAction } from './action';
 export type { Snippet, LANGUAGE, GenerateSnippetsParams } from "./types";
