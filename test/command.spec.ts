@@ -287,7 +287,7 @@ describe("installGem", () => {
   it("gets run command args", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/gem");
-      expect(args).toEqual(["install", "synvert-core", "synvert"]);
+      expect(args).toEqual(["install", "--force", "synvert-core", "synvert"]);
       return { output: "", error: "" };
     };
     installGem({
@@ -302,7 +302,7 @@ describe("installNpm", () => {
   it("gets run command args", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/npm");
-      expect(args).toEqual(["install", "-g", "synvert"]);
+      expect(args).toEqual(["install", "--force", "-g", "synvert"]);
       return { output: "", error: "" };
     };
     installNpm({

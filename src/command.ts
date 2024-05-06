@@ -285,7 +285,7 @@ export async function checkJavascriptDependencies({ runCommand, binPath }: { run
  * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
  */
 export async function installGem({ runCommand, gemName, binPath }: { runCommand: RunCommandFunc, gemName: string | string[], binPath?: string }): Promise<RunCommandResult> {
-  const options = ["install"];
+  const options = ["install", "--force"];
   if (Array.isArray(gemName)) {
     options.push(...gemName);
   } else {
@@ -303,7 +303,7 @@ export async function installGem({ runCommand, gemName, binPath }: { runCommand:
  * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
  */
 export async function installNpm({ runCommand, npmName, binPath }: { runCommand: RunCommandFunc, npmName: string, binPath?: string }): Promise<RunCommandResult> {
-  return formatCommandResult(await runCommand(fullCommand("npm", binPath), ["install", "-g", npmName]));
+  return formatCommandResult(await runCommand(fullCommand("npm", binPath), ["install", "--force", "-g", npmName]));
 }
 
 /**
