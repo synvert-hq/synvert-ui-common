@@ -10,6 +10,8 @@ import {
   DependencyResponse,
   checkRubyDependencies,
   checkJavascriptDependencies,
+  installGem,
+  installNpm,
   parseJSON,
   handleTestResults,
 } from "../src/command";
@@ -35,6 +37,7 @@ describe("formatCommandResult", () => {
 describe("runSynvertRuby", () => {
   it("gets run command args", () => {
     const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("synvert-ruby");
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
       return { output: "", error: "" };
     };
@@ -51,6 +54,7 @@ describe("runSynvertRuby", () => {
 
   it("gets test command args", () => {
     const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("/bin/synvert-ruby");
       expect(args).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
       return { output: "", error: "" };
     };
@@ -70,6 +74,7 @@ describe("runSynvertRuby", () => {
 describe("runSynvertJavascript", () => {
   it("gets run command args", () => {
     const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("synvert-javascript");
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
       return { output: "", error: "" };
     };
@@ -86,6 +91,7 @@ describe("runSynvertJavascript", () => {
 
   it("gets test command args", () => {
     const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("/bin/synvert-javascript");
       expect(args).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
       return { output: "", error: "" };
     };
@@ -285,6 +291,21 @@ describe("installGem", () => {
     installGem({
       runCommand,
       gemName: ["synvert-core", "synvert"],
+      binPath: "/bin",
+    });
+  });
+});
+
+describe("installNpm", () => {
+  it("gets run command args", () => {
+    const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("/bin/npm");
+      expect(args).toEqual(["install", "-g", "synvert"]);
+      return { output: "", error: "" };
+    };
+    installNpm({
+      runCommand,
+      npmName: "synvert",
       binPath: "/bin",
     });
   });

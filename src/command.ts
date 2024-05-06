@@ -294,6 +294,18 @@ export async function installGem({ runCommand, gemName, binPath }: { runCommand:
   return formatCommandResult(await runCommand(fullCommand("gem", binPath), options));
 }
 
+/**
+  * Install one npm package.
+  *
+  * @param {Function} runCommand - The function to run a command.
+  * @param {string} npmName - The name of the npm package to install.
+  * @param {string} binPath - The directory containing the npm binary.
+  * @returns
+  */
+export async function installNpm({ runCommand, npmName, binPath }: { runCommand: RunCommandFunc, npmName: string, binPath?: string }): Promise<RunCommandResult> {
+  return formatCommandResult(await runCommand(fullCommand("npm", binPath), ["install", "-g", npmName]));
+}
+
 function mergeRenameFileTestResults(snippets: TestResultExtExt[]) {
   const renameFileResults = snippets.filter(snippet => snippet.actions[0].type === "rename_file");
   if (renameFileResults.length === 0) {
