@@ -74,11 +74,11 @@ interface RunSynvertRubyParameters {
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @param {string} binPath - The directory containing the synvert-ruby binary.
- * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
  */
 export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertRubyParameters) {
   const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return formatCommandResult(await runCommand(join(binPath || "", "synvert-ruby"), commandArgs, { input: snippetCode }));
+  return formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), commandArgs, { input: snippetCode }));
 }
 
 function buildRubyCommandArgs(
@@ -127,11 +127,11 @@ interface RunSynvertJavascriptParameters {
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @param {string} binPath - The directory containing the synvert-javascript binary.
- * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<{RunCommandResult}>} A promise that resolves to an object containing the output and error messages.
  */
 export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertJavascriptParameters) {
   const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return formatCommandResult(await runCommand(join(binPath || "", "synvert-javascript"), commandArgs, { input: snippetCode }));
+  return formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), commandArgs, { input: snippetCode }));
 }
 
 function buildJavascriptCommandArgs(
@@ -198,11 +198,11 @@ async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synve
  */
 export async function checkRubyDependencies({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: rubyError } = formatCommandResult(await runCommand(join(binPath || "", "ruby"), ["-v"]));
+    const { error: rubyError } = formatCommandResult(await runCommand(fullCommand("ruby", binPath), ["-v"]));
     if (rubyError) {
       return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
     }
-    const { output, error } = formatCommandResult(await runCommand(join(binPath || "", "synvert-ruby"), ["-v"]));
+    const { output, error } = formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), ["-v"]));
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
@@ -247,11 +247,11 @@ async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synve
  */
 export async function checkJavascriptDependencies({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: javascriptError } = formatCommandResult(await runCommand(join(binPath || "", "node"), ["-v"]));
+    const { error: javascriptError } = formatCommandResult(await runCommand(fullCommand("node", binPath), ["-v"]));
     if (javascriptError) {
       return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
     }
-    const { output, error } = formatCommandResult(await runCommand(join(binPath || "", "synvert-javascript"), ["-v"]));
+    const { output, error } = formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), ["-v"]));
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
@@ -324,6 +324,10 @@ export async function handleTestResults(output: string, error: string | undefine
   } catch (e) {
     return { results: [], errorMessage: (e as Error).message };
   }
+}
+
+function fullCommand(command: string, binPath?: string): string {
+  return join(binPath || "", command);
 }
 
 const snakeToCamel = (str: string): string => str.replace(/([-_]\w)/g, g => g[1].toUpperCase());
