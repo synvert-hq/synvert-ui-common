@@ -311,6 +311,19 @@ describe("installNpm", () => {
   });
 });
 
+describe("syncRubySnippets", () => {
+  it("gets run command args", () => {
+    const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("synvert-ruby");
+      expect(args).toEqual(["--sync"]);
+      return { output: "", error: "" };
+    };
+    syncRubySnippets({
+      runCommand,
+    });
+  });
+});
+
 describe("parseJSON", () => {
   it("parses json with camel case keys", () => {
     const string = `{ "key": "value", "snake_case_key": "value", "camelCaseKey": "value" }`;

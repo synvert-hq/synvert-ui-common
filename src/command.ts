@@ -282,7 +282,7 @@ export async function checkJavascriptDependencies({ runCommand, binPath }: { run
  * @param {Function} runCommand - The function to run a command.
  * @param {string | string[]} gemName - The name of the gem to install.
  * @param {string} binPath - The directory containing the gem binary.
- * @returns
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
  */
 export async function installGem({ runCommand, gemName, binPath }: { runCommand: RunCommandFunc, gemName: string | string[], binPath?: string }): Promise<RunCommandResult> {
   const options = ["install"];
@@ -295,15 +295,26 @@ export async function installGem({ runCommand, gemName, binPath }: { runCommand:
 }
 
 /**
-  * Install one npm package.
-  *
-  * @param {Function} runCommand - The function to run a command.
-  * @param {string} npmName - The name of the npm package to install.
-  * @param {string} binPath - The directory containing the npm binary.
-  * @returns
-  */
+ * Install one npm package.
+ *
+ * @param {Function} runCommand - The function to run a command.
+ * @param {string} npmName - The name of the npm package to install.
+ * @param {string} binPath - The directory containing the npm binary.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ */
 export async function installNpm({ runCommand, npmName, binPath }: { runCommand: RunCommandFunc, npmName: string, binPath?: string }): Promise<RunCommandResult> {
   return formatCommandResult(await runCommand(fullCommand("npm", binPath), ["install", "-g", npmName]));
+}
+
+/**
+ * Sync ruby snippets.
+ *
+ * @param {Function} runCommand - The function to run a command.
+ * @param {string} binPath - The directory containing the synvert-ruby binary.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ */
+export async function syncRubySnippets({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<RunCommandResult> {
+  return formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), ["--sync"]));
 }
 
 function mergeRenameFileTestResults(snippets: TestResultExtExt[]) {
