@@ -276,6 +276,24 @@ export async function checkJavascriptDependencies({ runCommand, binPath }: { run
   }
 }
 
+/**
+ * Install one or multiple gems.
+ *
+ * @param {Function} runCommand - The function to run a command.
+ * @param {string | string[]} gemName - The name of the gem to install.
+ * @param {string} binPath - The directory containing the gem binary.
+ * @returns
+ */
+export async function installGem({ runCommand, gemName, binPath }: { runCommand: RunCommandFunc, gemName: string | string[], binPath?: string }): Promise<RunCommandResult> {
+  const options = ["install"];
+  if (Array.isArray(gemName)) {
+    options.push(...gemName);
+  } else {
+    options.push(gemName);
+  }
+  return formatCommandResult(await runCommand(fullCommand("gem", binPath), options));
+}
+
 function mergeRenameFileTestResults(snippets: TestResultExtExt[]) {
   const renameFileResults = snippets.filter(snippet => snippet.actions[0].type === "rename_file");
   if (renameFileResults.length === 0) {

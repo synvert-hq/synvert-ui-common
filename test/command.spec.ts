@@ -275,6 +275,21 @@ describe("checkJavascriptDependencies", () => {
   });
 });
 
+describe("installGem", () => {
+  it("gets run command args", () => {
+    const runCommand = async (command: string, args: string[]) => {
+      expect(command).toEqual("/bin/gem");
+      expect(args).toEqual(["install", "synvert-core", "synvert"]);
+      return { output: "", error: "" };
+    };
+    installGem({
+      runCommand,
+      gemName: ["synvert-core", "synvert"],
+      binPath: "/bin",
+    });
+  });
+});
+
 describe("parseJSON", () => {
   it("parses json with camel case keys", () => {
     const string = `{ "key": "value", "snake_case_key": "value", "camelCaseKey": "value" }`;
