@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { compareVersions } from 'compare-versions';
 
 import { PromiseFsAPI, PathAPI, RunCommandFunc, SearchResults, TestResultExtExt, RunCommandResult } from './types';
@@ -379,7 +378,11 @@ export async function handleTestResults(output: string, error: string | undefine
 }
 
 function fullCommand(command: string, binPath?: string): string {
-  return join(binPath || "", command);
+  return join(binPath, command);
+}
+
+function join(...args: (string | undefined)[]): string {
+  return args.filter(Boolean).join('/');
 }
 
 const snakeToCamel = (str: string): string => str.replace(/([-_]\w)/g, g => g[1].toUpperCase());
