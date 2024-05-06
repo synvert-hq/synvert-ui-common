@@ -1,6 +1,6 @@
 import { compareVersions } from 'compare-versions';
 
-import { PromiseFsAPI, PathAPI, RunCommandType, SearchResults, TestResultExtExt } from './types';
+import { PromiseFsAPI, PathAPI, RunCommandFunc, SearchResults, TestResultExtExt, RunCommandResult } from './types';
 
 function isRealError(stderr: string): boolean {
   return (
@@ -38,23 +38,22 @@ function stripOutput(stdout: string): string {
 
 /**
  * Format shell command result, convert stdout and stderr to a json object { output, error }.
- * @param {string} stdout
- * @param {string} stderr
- * @returns { { output: string, error: string } }
+ * @param {RunCommandResult}
+ * @returns {RunCommandResult}
  */
-export function formatCommandResult({ stdout, stderr }: { stdout: string, stderr: string }): { output: string, error?: string } {
-  let error;
-  if (isRealError(stderr)) {
-    error = stderr;
+export function formatCommandResult({ output, error }: RunCommandResult): RunCommandResult {
+  let realError;
+  if (error && isRealError(error)) {
+    realError = error;
   }
-  if (outputContainsError(stdout)) {
-    error = JSON.parse(stdout).error;
+  if (outputContainsError(output)) {
+    realError = JSON.parse(output).error;
   }
-  return { output: stripOutput(stdout), error };
+  return { output: stripOutput(output), error: realError };
 }
 
 interface RunSynvertRubyParameters {
-  runCommand: RunCommandType;
+  runCommand: RunCommandFunc;
   executeCommand: "run" | "test";
   rootPath: string;
   onlyPaths: string;
@@ -78,7 +77,7 @@ interface RunSynvertRubyParameters {
  */
 export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, commandPath }: RunSynvertRubyParameters) {
   const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return await runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, commandArgs, { input: snippetCode })
+  return formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, commandArgs, { input: snippetCode }));
 }
 
 function buildRubyCommandArgs(
@@ -107,7 +106,7 @@ function buildRubyCommandArgs(
 }
 
 interface RunSynvertJavascriptParameters {
-  runCommand: RunCommandType;
+  runCommand: RunCommandFunc;
   executeCommand: "run" | "test";
   rootPath: string;
   onlyPaths: string;
@@ -131,7 +130,7 @@ interface RunSynvertJavascriptParameters {
  */
 export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, commandPath }: RunSynvertJavascriptParameters) {
   const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return await runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, commandArgs, { input: snippetCode })
+  return formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, commandArgs, { input: snippetCode }));
 }
 
 function buildJavascriptCommandArgs(
@@ -196,13 +195,13 @@ async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synve
  * @param {string} commandPath - The path to the synvert-ruby binary.
  * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-export async function checkRubyDependencies({ runCommand, commandPath }: { runCommand: RunCommandType, commandPath?: string }): Promise<CheckDependencyResult> {
+export async function checkRubyDependencies({ runCommand, commandPath }: { runCommand: RunCommandFunc, commandPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: rubyError } = await runCommand("ruby", ["-v"]);
+    const { error: rubyError } = formatCommandResult(await runCommand("ruby", ["-v"]));
     if (rubyError) {
       return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
     }
-    const { output, error } = await runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, ["-v"]);
+    const { output, error } = formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, ["-v"]));
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
@@ -245,13 +244,13 @@ async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synve
  * @param {string} commandPath - The path to the synvert-javascript binary.
  * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-export async function checkJavascriptDependencies({ runCommand, commandPath }: { runCommand: RunCommandType, commandPath?: string }): Promise<CheckDependencyResult> {
+export async function checkJavascriptDependencies({ runCommand, commandPath }: { runCommand: RunCommandFunc, commandPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: javascriptError } = await runCommand("node", ["-v"]);
+    const { error: javascriptError } = formatCommandResult(await runCommand("node", ["-v"]));
     if (javascriptError) {
       return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
     }
-    const { output, error } = await runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, ["-v"]);
+    const { output, error } = formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, ["-v"]));
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }

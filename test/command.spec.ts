@@ -16,19 +16,19 @@ import {
 
 describe("formatCommandResult", () => {
   it("formats with empty stderr", () => {
-    expect(formatCommandResult({ stdout: "hello world", stderr: "" })).toEqual({ output: "hello world", error: undefined });
+    expect(formatCommandResult({ output: "hello world" })).toEqual({ output: "hello world", error: undefined });
   });
 
   it("formats with stderr", () => {
-    expect(formatCommandResult({ stdout: "", stderr: "hello world" })).toEqual({ output: "", error: "hello world" });
+    expect(formatCommandResult({ output: "", error: "hello world" })).toEqual({ output: "", error: "hello world" });
   });
 
   it("formats with warning", () => {
-    expect(formatCommandResult({ stdout: "hello world", stderr: "warning: hello world" })).toEqual({ output: "hello world", error: undefined });
+    expect(formatCommandResult({ output: "hello world", error: "warning: hello world" })).toEqual({ output: "hello world", error: undefined });
   });
 
   it("formats output", () => {
-    expect(formatCommandResult({ stdout: "Resolving dependencies...\nhello world", stderr: "" })).toEqual({ output: "hello world", error: undefined });
+    expect(formatCommandResult({ output: "Resolving dependencies...\nhello world", error: "" })).toEqual({ output: "hello world", error: undefined });
   });
 });
 
