@@ -62,7 +62,7 @@ describe("runSynvertRuby", () => {
       skipPaths: "node_modules",
       additionalArgs: ["--double-quote", "--tab-width", "2"],
       snippetCode: "snippet code",
-      commandPath: "/bin/synvert-ruby",
+      binPath: "/bin",
     });
   });
 });
@@ -97,7 +97,7 @@ describe("runSynvertJavascript", () => {
       skipPaths: "node_modules",
       additionalArgs: ["--single-quote", "--no-semi", "--tab-width", "2"],
       snippetCode: "snippet code",
-      commandPath: "/bin/synvert-javascript",
+      binPath: "/bin",
     });
   });
 });
@@ -139,7 +139,7 @@ describe("checkRubyDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkRubyDependencies({ runCommand, commandPath: "/bin/synvert-ruby" });
+    const result = await checkRubyDependencies({ runCommand, binPath: "/bin" });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
   });
 
@@ -233,7 +233,7 @@ describe("checkJavascriptDependencies", () => {
       }
       return { output: "", error: "" };
     };
-    const result = await checkJavascriptDependencies({ runCommand, commandPath: "/bin/synvert-javascript" });
+    const result = await checkJavascriptDependencies({ runCommand, binPath: "/bin" });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
   });
 

@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { compareVersions } from 'compare-versions';
 
 import { PromiseFsAPI, PathAPI, RunCommandFunc, SearchResults, TestResultExtExt, RunCommandResult } from './types';
@@ -60,7 +61,7 @@ interface RunSynvertRubyParameters {
   skipPaths: string;
   additionalArgs: string[];
   snippetCode: string;
-  commandPath?: string;
+  binPath?: string;
 }
 
 /**
@@ -72,12 +73,12 @@ interface RunSynvertRubyParameters {
  * @param {string} skipPaths - The paths to skip.
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
- * @param {string} commandPath - The path to the synvert-ruby binary.
+ * @param {string} binPath - The directory containing the synvert-ruby binary.
  * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
-export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, commandPath }: RunSynvertRubyParameters) {
+export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertRubyParameters) {
   const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, commandArgs, { input: snippetCode }));
+  return formatCommandResult(await runCommand(join(binPath || "", "synvert-ruby"), commandArgs, { input: snippetCode }));
 }
 
 function buildRubyCommandArgs(
@@ -113,7 +114,7 @@ interface RunSynvertJavascriptParameters {
   skipPaths: string;
   additionalArgs: string[];
   snippetCode: string;
-  commandPath?: string;
+  binPath?: string;
 }
 
 /**
@@ -125,12 +126,12 @@ interface RunSynvertJavascriptParameters {
  * @param {string} skipPaths - The paths to skip.
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
- * @param {string} commandPath - The path to the synvert-javascript binary.
+ * @param {string} binPath - The directory containing the synvert-javascript binary.
  * @returns {Promise<{output: string, error: string | undefined}>} A promise that resolves to an object containing the output and error messages.
  */
-export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, commandPath }: RunSynvertJavascriptParameters) {
+export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertJavascriptParameters) {
   const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
-  return formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, commandArgs, { input: snippetCode }));
+  return formatCommandResult(await runCommand(join(binPath || "", "synvert-javascript"), commandArgs, { input: snippetCode }));
 }
 
 function buildJavascriptCommandArgs(
@@ -192,16 +193,16 @@ async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synve
  * Checks the Ruby dependencies required for the application.
  *
  * @param {Function} runCommand - The function used to run commands.
- * @param {string} commandPath - The path to the synvert-ruby binary.
+ * @param {string} binPath - The directory containing the synvert-ruby binary.
  * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-export async function checkRubyDependencies({ runCommand, commandPath }: { runCommand: RunCommandFunc, commandPath?: string }): Promise<CheckDependencyResult> {
+export async function checkRubyDependencies({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: rubyError } = formatCommandResult(await runCommand("ruby", ["-v"]));
+    const { error: rubyError } = formatCommandResult(await runCommand(join(binPath || "", "ruby"), ["-v"]));
     if (rubyError) {
       return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
     }
-    const { output, error } = formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-ruby" : commandPath, ["-v"]));
+    const { output, error } = formatCommandResult(await runCommand(join(binPath || "", "synvert-ruby"), ["-v"]));
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
@@ -241,16 +242,16 @@ async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synve
 /**
  * Checks the JavaScript dependencies.
  * @param {Function} runCommand - The function to run a command.
- * @param {string} commandPath - The path to the synvert-javascript binary.
+ * @param {string} binPath - The directory containing the synvert-javascript binary.
  * @returns {Promise<{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-export async function checkJavascriptDependencies({ runCommand, commandPath }: { runCommand: RunCommandFunc, commandPath?: string }): Promise<CheckDependencyResult> {
+export async function checkJavascriptDependencies({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: javascriptError } = formatCommandResult(await runCommand("node", ["-v"]));
+    const { error: javascriptError } = formatCommandResult(await runCommand(join(binPath || "", "node"), ["-v"]));
     if (javascriptError) {
       return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
     }
-    const { output, error } = formatCommandResult(await runCommand(commandPath === undefined || commandPath === "" ? "synvert-javascript" : commandPath, ["-v"]));
+    const { output, error } = formatCommandResult(await runCommand(join(binPath || "", "synvert-javascript"), ["-v"]));
     if (error) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
