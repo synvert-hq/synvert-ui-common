@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 1.17.0 (2024-05-07)
+
+* Do not export `formatCommandResult` function
+* Revert to use `binPath`
+* Add `installGem` function
+* Add `installNpm` function
+* Add `syncRubySnippets` function
+* Add `syncJavascriptSnippets` function
+* Use `stdout`/`stderr` instead of `output`/`error`
+
 ## 1.16.1 (2024-04-15)
 
 * Rename `binPath` to `commandPath`
