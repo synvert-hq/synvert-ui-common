@@ -23,7 +23,7 @@ function isJsonString(str: string): boolean {
   return true;
 }
 
-function outputContainsError(stdout: string): boolean {
+function stdoutContainsError(stdout: string): boolean {
   return (
     Boolean(stdout) &&
     isJsonString(stdout) &&
@@ -33,24 +33,24 @@ function outputContainsError(stdout: string): boolean {
 
 // synvert-ruby in ruby 3.3 will output "Resolving dependencies...\n",
 // which we should strip.
-function stripOutput(stdout: string): string {
+function stripStdout(stdout: string): string {
   return stdout.replace(/^Resolving dependencies...\n/, "");
 }
 
 /**
- * Format shell command result, convert stdout and stderr to a json object { output, error }.
+ * Format shell command result, convert stdout and stderr to a json object { stdout, stderr }.
  * @param {RunCommandResult}
  * @returns {RunCommandResult}
  */
-export function formatCommandResult({ output, error }: RunCommandResult): RunCommandResult {
-  let realError;
-  if (error && isRealError(error)) {
-    realError = error;
+export function formatCommandResult({ stdout, stderr }: RunCommandResult): RunCommandResult {
+  let error;
+  if (stderr && isRealError(stderr)) {
+    error = stderr;
   }
-  if (isJsonString(output) && outputContainsError(output)) {
-    realError = JSON.parse(output).error;
+  if (isJsonString(stdout) && stdoutContainsError(stdout)) {
+    error = JSON.parse(stdout).error;
   }
-  return { output: stripOutput(output), error: realError };
+  return { stdout: stripStdout(stdout), stderr: error };
 }
 
 interface RunSynvertRubyParameters {
@@ -74,7 +74,7 @@ interface RunSynvertRubyParameters {
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @param {string} binPath - The directory containing the synvert-ruby binary.
- * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
 export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertRubyParameters) {
   const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
@@ -127,7 +127,7 @@ interface RunSynvertJavascriptParameters {
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @param {string} binPath - The directory containing the synvert-javascript binary.
- * @returns {Promise<{RunCommandResult}>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<{RunCommandResult}>} A promise that resolves to an object containing the stdout and stderr messages.
  */
 export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertJavascriptParameters) {
   const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
@@ -199,15 +199,15 @@ async function checkGemRemoteVersions(): Promise<{ synvertVersion: string, synve
  */
 export async function checkRubyDependencies({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: rubyError } = formatCommandResult(await runCommand(fullCommand("ruby", binPath), ["-v"]));
+    const { stderr: rubyError } = formatCommandResult(await runCommand(fullCommand("ruby", binPath), ["-v"]));
     if (rubyError) {
       return { code: DependencyResponse.RUBY_NOT_AVAILABLE };
     }
-    const { output, error } = formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), ["-v"]));
-    if (error) {
+    const { stdout, stderr } = formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), ["-v"]));
+    if (stderr) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
-    const result = output.match(RUBY_VERSION_REGEXP);
+    const result = stdout.match(RUBY_VERSION_REGEXP);
     if (result) {
       const localSynvertVersion = result[1];
       const localSynvertCoreVersion = result[2];
@@ -248,15 +248,15 @@ async function checkNpmRemoteVersions(): Promise<{ synvertVersion: string, synve
  */
 export async function checkJavascriptDependencies({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<CheckDependencyResult> {
   try {
-    const { error: javascriptError } = formatCommandResult(await runCommand(fullCommand("node", binPath), ["-v"]));
+    const { stderr: javascriptError } = formatCommandResult(await runCommand(fullCommand("node", binPath), ["-v"]));
     if (javascriptError) {
       return { code: DependencyResponse.JAVASCRIPT_NOT_AVAILABLE };
     }
-    const { output, error } = formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), ["-v"]));
-    if (error) {
+    const { stdout, stderr } = formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), ["-v"]));
+    if (stderr) {
       return { code: DependencyResponse.SYNVERT_NOT_AVAILABLE };
     }
-    const result = output.match(JAVASCRIPT_VERSION_REGEXP);
+    const result = stdout.match(JAVASCRIPT_VERSION_REGEXP);
     if (result) {
       const localSynvertVersion = result[1];
       const data = await checkNpmRemoteVersions();
@@ -283,7 +283,7 @@ export async function checkJavascriptDependencies({ runCommand, binPath }: { run
  * @param {Function} runCommand - The function to run a command.
  * @param {string | string[]} gemName - The name of the gem to install.
  * @param {string} binPath - The directory containing the gem binary.
- * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
 export async function installGem({ runCommand, gemName, binPath }: { runCommand: RunCommandFunc, gemName: string | string[], binPath?: string }): Promise<RunCommandResult> {
   const options = ["install", "--force"];
@@ -301,7 +301,7 @@ export async function installGem({ runCommand, gemName, binPath }: { runCommand:
  * @param {Function} runCommand - The function to run a command.
  * @param {string} npmName - The name of the npm package to install.
  * @param {string} binPath - The directory containing the npm binary.
- * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
 export async function installNpm({ runCommand, npmName, binPath }: { runCommand: RunCommandFunc, npmName: string, binPath?: string }): Promise<RunCommandResult> {
   return formatCommandResult(await runCommand(fullCommand("npm", binPath), ["install", "--force", "-g", npmName]));
@@ -312,7 +312,7 @@ export async function installNpm({ runCommand, npmName, binPath }: { runCommand:
  *
  * @param {Function} runCommand - The function to run a command.
  * @param {string} binPath - The directory containing the synvert-ruby binary.
- * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
 export async function syncRubySnippets({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<RunCommandResult> {
   return formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), ["--sync"]));
@@ -323,7 +323,7 @@ export async function syncRubySnippets({ runCommand, binPath }: { runCommand: Ru
  *
  * @param {Function} runCommand - The function to run a command.
  * @param {string} binPath - The directory containing the synvert-javascript binary.
- * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the output and error messages.
+ * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
 export async function syncJavascriptSnippets({ runCommand, binPath }: { runCommand: RunCommandFunc, binPath?: string }): Promise<RunCommandResult> {
   return formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), ["--sync"]));
@@ -356,19 +356,19 @@ async function addFileSourceToSnippets(snippets: TestResultExtExt[], rootPath: s
 
 /**
  * Handles the test results.
- * @param {string} output output of run command
- * @param {string} error  error of run command
+ * @param {string} stdout stdout of run command
+ * @param {string} stderr stderr of run command
  * @param {string} rootPath root path
  * @param {object} pathAPI api of path
  * @param {object} fsAPI api of fs/promises
  * @returns {Promise<SearchResults>} search results
  */
-export async function handleTestResults(output: string, error: string | undefined, rootPath: string, pathAPI: PathAPI, fsAPI: PromiseFsAPI): Promise<SearchResults> {
-  if (error) {
-    return { results: [], errorMessage: error };
+export async function handleTestResults(stdout: string, stderr: string | undefined, rootPath: string, pathAPI: PathAPI, fsAPI: PromiseFsAPI): Promise<SearchResults> {
+  if (stderr) {
+    return { results: [], errorMessage: stderr };
   }
   try {
-    const results = parseJSON(output);
+    const results = parseJSON(stdout);
     if (results.error) {
       return { results: [], errorMessage: results.error };
     }

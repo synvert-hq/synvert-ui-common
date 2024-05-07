@@ -20,19 +20,19 @@ import {
 
 describe("formatCommandResult", () => {
   it("formats with empty stderr", () => {
-    expect(formatCommandResult({ output: "hello world" })).toEqual({ output: "hello world", error: undefined });
+    expect(formatCommandResult({ stdout: "hello world" })).toEqual({ stdout: "hello world" });
   });
 
   it("formats with stderr", () => {
-    expect(formatCommandResult({ output: "", error: "hello world" })).toEqual({ output: "", error: "hello world" });
+    expect(formatCommandResult({ stdout: "", stderr: "hello world" })).toEqual({ stdout: "", stderr: "hello world" });
   });
 
   it("formats with warning", () => {
-    expect(formatCommandResult({ output: "hello world", error: "warning: hello world" })).toEqual({ output: "hello world", error: undefined });
+    expect(formatCommandResult({ stdout: "hello world", stderr: "warning: hello world" })).toEqual({ stdout: "hello world", stderr: undefined });
   });
 
   it("formats output", () => {
-    expect(formatCommandResult({ output: "Resolving dependencies...\nhello world", error: "" })).toEqual({ output: "hello world", error: undefined });
+    expect(formatCommandResult({ stdout: "Resolving dependencies...\nhello world", stderr: "" })).toEqual({ stdout: "hello world", stderr: undefined });
   });
 });
 
@@ -41,7 +41,7 @@ describe("runSynvertRuby", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("synvert-ruby");
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     runSynvertRuby({
       runCommand,
@@ -58,7 +58,7 @@ describe("runSynvertRuby", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/synvert-ruby");
       expect(args).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     runSynvertRuby({
       runCommand,
@@ -78,7 +78,7 @@ describe("runSynvertJavascript", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("synvert-javascript");
       expect(args).toEqual(["--execute", "run", "--format", "json", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     runSynvertJavascript({
       runCommand,
@@ -95,7 +95,7 @@ describe("runSynvertJavascript", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/synvert-javascript");
       expect(args).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     runSynvertJavascript({
       runCommand,
@@ -120,7 +120,7 @@ describe("checkRubyDependencies", () => {
   });
 
   it("returns RUBY_NOT_AVAILABLE if ruby command returns an error", async () => {
-    const runCommand = async () => ({ output: "", error: "ruby command not found" });
+    const runCommand = async () => ({ stdout: "", stderr: "ruby command not found" });
     const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.RUBY_NOT_AVAILABLE);
   });
@@ -128,11 +128,11 @@ describe("checkRubyDependencies", () => {
   it("returns SYNVERT_NOT_AVAILABLE if synvert-ruby command returns an error", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "ruby" && args[0] === "-v") {
-        return { output: "ruby 2.7.0", error: "" };
+        return { stdout: "ruby 2.7.0", stderr: "" };
       } else if (command === "synvert-ruby" && args[0] === "-v") {
-        return { output: "", error: "synvert-ruby command not found" };
+        return { stdout: "", stderr: "synvert-ruby command not found" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
@@ -141,11 +141,11 @@ describe("checkRubyDependencies", () => {
   it("returns SYNVERT_NOT_AVAILABLE if /bin/synvert-ruby command returns an error", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "ruby" && args[0] === "-v") {
-        return { output: "ruby 2.7.0", error: "" };
+        return { stdout: "ruby 2.7.0", stderr: "" };
       } else if (command === "/bin/synvert-ruby" && args[0] === "-v") {
-        return { output: "", error: "synvert-ruby command not found" };
+        return { stdout: "", stderr: "synvert-ruby command not found" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkRubyDependencies({ runCommand, binPath: "/bin" });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
@@ -154,11 +154,11 @@ describe("checkRubyDependencies", () => {
   it("returns SYNVERT_OUTDATED if local synvert version is outdated", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "ruby" && args[0] === "-v") {
-        return { output: "ruby 2.7.0", error: "" };
+        return { stdout: "ruby 2.7.0", stderr: "" };
       } else if (command === "synvert-ruby" && args[0] === "-v") {
-        return { output: "1.0.0 (with synvert-core 2.0.0)", error: "" };
+        return { stdout: "1.0.0 (with synvert-core 2.0.0)", stderr: "" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_OUTDATED);
@@ -169,11 +169,11 @@ describe("checkRubyDependencies", () => {
   it("returns SYNVERT_CORE_OUTDATED if local synvert core version is outdated", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "ruby" && args[0] === "-v") {
-        return { output: "ruby 2.7.0", error: "" };
+        return { stdout: "ruby 2.7.0", stderr: "" };
       } else if (command === "synvert-ruby" && args[0] === "-v") {
-        return { output: "2.0.0 (with synvert-core 2.0.0)", error: "" };
+        return { stdout: "2.0.0 (with synvert-core 2.0.0)", stderr: "" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_CORE_OUTDATED);
@@ -184,11 +184,11 @@ describe("checkRubyDependencies", () => {
   it("returns OK if all dependencies are up to date", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "ruby" && args[0] === "-v") {
-        return { output: "ruby 2.7.0", error: "" };
+        return { stdout: "ruby 2.7.0", stderr: "" };
       } else if (command === "synvert-ruby" && args[0] === "-v") {
-        return { output: "2.0.0 (with synvert-core 3.0.0)", error: "" };
+        return { stdout: "2.0.0 (with synvert-core 3.0.0)", stderr: "" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkRubyDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.OK);
@@ -214,7 +214,7 @@ describe("checkJavascriptDependencies", () => {
   });
 
   it("returns JAVASCRIPT_NOT_AVAILABLE if node command returns an error", async () => {
-    const runCommand = async () => ({ output: "", error: "node command not found" });
+    const runCommand = async () => ({ stdout: "", stderr: "node command not found" });
     const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.JAVASCRIPT_NOT_AVAILABLE);
   });
@@ -222,11 +222,11 @@ describe("checkJavascriptDependencies", () => {
   it("returns SYNVERT_NOT_AVAILABLE if synvert-javascript command returns an error", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "node" && args[0] === "-v") {
-        return { output: "node 20.0.0", error: "" };
+        return { stdout: "node 20.0.0", stderr: "" };
       } else if (command === "synvert-javascript" && args[0] === "-v") {
-        return { output: "", error: "synvert-javascript command not found" };
+        return { stdout: "", stderr: "synvert-javascript command not found" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
@@ -235,11 +235,11 @@ describe("checkJavascriptDependencies", () => {
   it("returns SYNVERT_NOT_AVAILABLE if /bin/synvert-javascript command returns an error", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "node" && args[0] === "-v") {
-        return { output: "node 20.0.0", error: "" };
+        return { stdout: "node 20.0.0", stderr: "" };
       } else if (command === "/bin/synvert-javascript" && args[0] === "-v") {
-        return { output: "", error: "synvert-javascript command not found" };
+        return { stdout: "", stderr: "synvert-javascript command not found" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkJavascriptDependencies({ runCommand, binPath: "/bin" });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_NOT_AVAILABLE);
@@ -248,11 +248,11 @@ describe("checkJavascriptDependencies", () => {
   it("returns SYNVERT_OUTDATED if local synvert version is outdated", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "node" && args[0] === "-v") {
-        return { output: "node 20.0.0", error: "" };
+        return { stdout: "node 20.0.0", stderr: "" };
       } else if (command === "synvert-javascript" && args[0] === "-v") {
-        return { output: "1.0.0 (with @synvert-hq/synvert-core 2.0.0)", error: "" };
+        return { stdout: "1.0.0 (with @synvert-hq/synvert-core 2.0.0)", stderr: "" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.SYNVERT_OUTDATED);
@@ -263,11 +263,11 @@ describe("checkJavascriptDependencies", () => {
   it("returns OK if all dependencies are up to date", async () => {
     const runCommand = async (command: string, args: string[]) => {
       if (command === "node" && args[0] === "-v") {
-        return { output: "node 20.0.0", error: "" };
+        return { stdout: "node 20.0.0", stderr: "" };
       } else if (command === "synvert-javascript" && args[0] === "-v") {
-        return { output: "2.0.0 (with @synvert-hq/synvert-core 3.0.0)", error: "" };
+        return { stdout: "2.0.0 (with @synvert-hq/synvert-core 3.0.0)", stderr: "" };
       }
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     const result = await checkJavascriptDependencies({ runCommand });
     expect(result.code).toEqual(DependencyResponse.OK);
@@ -288,7 +288,7 @@ describe("installGem", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/gem");
       expect(args).toEqual(["install", "--force", "synvert-core", "synvert"]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     installGem({
       runCommand,
@@ -303,7 +303,7 @@ describe("installNpm", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/npm");
       expect(args).toEqual(["install", "--force", "-g", "synvert"]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     installNpm({
       runCommand,
@@ -318,7 +318,7 @@ describe("syncRubySnippets", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("synvert-ruby");
       expect(args).toEqual(["--sync"]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     syncRubySnippets({
       runCommand,
@@ -331,7 +331,7 @@ describe("syncJavascriptSnippets", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("synvert-javascript");
       expect(args).toEqual(["--sync"]);
-      return { output: "", error: "" };
+      return { stdout: "", stderr: "" };
     };
     syncJavascriptSnippets({
       runCommand,

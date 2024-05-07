@@ -51,7 +51,7 @@ export type GenerateSnippetsParams = {
   nqlOrRules: "nql" | "rules",
 }
 
-export type RunCommandResult = { output: string, error?: string };
+export type RunCommandResult = { stdout: string, stderr?: string };
 export type RunCommandFunc = (command: string, args: string[], options?: { input?: string }) => Promise<RunCommandResult>;
 
 // Copy from @synvert-hq/node-mutation
