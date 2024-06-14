@@ -59,6 +59,7 @@ interface RunSynvertRubyParameters {
   rootPath: string;
   onlyPaths: string;
   skipPaths: string;
+  respectGitignore: boolean;
   additionalArgs: string[];
   snippetCode: string;
   binPath?: string;
@@ -71,13 +72,14 @@ interface RunSynvertRubyParameters {
  * @param {string} rootPath - The root path.
  * @param {string} onlyPaths - The paths to include.
  * @param {string} skipPaths - The paths to skip.
+ * @param {boolean} respectGitignore - Whether to respect the .gitignore file.
  * @param {string[]} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @param {string} binPath - The directory containing the synvert-ruby binary.
  * @returns {Promise<RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertRubyParameters) {
-  const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
+export async function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs, snippetCode, binPath }: RunSynvertRubyParameters) {
+  const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs);
   return formatCommandResult(await runCommand(fullCommand("synvert-ruby", binPath), commandArgs, { input: snippetCode }));
 }
 
@@ -86,6 +88,7 @@ function buildRubyCommandArgs(
   rootPath: string,
   onlyPaths: string,
   skipPaths: string,
+  respectGitignore: boolean,
   additionalArgs: string[],
 ): string[] {
   const commandArgs = ["--execute", executeCommand];
@@ -100,6 +103,9 @@ function buildRubyCommandArgs(
   if (skipPaths.length > 0) {
     commandArgs.push("--skip-paths");
     commandArgs.push(skipPaths);
+  }
+  if (!respectGitignore) {
+    commandArgs.push("--dont-respect-gitignore");
   }
   commandArgs.push(...additionalArgs);
   commandArgs.push(rootPath);
@@ -112,6 +118,7 @@ interface RunSynvertJavascriptParameters {
   rootPath: string;
   onlyPaths: string;
   skipPaths: string;
+  respectGitignore: boolean;
   additionalArgs: string[];
   snippetCode: string;
   binPath?: string;
@@ -124,13 +131,14 @@ interface RunSynvertJavascriptParameters {
  * @param {string} rootPath - The root path.
  * @param {string} onlyPaths - The paths to include.
  * @param {string} skipPaths - The paths to skip.
+ * @param {boolean} respectGitignore - Whether to respect the .gitignore file.
  * @param {Object} additionalArgs - Additional arguments for the command.
  * @param {string} snippetCode - The code snippet to process.
  * @param {string} binPath - The directory containing the synvert-javascript binary.
  * @returns {Promise<{RunCommandResult}>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs, snippetCode, binPath }: RunSynvertJavascriptParameters) {
-  const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, additionalArgs);
+export async function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs, snippetCode, binPath }: RunSynvertJavascriptParameters) {
+  const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs);
   return formatCommandResult(await runCommand(fullCommand("synvert-javascript", binPath), commandArgs, { input: snippetCode }));
 }
 
@@ -139,6 +147,7 @@ function buildJavascriptCommandArgs(
   rootPath: string,
   onlyPaths: string,
   skipPaths: string,
+  respectGitignore: boolean,
   additionalArgs: string[],
 ): string[] {
   const commandArgs = ["--execute", executeCommand];
@@ -153,6 +162,9 @@ function buildJavascriptCommandArgs(
   if (skipPaths.length > 0) {
     commandArgs.push("--skip-paths");
     commandArgs.push(skipPaths);
+  }
+  if (!respectGitignore) {
+    commandArgs.push("--dont-respect-gitignore");
   }
   commandArgs.push(...additionalArgs);
   commandArgs.push("--root-path");

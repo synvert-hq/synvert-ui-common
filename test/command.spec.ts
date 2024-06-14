@@ -48,6 +48,7 @@ describe("runSynvertRuby", () => {
       rootPath: ".",
       onlyPaths: "app,spec",
       skipPaths: "node_modules",
+      respectGitignore: true,
       additionalArgs: ["--double-quote", "--tab-width", "2"],
       snippetCode: "snippet code",
     });
@@ -56,7 +57,7 @@ describe("runSynvertRuby", () => {
   it("gets test command args", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/synvert-ruby");
-      expect(args).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--double-quote", "--tab-width", "2", "."]);
+      expect(args).toEqual(["--execute", "test", "--only-paths", "app,spec", "--skip-paths", "node_modules", "--dont-respect-gitignore", "--double-quote", "--tab-width", "2", "."]);
       return { stdout: "", stderr: "" };
     };
     runSynvertRuby({
@@ -65,6 +66,7 @@ describe("runSynvertRuby", () => {
       rootPath: ".",
       onlyPaths: "app,spec",
       skipPaths: "node_modules",
+      respectGitignore: false,
       additionalArgs: ["--double-quote", "--tab-width", "2"],
       snippetCode: "snippet code",
       binPath: "/bin",
@@ -85,6 +87,7 @@ describe("runSynvertJavascript", () => {
       rootPath: ".",
       onlyPaths: "lib,spec",
       skipPaths: "node_modules",
+      respectGitignore: true,
       additionalArgs: ["--single-quote", "--no-semi", "--tab-width", "2"],
       snippetCode: "snippet code",
     });
@@ -93,7 +96,7 @@ describe("runSynvertJavascript", () => {
   it("gets test command args", () => {
     const runCommand = async (command: string, args: string[]) => {
       expect(command).toEqual("/bin/synvert-javascript");
-      expect(args).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
+      expect(args).toEqual(["--execute", "test", "--only-paths", "lib,spec", "--skip-paths", "node_modules", "--dont-respect-gitignore", "--single-quote", "--no-semi", "--tab-width", "2", "--root-path", "."]);
       return { stdout: "", stderr: "" };
     };
     runSynvertJavascript({
@@ -102,6 +105,7 @@ describe("runSynvertJavascript", () => {
       rootPath: ".",
       onlyPaths: "lib,spec",
       skipPaths: "node_modules",
+      respectGitignore: false,
       additionalArgs: ["--single-quote", "--no-semi", "--tab-width", "2"],
       snippetCode: "snippet code",
       binPath: "/bin",
