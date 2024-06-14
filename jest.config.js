@@ -2,7 +2,4 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  automock: false,
-  resetMocks: false,
-  setupFiles: ["./setupJest.ts"],
 };

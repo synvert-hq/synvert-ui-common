@@ -1,5 +1,4 @@
 import dedent from "dedent";
-import fetchMock from 'jest-fetch-mock';
 
 import {
   filterSnippets,
@@ -55,16 +54,16 @@ describe("sortSnippets", () => {
 });
 
 describe("fetchSnippets", () => {
-  afterEach(() => {
-    fetchMock.resetMocks();
-  });
-
   describe("javascript", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-javascript.synvert.net/snippets?language=javascript", JSON.stringify({ snippets: [
-        { group: "group1", name: "name1", description: "description1", source_code: "" },
-        { group: "group2", name: "name2", description: "description2", source_code: "" },
-      ] }));
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({ snippets: [
+            { group: "group1", name: "name1", description: "description1", source_code: "" },
+            { group: "group2", name: "name2", description: "description2", source_code: "" },
+          ] }),
+        }),
+      ) as jest.Mock;
     });
 
     it("fetches snippets", async () => {
@@ -78,10 +77,14 @@ describe("fetchSnippets", () => {
 
   describe("ruby", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-ruby.synvert.net/snippets?language=ruby", JSON.stringify({ snippets: [
-        { group: "group1", name: "name1", description: "description1", source_code: "" },
-        { group: "group2", name: "name2", description: "description2", source_code: "" },
-      ] }));
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({ snippets: [
+            { group: "group1", name: "name1", description: "description1", source_code: "" },
+            { group: "group2", name: "name2", description: "description2", source_code: "" },
+          ] }),
+        }),
+      ) as jest.Mock;
     });
 
     it("fetches snippets", async () => {
@@ -95,28 +98,32 @@ describe("fetchSnippets", () => {
 
   describe("error", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-ruby.synvert.net/snippets?language=ruby", "");
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(""),
+        }),
+      ) as jest.Mock;
     });
 
     it("gets error", async () => {
       const data = await fetchSnippets("ruby", "token", "platform");
-      expect(data.errorMessage).toEqual("invalid json response body at  reason: Unexpected end of JSON input");
+      expect(data.errorMessage).toEqual("Cannot read properties of undefined (reading 'map')");
     });
   });
 });
 
 describe("generateSnippets", () => {
-  afterEach(() => {
-    fetchMock.resetMocks();
-  });
-
   describe("javascript", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-javascript.synvert.net/generate-snippet", JSON.stringify({ snippets: [dedent`
-        findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
-          replace("callee.object", { with: "Array" });
-        });
-      `] }));
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({ snippets: [dedent`
+            findNode(".CallExpression[callee=.MemberExpression[object IN ($ jQuery)][property=isArray]]", () => {
+              replace("callee.object", { with: "Array" });
+            });
+          `] }),
+        }),
+      ) as jest.Mock;
     });
 
     it("generates snippet", async () => {
@@ -138,11 +145,15 @@ describe("generateSnippets", () => {
 
   describe("ruby", () => {
     beforeEach(() => {
-      fetchMock.mockIf("https://api-ruby.synvert.net/generate-snippet", JSON.stringify({ snippets: [dedent`
-        find_node '.const[name=FactoryGirl]' do
-          replace :name, with: 'FactoryBot'
-        end
-      `] }));
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({ snippets: [dedent`
+            find_node '.const[name=FactoryGirl]' do
+              replace :name, with: 'FactoryBot'
+            end
+          `] }),
+        }),
+      ) as jest.Mock;
     });
 
     it("generates snippet", async () => {

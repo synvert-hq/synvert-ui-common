@@ -1,6 +1,5 @@
 import path from "path";
 import promiseFs from "fs/promises";
-import fetchMock from 'jest-fetch-mock';
 import mock from "mock-fs";
 
 import {
@@ -112,11 +111,11 @@ describe("runSynvertJavascript", () => {
 
 describe("checkRubyDependencies", () => {
   beforeEach(() => {
-    fetchMock.mockIf("https://api-ruby.synvert.net/check-versions", JSON.stringify({ synvert_version: "2.0.0", synvert_core_version: "3.0.0" }));
-  });
-
-  afterEach(() => {
-    fetchMock.resetMocks();
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ synvert_version: "2.0.0", synvert_core_version: "3.0.0" }),
+      }),
+    ) as jest.Mock;
   });
 
   it("returns RUBY_NOT_AVAILABLE if ruby command returns an error", async () => {
@@ -206,11 +205,11 @@ describe("checkRubyDependencies", () => {
 
 describe("checkJavascriptDependencies", () => {
   beforeEach(() => {
-    fetchMock.mockIf("https://api-javascript.synvert.net/check-versions", JSON.stringify({ synvert_version: "2.0.0", synvert_core_version: "3.0.0" }));
-  });
-
-  afterEach(() => {
-    fetchMock.resetMocks();
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ synvert_version: "2.0.0", synvert_core_version: "3.0.0" }),
+      }),
+    ) as jest.Mock;
   });
 
   it("returns JAVASCRIPT_NOT_AVAILABLE if node command returns an error", async () => {
