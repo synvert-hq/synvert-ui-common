@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.18.0 (2024-06-14)
+
+* Drop `jest-fetch-mock`
+* Add `respectGitignore` param to `runSynvertRuby` and `runSynvertJavascript`
+
 ## 1.17.0 (2024-05-07)
 
 * Do not export `formatCommandResult` function
