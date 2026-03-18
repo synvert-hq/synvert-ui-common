@@ -50,7 +50,17 @@ var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _argument
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseJSON = exports.handleTestResults = exports.syncJavascriptSnippets = exports.syncRubySnippets = exports.installNpm = exports.installGem = exports.checkJavascriptDependencies = exports.checkRubyDependencies = exports.DependencyResponse = exports.runSynvertJavascript = exports.runSynvertRuby = exports.formatCommandResult = void 0;
+exports.parseJSON = exports.DependencyResponse = void 0;
+exports.formatCommandResult = formatCommandResult;
+exports.runSynvertRuby = runSynvertRuby;
+exports.runSynvertJavascript = runSynvertJavascript;
+exports.checkRubyDependencies = checkRubyDependencies;
+exports.checkJavascriptDependencies = checkJavascriptDependencies;
+exports.installGem = installGem;
+exports.installNpm = installNpm;
+exports.syncRubySnippets = syncRubySnippets;
+exports.syncJavascriptSnippets = syncJavascriptSnippets;
+exports.handleTestResults = handleTestResults;
 const compare_versions_1 = require("compare-versions");
 function isRealError(stderr) {
     return (Boolean(stderr) &amp;&amp;
@@ -95,7 +105,6 @@ function formatCommandResult({ stdout, stderr }) {
     }
     return { stdout: stripStdout(stdout), stderr: error };
 }
-exports.formatCommandResult = formatCommandResult;
 /**
  * Runs synvert-ruby command line.
  * @param {Function} runCommand - The function to run the command.
@@ -109,13 +118,12 @@ exports.formatCommandResult = formatCommandResult;
  * @param {string} binPath - The directory containing the synvert-ruby binary.
  * @returns {Promise&lt;RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-function runSynvertRuby({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs, snippetCode, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function runSynvertRuby(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs, snippetCode, binPath }) {
         const commandArgs = buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs);
         return formatCommandResult(yield runCommand(fullCommand("synvert-ruby", binPath), commandArgs, { input: snippetCode }));
     });
 }
-exports.runSynvertRuby = runSynvertRuby;
 function buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs) {
     const commandArgs = ["--execute", executeCommand];
     if (executeCommand === "run") {
@@ -150,13 +158,12 @@ function buildRubyCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, re
  * @param {string} binPath - The directory containing the synvert-javascript binary.
  * @returns {Promise&lt;{RunCommandResult}>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-function runSynvertJavascript({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs, snippetCode, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function runSynvertJavascript(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs, snippetCode, binPath }) {
         const commandArgs = buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs);
         return formatCommandResult(yield runCommand(fullCommand("synvert-javascript", binPath), commandArgs, { input: snippetCode }));
     });
 }
-exports.runSynvertJavascript = runSynvertJavascript;
 function buildJavascriptCommandArgs(executeCommand, rootPath, onlyPaths, skipPaths, respectGitignore, additionalArgs) {
     const commandArgs = ["--execute", executeCommand];
     if (executeCommand === "run") {
@@ -188,7 +195,7 @@ var DependencyResponse;
     DependencyResponse[DependencyResponse["SYNVERT_OUTDATED"] = 4] = "SYNVERT_OUTDATED";
     DependencyResponse[DependencyResponse["SYNVERT_CORE_OUTDATED"] = 5] = "SYNVERT_CORE_OUTDATED";
     DependencyResponse[DependencyResponse["ERROR"] = 6] = "ERROR";
-})(DependencyResponse = exports.DependencyResponse || (exports.DependencyResponse = {}));
+})(DependencyResponse || (exports.DependencyResponse = DependencyResponse = {}));
 const RUBY_VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with synvert-core (\d+\.\d+\.\d+)/;
 const JAVASCRIPT_VERSION_REGEXP = /(\d+\.\d+\.\d+) \(with @synvert-hq\/synvert-core (\d+\.\d+\.\d+)/;
 function checkGemRemoteVersions() {
@@ -207,8 +214,8 @@ function checkGemRemoteVersions() {
  * @param {string} binPath - The directory containing the synvert-ruby binary.
  * @returns {Promise&lt;{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-function checkRubyDependencies({ runCommand, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function checkRubyDependencies(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, binPath }) {
         try {
             const { stderr: rubyError } = formatCommandResult(yield runCommand(fullCommand("ruby", binPath), ["-v"]));
             if (rubyError) {
@@ -245,7 +252,6 @@ function checkRubyDependencies({ runCommand, binPath }) {
         }
     });
 }
-exports.checkRubyDependencies = checkRubyDependencies;
 function checkNpmRemoteVersions() {
     return __awaiter(this, void 0, void 0, function* () {
         const url = "https://api-javascript.synvert.net/check-versions";
@@ -261,8 +267,8 @@ function checkNpmRemoteVersions() {
  * @param {string} binPath - The directory containing the synvert-javascript binary.
  * @returns {Promise&lt;{code: DependencyResponse, error: string | undefined}>} A promise that resolves to a CheckDependencyResult object.
  */
-function checkJavascriptDependencies({ runCommand, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function checkJavascriptDependencies(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, binPath }) {
         try {
             const { stderr: javascriptError } = formatCommandResult(yield runCommand(fullCommand("node", binPath), ["-v"]));
             if (javascriptError) {
@@ -295,7 +301,6 @@ function checkJavascriptDependencies({ runCommand, binPath }) {
         }
     });
 }
-exports.checkJavascriptDependencies = checkJavascriptDependencies;
 /**
  * Install one or multiple gems.
  *
@@ -304,8 +309,8 @@ exports.checkJavascriptDependencies = checkJavascriptDependencies;
  * @param {string} binPath - The directory containing the gem binary.
  * @returns {Promise&lt;RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-function installGem({ runCommand, gemName, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function installGem(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, gemName, binPath }) {
         const options = ["install", "--force"];
         if (Array.isArray(gemName)) {
             options.push(...gemName);
@@ -316,7 +321,6 @@ function installGem({ runCommand, gemName, binPath }) {
         return formatCommandResult(yield runCommand(fullCommand("gem", binPath), options));
     });
 }
-exports.installGem = installGem;
 /**
  * Install one npm package.
  *
@@ -325,12 +329,11 @@ exports.installGem = installGem;
  * @param {string} binPath - The directory containing the npm binary.
  * @returns {Promise&lt;RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-function installNpm({ runCommand, npmName, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function installNpm(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, npmName, binPath }) {
         return formatCommandResult(yield runCommand(fullCommand("npm", binPath), ["install", "--force", "-g", npmName]));
     });
 }
-exports.installNpm = installNpm;
 /**
  * Sync ruby snippets.
  *
@@ -338,12 +341,11 @@ exports.installNpm = installNpm;
  * @param {string} binPath - The directory containing the synvert-ruby binary.
  * @returns {Promise&lt;RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-function syncRubySnippets({ runCommand, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function syncRubySnippets(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, binPath }) {
         return formatCommandResult(yield runCommand(fullCommand("synvert-ruby", binPath), ["--sync"]));
     });
 }
-exports.syncRubySnippets = syncRubySnippets;
 /**
  * Sync javascript snippets.
  *
@@ -351,12 +353,11 @@ exports.syncRubySnippets = syncRubySnippets;
  * @param {string} binPath - The directory containing the synvert-javascript binary.
  * @returns {Promise&lt;RunCommandResult>} A promise that resolves to an object containing the stdout and stderr messages.
  */
-function syncJavascriptSnippets({ runCommand, binPath }) {
-    return __awaiter(this, void 0, void 0, function* () {
+function syncJavascriptSnippets(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ runCommand, binPath }) {
         return formatCommandResult(yield runCommand(fullCommand("synvert-javascript", binPath), ["--sync"]));
     });
 }
-exports.syncJavascriptSnippets = syncJavascriptSnippets;
 function mergeRenameFileTestResults(snippets) {
     const renameFileResults = snippets.filter(snippet => snippet.actions[0].type === "rename_file");
     if (renameFileResults.length === 0) {
@@ -409,7 +410,6 @@ function handleTestResults(stdout, stderr, rootPath, pathAPI, fsAPI) {
         }
     });
 }
-exports.handleTestResults = handleTestResults;
 function fullCommand(command, binPath) {
     return join(binPath, command);
 }
@@ -446,7 +446,7 @@ exports.parseJSON = parseJSON;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Mar 18 2026 08:04:40 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Mar 18 2026 12:55:36 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
